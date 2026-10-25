@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WAYOUT V33</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;color:#0f0;font-family:'Courier New',monospace;overflow:hidden}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:99999;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.18) 0,rgba(0,0,0,0.18) 1px,transparent 1px,transparent 3px)}
+#intro{position:fixed;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;cursor:pointer}
+#intro h1{font-size:48px;letter-spacing:8px;animation:glow 1s infinite alternate}
+@keyframes glow{from{text-shadow:0 0 10px #0f0}to{text-shadow:0 0 30px #0f0}}
+#created{margin-top:20px;color:#0f0;font-size:18px;letter-spacing:3px;opacity:0.9}
+#bootLog{margin-top:22px;font-size:13px;color:#0f0;opacity:0.85;min-height:120px;text-align:left;white-space:pre;font-family:inherit}
+#app{position:fixed;inset:0;background:radial-gradient(circle at 50% 40%,#0d1a0d,#050805 70%)}
+.hidden{display:none!important}
+.panel{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#0a0a0a;border:2px solid #0f0;padding:30px;min-width:380px;max-width:92vw;z-index:100}
+.panel,.inv-box,.hud-box,.update-box{text-shadow:0 0 6px rgba(0,255,0,.55);box-shadow:0 0 18px rgba(0,255,0,.22)}
+input{width:100%;padding:12px;margin:8px 0;background:#000;border:1px solid #0f0;color:#0f0;font-family:inherit}
+button{width:100%;padding:14px;margin:8px 0;background:#0f0;color:#000;border:none;font-weight:bold;cursor:pointer;font-family:inherit;letter-spacing:2px}
+button:hover{background:#0a0}
+.small{font-size:12px;opacity:0.7;margin-top:10px}
+#gameCanvas{position:fixed;inset:0;width:100vw;height:100vh;display:block;background:#8a7a55}
+#hud{position:fixed;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none;z-index:50}
+.hud-box{background:rgba(0,0,0,0.85);border:1px solid #0f0;padding:8px 12px;font-size:12px;line-height:1.6}
+#questBox{position:fixed;top:78px;left:10px;width:270px;background:rgba(0,0,0,.75);border:1px solid #0f0;padding:6px 10px;font-size:11px;line-height:1.5;white-space:pre-wrap}
+#onlineBox{position:fixed;top:78px;right:10px;min-width:230px;background:rgba(0,0,0,.75);border:1px solid #0f0;padding:6px 10px;font-size:11px;line-height:1.5;white-space:pre}
+#chatBox{position:fixed;bottom:12px;left:12px;width:440px;max-width:90vw;z-index:60}
+#chatLog{font-size:13px;text-shadow:0 0 4px #000,0 0 6px #0f0;min-height:20px}
+#chatLog div{background:rgba(0,0,0,.55);padding:2px 6px;margin-top:2px}
+#chatIn{display:none;pointer-events:auto;margin-top:6px}
+#chatIn.show{display:block}
+#cross{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:20px;pointer-events:none;z-index:60}
+#cross::before,#cross::after{content:'';position:absolute;background:#0f0}
+#cross::before{left:9px;top:0;width:2px;height:20px}
+#cross::after{left:0;top:9px;width:20px;height:2px}
+#radOverlay{position:fixed;inset:0;pointer-events:none;z-index:40;background:radial-gradient(circle,transparent 35%,rgba(120,255,0,0.45) 100%);opacity:0;transition:opacity .3s}
+#toast{position:fixed;top:44px;left:50%;transform:translateX(-50%);z-index:70;background:rgba(0,0,0,0.9);border:1px solid #0f0;padding:8px 16px;font-size:14px;letter-spacing:2px;pointer-events:none;display:none;text-shadow:0 0 6px #0f0;text-align:center;max-width:90vw}
+#enterBtn{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:5000;padding:18px 40px;font-size:20px;letter-spacing:4px;background:#0f0;color:#000;border:3px solid #0f0;cursor:pointer;display:none;width:auto}
+#enterBtn.show{display:block}
+#inventory,#mapScreen,#updateScreen,#pipboy{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:8000;display:flex;align-items:center;justify-content:center}
+.inv-box{background:#0a0a0a;border:2px solid #0f0;padding:30px;min-width:500px;max-width:700px}
+.inv-box div{margin:6px 0}
+.map-canvas{border:2px solid #0f0;background:#1a1a1a;cursor:crosshair}
+.update-box{background:#001a00;border:3px solid #ff0;padding:30px;min-width:480px}
+.tabbtn{width:auto;display:inline-block;padding:8px 14px;margin:2px 4px 8px 0;font-size:12px}
+.tabbtn.on{background:#fff}
+#pipBody{min-height:200px;font-size:13px;line-height:1.5}
+#ownerConsole{position:fixed;top:230px;right:10px;width:400px;background:#0a0a0a;border:2px solid #f00;z-index:9000;padding:12px;display:none}
+#ownerConsole.show{display:block}
+#ownerInput{width:100%;background:#000;border:1px solid #f00;color:#f00;padding:10px;font-family:inherit}
+#ownerLog{max-height:140px;overflow-y:auto;font-size:11px;color:#ff0;margin-top:8px;background:#111;padding:6px}
+</style>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
+</head>
+<body>
+<div id="ownerConsole"><h3 style="color:#f00">👑 OWNER [C]</h3><input id="ownerInput" placeholder="/sendupdateall"><div id="ownerLog">V33 Created By ItzRealLenix</div></div>
+
+<div id="intro" onclick="finishIntro()">
+  <h1 id="please">Please stand by</h1>
+  <div id="created">Created By ItzRealLenix</div>
+  <pre id="bootLog"></pre>
+  <div id="updateBanner" class="hidden" style="margin-top:20px;background:#ff0;color:#000;padding:12px;font-weight:bold"></div>
+  <div class="small" style="margin-top:15px;opacity:0.5">klikni pro pokračování</div>
+</div>
+
+<div id="app" class="hidden">
+  <div id="register" class="panel">
+    <h2>WAYOUT V33</h2>
+    <p class="small">Created By ItzRealLenix</p>
+    <p class="small" style="opacity:0.9">Poslední sklep. Poslední naděje. Najdi cestu ven.</p>
+    <input id="nameIn" placeholder="Jméno" maxlength="16">
+    <input id="pinIn" placeholder="PIN 4 čísla" maxlength="4" type="password">
+    <div id="pinErr" style="color:#f00;display:none">ŠPATNÝ PIN!</div>
+    <button onclick="doRegister()">VSTOUPIT</button>
+    <div id="versionInfo" class="small"></div>
+  </div>
+  <div id="lobby" class="panel hidden">
+    <h2>LOBBY V33</h2>
+    <div>VAULT KÓD: <b id="myIdDisp" style="color:#0ff;font-size:22px;letter-spacing:4px"></b> <button onclick="copyId()" style="width:auto;padding:4px 8px">KOPIE</button> <button onclick="newCode()" style="width:auto;padding:4px 8px;background:#333;color:#0f0">NOVÝ KÓD</button></div>
+    <div id="playerList" class="small"></div>
+    <input id="friendId" placeholder="Vault kód kamaráda (6 znaků)" maxlength="24">
+    <button onclick="connectFriend()">PŘIPOJIT</button>
+    <div class="small" id="connLog" style="max-height:120px;overflow-y:auto"></div>
+    <div class="small" style="opacity:0.55">WASD pohyb | R přebít | H stimpak | J radaway | 1 jídlo | 2 voda | E odpočinek | Q C.A.M.P. | K rádio | Enter chat | Z X V emotes | M mapa (klik = rychlý přesun) | P pip-boy | TAB inventář</div>
+  </div>
+</div>
+
+<button id="enterBtn" onclick="enterGame()">VSTOUPIT DO WAYOUT</button>
+<canvas id="gameCanvas" class="hidden"></canvas>
+<div id="radOverlay"></div>
+<div id="toast"></div>
+<div id="hud" class="hidden">
+  <div class="hud-box">HP <span id="hp">100</span>/<span id="hpMax">100</span> | LVL <span id="lvl">1</span> (XP <span id="xp">0/120</span>) | <span id="ammo">30/90</span> | H:<span id="hCount">3</span> | J:<span id="radawayCount">1</span> | RAD <span id="rad">0</span> | CAPS <span id="caps">0</span><br>🍖 <span id="hun">100</span>% [1:<span id="foodCount">1</span>] | 💧 <span id="thi">100</span>% [2:<span id="waterCount">1</span>] | <span id="clock">DEN</span></div>
+  <div class="hud-box"><span id="hudId"></span> | <span id="seeCount">0</span> | <span id="loc">MĚSTO</span> | V33</div>
+  <div id="questBox"></div>
+  <div id="onlineBox"></div>
+  <div id="chatBox"><div id="chatLog"></div><input id="chatIn" maxlength="120" placeholder="Zpráva... (Enter odeslat, Esc zrušit)"></div>
+</div>
+<div id="cross" class="hidden"></div>
+<div id="inventory" class="hidden"><div class="inv-box"><h2>INV - TAB/ESC</h2><div>Ammo: <span id="invAmmo">30/90</span> | Stimpak: <span id="invHeal">3</span> | RadAway: <span id="invRadaway">1</span></div><div>Caps: <span id="invCaps">0</span> | <span id="invFood">0 jídlo</span> | <span id="invWater">0 voda</span></div><button onclick="closeInv()">ZAVŘÍT</button></div></div>
+<div id="mapScreen" class="hidden"><div class="inv-box"><h2>MAPA - M/ESC</h2><canvas id="mapCanvas" width="600" height="600" class="map-canvas"></canvas><div class="small">Žlutý čtverec = WAYOUT | zelená = radiace | červená/oranžová = NUKE | modré = hráči a campy | KLIK na značku = rychlý přesun za caps</div><button onclick="closeMap()">ZAVŘÍT</button></div></div>
+<div id="pipboy" class="hidden"><div class="inv-box" style="min-width:580px"><h2>PIP-BOY - P/ESC</h2>
+  <div><button class="tabbtn on" onclick="pipTab(0)">STAT</button><button class="tabbtn" onclick="pipTab(1)">S.P.E.C.I.A.L.</button><button class="tabbtn" onclick="pipTab(2)">ÚKOLY</button><button class="tabbtn" onclick="pipTab(3)">HRÁČI</button></div>
+  <div id="pipBody"></div>
+  <button onclick="closePip()">ZAVŘÍT</button></div></div>
+<div id="updateScreen" class="hidden"><div class="update-box"><h2 style="color:#ff0">🚀 UPDATE V<span id="newVerNum">33</span>!</h2><p id="updateText"></p><button onclick="applyUpdate()" style="background:#ff0;color:#000">AKTUALIZOVAT</button><button onclick="downloadNewVersion()" style="background:#0ff;color:#000;margin-top:8px">STÁHNOUT SOUBOR</button><button onclick="skipUpdate()" style="background:#333;color:#fff;margin-top:8px">PŘESKOČIT</button></div></div>
+
+<script type="module">
+import * as THREE from 'three';
+const GAME_VERSION = 33;
+const GAME_NAME = 'WAYOUT';
+// localStorage klíče zůstávají 'wp_*', aby se neztratily uložené postavy a PINy
+// každý hráč má vlastní 6místný VAULT KÓD (bez zaměnitelných znaků), ostatním ho pošleš a připojí se přes něj
+const ID_PREFIX='wayout33-';
+const CODE_CHARS='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+function newVaultCode(){let s='';const a=new Uint32Array(6);crypto.getRandomValues(a);for(let i=0;i<6;i++) s+=CODE_CHARS[a[i]%CODE_CHARS.length];return s;}
+const shortId=id=>String(id||'').replace(ID_PREFIX,'');
+let myId = localStorage.getItem('wp_myId');
+if(!myId||!myId.startsWith(ID_PREFIX)){
+  myId=ID_PREFIX+newVaultCode();
+  localStorage.setItem('wp_myId', myId);
+}
+let worldSeed = 13371337;
+function seededRandom(s){let seed=s;return()=>{seed=(seed*9301+49297)%233280;return seed/233280;}}
+let rng=seededRandom(worldSeed);
+let myName='',myLevel=1,peer=null,conns={},remote={},posRef={x:0,y:2,z:0},yawRef=0,pitchRef=0;
+let scene,camera,renderer,buildings=[],enemies=[],trees=[],chests=[],camps=[],pistolPickups=[],radZones=[];
+let keys={},isPointerLocked=false,ammo=30,magAmmo=30,reserveAmmo=90,hp=100,healingCaps=3,maxHp=100,food=1,water=1,isInventoryOpen=false,isMapOpen=false,isPipOpen=false;
+let sounds={ctx:null},isOwner=false,ownerConsoleVisible=false,spawnProtectionUntil=0,codeChunks={},remoteMeshes={};
+let gameStarted=false,dead=false,inGame=false,chatOpen=false;
+// Fallout vrstva
+let rads=0,caps=0,kills=0,radaway=1,lastRest=0,radDmgT=0;
+let xp=0,perkPoints=0,special={S:1,P:1,E:1,C:1,I:1,A:1,L:1};
+let hunger=100,thirst=100,hungerDmgT=0,scorchedKills=0,doneQuests={},myCamp=null,pending={},pipTabIdx=0,curLoc='MĚSTO',dayNow=1;
+const DOOR={x:0,z:-40,safeR:16};
+const effMax=()=>maxHp-Math.floor(rads/2);
+const xpNeed=l=>80+l*40;
+const SPECIAL_INFO={S:['Síla','+20 max. munice'],P:['Vnímání','větší dosah sběru'],E:['Odolnost','+10 max. HP'],C:['Charisma','stimpak léčí víc'],I:['Inteligence','+10% XP'],A:['Hbitost','+5% rychlost'],L:['Štěstí','+5% caps z nepřátel']};
+
+function setText(id,t){const el=document.getElementById(id);if(el) el.textContent=t;}
+let toastT=null;
+function toast(t,ms=2500){const el=document.getElementById('toast');if(!el) return;el.textContent=t;el.style.display='block';clearTimeout(toastT);toastT=setTimeout(()=>{el.style.display='none';},ms);}
+function applySpecial(){maxHp=100+(special.E-1)*10;}
+function saveStats(){
+  if(!myName) return;
+  localStorage.setItem('wp_caps_'+myName,caps);localStorage.setItem('wp_kills_'+myName,kills);localStorage.setItem('wp_lvl_'+myName,myLevel);
+  localStorage.setItem('wp_xp_'+myName,xp);
+  localStorage.setItem('wp_special_'+myName,JSON.stringify({s:special,pp:perkPoints}));
+  localStorage.setItem('wp_quests_'+myName,JSON.stringify(doneQuests));
+}
+function gainXp(n){
+  n=Math.round(n*(1+0.1*(special.I-1)));xp+=n;let up=false;
+  while(xp>=xpNeed(myLevel)){xp-=xpNeed(myLevel);myLevel++;perkPoints++;up=true;}
+  if(up){toast('⬆ LEVEL '+myLevel+'! +1 bod S.P.E.C.I.A.L. (P)',4000);playSound('heal');}
+  setText('lvl',myLevel);
+}
+function broadcast(msg){Object.values(conns).forEach(c=>{try{if(c.open) c.send(msg);}catch(e){}});}
+
+// ===== úkoly (jako Fallout 76 questy) =====
+const QUESTS=[
+  {id:'q1',t:'Zabij 10 nepřátel',goal:10,get:()=>kills,r:{caps:50,xp:100}},
+  {id:'q2',t:'Měj 200 caps',goal:200,get:()=>caps,r:{pp:1}},
+  {id:'q3',t:'Postav C.A.M.P. (Q)',goal:1,get:()=>myCamp?1:0,r:{caps:30}},
+  {id:'q4',t:'Potkej dalšího přeživšího',goal:1,get:()=>Object.values(remote).some(p=>p.ig)?1:0,r:{xp:150}},
+  {id:'q5',t:'Zabij 3 Scorched v nuke zóně',goal:3,get:()=>scorchedKills,r:{caps:150,pp:1}},
+  {id:'q6',t:'Otevři WAYOUT (500 caps)',goal:500,get:()=>caps,r:{levels:10}}
+];
+function checkQuests(){
+  let changed=false;
+  QUESTS.forEach(q=>{
+    if(doneQuests[q.id]) return;
+    if(q.get()>=q.goal){
+      doneQuests[q.id]=1;changed=true;
+      if(q.r.caps) caps+=q.r.caps;
+      if(q.r.xp) gainXp(q.r.xp);
+      if(q.r.pp) perkPoints+=q.r.pp;
+      if(q.r.levels) myLevel+=q.r.levels;
+      toast('✅ ÚKOL SPLNĚN: '+q.t+(q.id==='q6'?' - Našel jsi cestu ven! +10 LVL':''),5000);
+    }
+  });
+  if(changed){saveStats();if(window.updateAmmo) window.updateAmmo();}
+}
+function updateQuestBox(){
+  const box=document.getElementById('questBox');if(!box) return;
+  const open=QUESTS.filter(q=>!doneQuests[q.id]).slice(0,3);
+  box.textContent='ÚKOLY\n'+(open.length?open.map(q=>'• '+q.t+' ['+Math.min(q.get(),q.goal)+'/'+q.goal+']').join('\n'):'Vše splněno!');
+}
+
+// ===== text sprity (jmenovky, bubliny) =====
+function makeTextSprite(w=256,h=64,sx=4,sy=1){
+  const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+  const tex=new THREE.CanvasTexture(canvas);
+  const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false}));
+  sprite.scale.set(sx,sy,1);sprite.renderOrder=10;
+  return {canvas,tex,sprite,text:''};
+}
+function drawTextSprite(o,lines,color='#0f0'){
+  const key=lines.join('|')+color;if(o.text===key) return;o.text=key;
+  const c=o.canvas,ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);
+  ctx.fillStyle='rgba(0,0,0,0.55)';ctx.fillRect(0,0,c.width,c.height);
+  ctx.strokeStyle=color;ctx.lineWidth=3;ctx.strokeRect(2,2,c.width-4,c.height-4);
+  ctx.fillStyle=color;ctx.textAlign='center';ctx.textBaseline='middle';
+  const lh=c.height/lines.length;let L=1;lines.forEach(l=>{L=Math.max(L,l.length);});
+  const fs=Math.min(lh*0.62,(c.width-16)/(L*0.6));
+  ctx.font='bold '+Math.floor(fs)+'px monospace';
+  lines.forEach((l,i)=>ctx.fillText(l,c.width/2,lh*(i+0.5)));
+  o.tex.needsUpdate=true;
+}
+
+// ===== C.A.M.P. =====
+function ensureCampMesh(c){
+  if(!scene||c.group) return;
+  const cy=getTerrainHeight(c.x,c.z);
+  const mine=c.owner===myId;
+  const g=new THREE.Group();
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(6,6),new THREE.MeshStandardMaterial({color:0x8B4513}));floor.rotation.x=-Math.PI/2;floor.position.set(c.x,cy+0.05,c.z);
+  const tent=new THREE.Mesh(new THREE.ConeGeometry(2,2,4),new THREE.MeshStandardMaterial({color:mine?0x2a8a2a:0x2a5aff}));tent.position.set(c.x,cy+1,c.z);
+  const lab=makeTextSprite(256,64,4,1);drawTextSprite(lab,['C.A.M.P. '+(c.name||'?').slice(0,14)],mine?'#0f0':'#7db7ff');lab.sprite.position.set(c.x,cy+3.6,c.z);
+  g.add(floor);g.add(tent);g.add(lab.sprite);scene.add(g);c.group=g;
+}
+function addCamp(c){
+  const old=camps.find(k=>k.owner===c.owner);
+  if(old){if(old.group&&scene) scene.remove(old.group);camps=camps.filter(k=>k!==old);}
+  camps.push(c);if(c.owner===myId) myCamp=c;
+  ensureCampMesh(c);
+}
+
+// ===== avatar jiného hráče (vault oblek) =====
+function makeAvatar(){
+  const g=new THREE.Group();
+  const suit=new THREE.MeshStandardMaterial({color:0x2a4aaa}),stripe=new THREE.MeshStandardMaterial({color:0xe8c840}),skin=new THREE.MeshStandardMaterial({color:0xffdbac});
+  const torso=new THREE.Mesh(new THREE.BoxGeometry(0.8,0.9,0.45),suit);torso.position.y=1.25;g.add(torso);
+  const st=new THREE.Mesh(new THREE.BoxGeometry(0.2,0.92,0.47),stripe);st.position.y=1.25;g.add(st);
+  const head=new THREE.Mesh(new THREE.SphereGeometry(0.28,10,8),skin);head.position.y=1.95;g.add(head);
+  const mk=(x,y,w,h)=>{const pv=new THREE.Group();pv.position.set(x,y,0);const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,0.3),suit);m.position.y=-h/2;pv.add(m);g.add(pv);return pv;};
+  const legL=mk(-0.2,0.8,0.32,0.8),legR=mk(0.2,0.8,0.32,0.8),armL=mk(-0.55,1.65,0.25,0.75),armR=mk(0.55,1.65,0.25,0.75);
+  const plate=makeTextSprite(256,64,3.4,0.85);plate.sprite.position.y=2.7;g.add(plate.sprite);
+  const bubble=makeTextSprite(768,64,9,0.75);bubble.sprite.position.y=3.5;bubble.sprite.visible=false;g.add(bubble.sprite);
+  g.userData={legL,legR,armL,armR,plate,bubble,bubbleUntil:0,lx:0,lz:0,phase:0};
+  return g;
+}
+function setBubble(id,text,ms){
+  const m=remoteMeshes[id];if(!m) return;
+  drawTextSprite(m.userData.bubble,[String(text).slice(0,32)],'#ffe97d');
+  m.userData.bubbleUntil=performance.now()+ms;
+}
+function dropRemote(id){
+  delete remote[id];
+  if(remoteMeshes[id]){try{scene.remove(remoteMeshes[id]);}catch(e){} delete remoteMeshes[id];}
+  updatePlayerList();
+}
+function updateRemotes(now){
+  if(!scene) return;
+  Object.values(remote).forEach(p=>{
+    if(now-p.t>20000){dropRemote(p.id);return;}
+    let m=remoteMeshes[p.id];
+    if(!p.ig||typeof p.x!=='number'||isNaN(p.x)||typeof p.z!=='number'||isNaN(p.z)){if(m) m.visible=false;return;}
+    if(!m){m=makeAvatar();m.position.set(p.x,getTerrainHeight(p.x,p.z),p.z);m.userData.lx=p.x;m.userData.lz=p.z;scene.add(m);remoteMeshes[p.id]=m;}
+    m.visible=true;
+    const ud=m.userData;
+    m.position.x+=(p.x-m.position.x)*0.35;m.position.z+=(p.z-m.position.z)*0.35;
+    m.position.y=getTerrainHeight(m.position.x,m.position.z);
+    m.rotation.y=p.yaw||0;
+    const sp=Math.hypot(m.position.x-ud.lx,m.position.z-ud.lz);ud.lx=m.position.x;ud.lz=m.position.z;
+    ud.phase+=sp*3;const amp=Math.min(0.9,sp*6);
+    ud.legL.rotation.x=Math.sin(ud.phase)*amp;ud.legR.rotation.x=-Math.sin(ud.phase)*amp;
+    ud.armL.rotation.x=-Math.sin(ud.phase)*amp*0.8;ud.armR.rotation.x=Math.sin(ud.phase)*amp*0.8;
+    drawTextSprite(ud.plate,[p.name+'  LVL '+p.level],'#7dff7d');
+    ud.bubble.sprite.visible=now<ud.bubbleUntil;
+  });
+}
+
+// ===== chat =====
+function addChat(name,text){
+  const log=document.getElementById('chatLog');if(!log) return;
+  const row=document.createElement('div');const b=document.createElement('b');b.textContent=name+': ';
+  row.appendChild(b);row.appendChild(document.createTextNode(text));log.appendChild(row);
+  while(log.children.length>7) log.removeChild(log.firstChild);
+  setTimeout(()=>{if(row.parentNode) row.parentNode.removeChild(row);},14000);
+}
+
+// ===== Pip-Boy =====
+function addSpecial(k){
+  if(perkPoints>0&&special[k]<10){special[k]++;perkPoints--;applySpecial();saveStats();if(window.updateAmmo) window.updateAmmo();renderPip();}
+}
+function renderPip(){
+  const body=document.getElementById('pipBody');if(!body) return;
+  body.textContent='';
+  const add=t=>{const d=document.createElement('div');d.textContent=t;body.appendChild(d);return d;};
+  document.querySelectorAll('.tabbtn').forEach((b,i)=>{if(i<4) b.classList.toggle('on',i===pipTabIdx);});
+  if(pipTabIdx===0){
+    add('HP: '+Math.floor(hp)+' / '+maxHp+(rads>0?'  (radiace snížila max na '+effMax()+')':''));
+    add('LEVEL '+myLevel+' | XP '+xp+'/'+xpNeed(myLevel)+' | volné body: '+perkPoints);
+    add('Ammo: '+magAmmo+'/'+reserveAmmo+' | Stimpaky: '+healingCaps+' | RadAway: '+radaway);
+    add('RAD: '+Math.floor(rads)+' | CAPS: '+caps+' | ZABITO: '+kills);
+    add('Hlad: '+Math.floor(hunger)+'% | Žízeň: '+Math.floor(thirst)+'% | Jídlo: '+food+' | Voda: '+water);
+    add('Místo: '+curLoc+' | Čas: '+(dayNow>0.45?'DEN':'NOC'));
+    add('Hráči online: '+Object.values(remote).filter(p=>p.ig).length);
+    add('Cíl: dostat se k WAYOUT dveřím s 500 caps');
+  }else if(pipTabIdx===1){
+    add('Volné body: '+perkPoints+' (body získáš za level)');
+    Object.keys(SPECIAL_INFO).forEach(k=>{
+      const row=document.createElement('div');
+      row.textContent=k+' '+SPECIAL_INFO[k][0]+': '+special[k]+'  ('+SPECIAL_INFO[k][1]+') ';
+      if(perkPoints>0&&special[k]<10){const b=document.createElement('button');b.className='tabbtn';b.textContent='+';b.onclick=()=>addSpecial(k);row.appendChild(b);}
+      body.appendChild(row);
+    });
+  }else if(pipTabIdx===2){
+    QUESTS.forEach(q=>{add((doneQuests[q.id]?'[x] ':'[ ] ')+q.t+(doneQuests[q.id]?'':'  ['+Math.min(q.get(),q.goal)+'/'+q.goal+']'));});
+  }else{
+    add('★ '+myName+' LVL '+myLevel+' (ty)');
+    Object.values(remote).forEach(p=>{
+      let d='v lobby';
+      if(p.ig&&camera&&typeof p.x==='number') d=Math.round(Math.hypot(p.x-camera.position.x,p.z-camera.position.z))+' m';
+      add('▶ '+p.name+' LVL '+p.level+' - '+d);
+    });
+    if(!Object.keys(remote).length) add('Nikdo další není připojen.');
+    add('');
+    camps.forEach(c=>add('⛺ C.A.M.P. '+(c.name||'?')+(c.owner===myId?' (tvůj)':'')));
+  }
+}
+window.pipTab=i=>{pipTabIdx=i;renderPip();};
+
+function logOwner(t){const l=document.getElementById('ownerLog');if(l){const d=document.createElement('div');d.textContent='> '+t;l.appendChild(d);l.scrollTop=l.scrollHeight;}}
+function checkOwner(){if(myName.toLowerCase()==='itzreallenix'){isOwner=true;logOwner(`OWNER V${GAME_VERSION}`);}}
+function toggleOwnerConsole(){if(!isOwner) return;ownerConsoleVisible=!ownerConsoleVisible;const con=document.getElementById('ownerConsole');if(ownerConsoleVisible){con.classList.add('show');document.exitPointerLock();setTimeout(()=>document.getElementById('ownerInput').focus(),100);}else{con.classList.remove('show');try{document.getElementById('gameCanvas').requestPointerLock();}catch(e){}}}
+function handleOwnerCommand(cmd){cmd=cmd.trim();if(!cmd) return;logOwner(cmd);if(cmd==='/sendupdateall'){const fullCode=document.documentElement.outerHTML;Object.values(conns).forEach(c=>{if(c.open){c.send({type:'updateAvailable',newVersion:GAME_VERSION,from:'OWNER',message:`UPDATE V${GAME_VERSION}!`});const chunkSize=15000;for(let i=0;i<fullCode.length;i+=chunkSize){c.send({type:'codeChunk',index:i/chunkSize,total:Math.ceil(fullCode.length/chunkSize),chunk:fullCode.slice(i,i+chunkSize),version:GAME_VERSION});}c.send({type:'codePushDone',version:GAME_VERSION});}});localStorage.setItem('wp_latest_pushed_version',GAME_VERSION);}}
+
+function checkForUpdate(){
+  const saved=parseInt(localStorage.getItem('wp_game_version')||'0');
+  const pushed=parseInt(localStorage.getItem('wp_latest_pushed_version')||'0');
+  const latest=Math.max(GAME_VERSION,pushed);
+  const banner=document.getElementById('updateBanner');
+  const verInfo=document.getElementById('versionInfo');
+  if(verInfo) verInfo.textContent=`V${GAME_VERSION} | Uložená V${saved}`;
+  if(saved >= GAME_VERSION && (pushed===0 || saved >= pushed)){if(banner) banner.classList.add('hidden');document.getElementById('updateScreen').classList.add('hidden');return false;}
+  if(saved>=27 && latest>saved){if(banner){banner.classList.remove('hidden');banner.textContent=`🚀 UPDATE V${latest}!`;}document.getElementById('updateScreen').classList.remove('hidden');document.getElementById('newVerNum').textContent=latest;document.getElementById('updateText').textContent=`Je V${latest}, ty máš V${saved}.`;return true;}
+  if(!saved) localStorage.setItem('wp_game_version',GAME_VERSION);return false;
+}
+window.applyUpdate=()=>{const pushed=parseInt(localStorage.getItem('wp_latest_pushed_version')||'0');const latest=Math.max(GAME_VERSION,pushed);localStorage.setItem('wp_game_version',latest);localStorage.removeItem('wp_latest_pushed_version');document.getElementById('updateScreen').classList.add('hidden');document.getElementById('updateBanner').classList.add('hidden');location.reload();}
+window.skipUpdate=()=>{document.getElementById('updateScreen').classList.add('hidden');document.getElementById('updateBanner').classList.add('hidden');localStorage.removeItem('wp_latest_pushed_version');}
+window.downloadNewVersion=()=>{const code=document.documentElement.outerHTML;const blob=new Blob([code],{type:'text/html'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${GAME_NAME}_V${GAME_VERSION}_NEW.html`;a.click();URL.revokeObjectURL(url);}
+
+function ensureAudio(){try{if(!sounds.ctx) sounds.ctx=new (window.AudioContext||window.webkitAudioContext)();if(sounds.ctx.state==='suspended') sounds.ctx.resume();return sounds.ctx;}catch(e){return null;}}
+function playSound(n,v=0.5){
+  const ctx=ensureAudio();if(!ctx) return;
+  try{
+    const g=ctx.createGain();g.gain.value=v;g.connect(ctx.destination);
+    const o=ctx.createOscillator();
+    o.type=(n==='shoot'||n==='geiger')?'square':'sine';
+    o.frequency.value=n==='shoot'?800:n==='geiger'?1900:n==='hit'?300:500;
+    const dur=n==='geiger'?0.03:0.2;
+    g.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+dur);
+    o.connect(g);o.start();o.stop(ctx.currentTime+dur);
+  }catch(e){}
+}
+// rádio
+let radioOn=false,radioInt=null;
+function toggleRadio(){
+  radioOn=!radioOn;
+  if(radioOn){
+    const sc=[220,247,277,330,370,440];
+    radioInt=setInterval(()=>{const ctx=ensureAudio();if(!ctx) return;try{const g=ctx.createGain();g.gain.value=0.08;g.connect(ctx.destination);const o=ctx.createOscillator();o.type='triangle';o.frequency.value=sc[Math.floor(Math.random()*sc.length)];g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.4);o.connect(g);o.start();o.stop(ctx.currentTime+0.4);}catch(e){}},420);
+    toast('📻 WAYOUT FM - ON');
+  }else{clearInterval(radioInt);toast('📻 RADIO OFF');}
+}
+
+// intro: Pip-Boy terminál
+let dots=0;
+let introFinished=false;
+const pleaseEl=document.getElementById('please');
+const dotInt=setInterval(()=>{try{if(!pleaseEl) return;dots=(dots+1)%7;pleaseEl.textContent='Please stand by'+'.'.repeat(dots);}catch{}},300);
+const bootLines=['WAYOUT-TEC TERMLINK PROTOCOL','BOOTING SHELTER OS v33.0 ...','GEIGER MODULE ........ OK','STIMPAK DISPENSER .... OK','MULTIPLAYER MESH ..... OK','WASTELAND DATA ....... LOADED','>> NAJDI CESTU VEN <<'];
+let bootI=0;
+const bootInt=setInterval(()=>{const el=document.getElementById('bootLog');if(!el||bootI>=bootLines.length){clearInterval(bootInt);return;}el.textContent+=bootLines[bootI++]+'\n';},220);
+
+function finishIntro(){
+  if(introFinished) return;
+  introFinished=true;
+  try{clearInterval(dotInt);clearInterval(bootInt);}catch{}
+  const intro=document.getElementById('intro');
+  const app=document.getElementById('app');
+  if(intro) intro.classList.add('hidden');
+  if(app) app.classList.remove('hidden');
+  const nameIn=document.getElementById('nameIn');
+  if(nameIn) nameIn.value=localStorage.getItem('wp_name')||'';
+  checkForUpdate();
+}
+window.finishIntro=finishIntro;
+window.ensureAudio=ensureAudio;
+setTimeout(()=>{if(!introFinished) finishIntro();},2600);
+window.addEventListener('load',()=>{setTimeout(()=>{if(!introFinished) finishIntro();},2200);});
+
+window.doRegister=()=>{
+  const name=document.getElementById('nameIn').value.trim();const pin=document.getElementById('pinIn').value.trim();
+  if(name.length<3||name.length>16){alert('Jméno 3-16');return;}if(!/^\d{4}$/.test(pin)){alert('PIN 4 čísla');return;}
+  const sp=localStorage.getItem('wp_pin_'+name);if(sp&&sp!==pin){document.getElementById('pinErr').style.display='block';return;}
+  document.getElementById('pinErr').style.display='none';if(!sp) localStorage.setItem('wp_pin_'+name,pin);
+  localStorage.setItem('wp_name',name);
+  const curVer=parseInt(localStorage.getItem('wp_game_version')||'0');
+  if(curVer < GAME_VERSION && curVer < 27) localStorage.setItem('wp_game_version',GAME_VERSION);
+  const sl=localStorage.getItem('wp_lvl_'+name);if(sl) myLevel=parseInt(sl)||1;
+  const scp=localStorage.getItem('wp_caps_'+name);if(scp) caps=parseInt(scp)||0;
+  const skl=localStorage.getItem('wp_kills_'+name);if(skl) kills=parseInt(skl)||0;
+  const sxp=localStorage.getItem('wp_xp_'+name);xp=sxp?(parseInt(sxp)||0):0;
+  const ssp=localStorage.getItem('wp_special_'+name);
+  if(ssp){try{const o=JSON.parse(ssp);special=Object.assign(special,o.s||{});perkPoints=o.pp||0;}catch(e){}}else{perkPoints=3;}
+  const sqs=localStorage.getItem('wp_quests_'+name);if(sqs){try{doneQuests=JSON.parse(sqs)||{};}catch(e){}}
+  applySpecial();
+  myName=name;document.getElementById('register').classList.add('hidden');document.getElementById('lobby').classList.remove('hidden');
+  document.getElementById('myIdDisp').textContent=shortId(myId);document.getElementById('enterBtn').classList.add('show');
+  checkOwner();initPeer();
+  if(isOwner){const inp=document.getElementById('ownerInput');inp.addEventListener('keydown',e=>{if(e.key==='Enter'){handleOwnerCommand(inp.value);inp.value='';}});}
+};
+
+// ===== multiplayer (PeerJS) =====
+let posInterval=null,peerAttempt=0,peerStarting=false;
+function initPeer(){
+  if(window.Peer){startPeer();return;}
+  const urls=['https://unpkg.com/peerjs@1.5.0/dist/peerjs.min.js','https://cdn.jsdelivr.net/npm/peerjs@1.5.0/dist/peerjs.min.js'];
+  let i=0;
+  const load=()=>{
+    const s=document.createElement('script');s.src=urls[i];
+    s.onload=startPeer;
+    s.onerror=()=>{i++;if(i<urls.length){logConn('Zkouším jiný zdroj PeerJS...');load();}else{logConn('Nelze načíst PeerJS - zkontroluj internet.');}};
+    document.head.appendChild(s);
+  };
+  load();
+}
+function setupConn(conn){
+  const pid=conn.peer;
+  conn.on('open',()=>{
+    delete pending[pid];
+    conns[pid]=conn;
+    try{conn.send({type:'hello',id:myId,name:myName,level:myLevel,version:GAME_VERSION,seed:worldSeed,ig:inGame,camp:myCamp?{x:myCamp.x,z:myCamp.z}:null});}catch(e){}
+    logConn('Spojeno s vaultem '+shortId(pid));
+  });
+  conn.on('data',d=>handleData(d,pid));
+  conn.on('close',()=>{if(conns[pid]===conn||!conns[pid]||!conns[pid].open) handlePlayerDisconnect(pid);});
+  conn.on('error',()=>{delete pending[pid];if(conns[pid]===conn||!conns[pid]||!conns[pid].open) handlePlayerDisconnect(pid);});
+}
+function connectTo(fid){
+  if(!peer||peer.destroyed||fid===myId||(conns[fid]&&conns[fid].open)||pending[fid]) return;
+  pending[fid]=true;setTimeout(()=>{delete pending[fid];},10000);
+  setupConn(peer.connect(fid,{reliable:true}));
+}
+function startPeer(){
+  if(peerStarting) return;
+  peerStarting=true;
+  try{if(peer){peer.destroy();}}catch(e){}
+  conns={};pending={};
+  peer=new Peer(myId,{config:{iceServers:[
+    {urls:'stun:stun.l.google.com:19302'},
+    {urls:'stun:stun1.l.google.com:19302'},
+    {urls:'stun:stun.cloudflare.com:3478'}
+  ]}});
+  peer.on('open',()=>{peerStarting=false;peerAttempt=0;logConn('✅ Tvůj vault kód: '+shortId(myId)+' (V'+GAME_VERSION+')');});
+  peer.on('error',err=>{
+    const t=err&&err.type?err.type:String(err);
+    if(t==='unavailable-id'){
+      peerStarting=false;peerAttempt++;
+      if(peerAttempt<=2){
+        logConn('ID je zrovna obsazené (starý/jiný tab?), zkouším znovu...');
+        setTimeout(startPeer,3000);
+      }else{
+        myId=ID_PREFIX+newVaultCode();
+        localStorage.setItem('wp_myId',myId);
+        setText('myIdDisp',shortId(myId));setText('hudId',shortId(myId));
+        logConn('Nový vault kód: '+shortId(myId));
+        peerAttempt=0;
+        setTimeout(startPeer,500);
+      }
+    }else if(t==='peer-unavailable'){
+      logConn('❌ Hráč s tím ID není online - zkontroluj ID a ať je v lobby.');
+    }else if(t==='network'||t==='server-error'||t==='socket-error'||t==='socket-closed'){
+      peerStarting=false;
+      logConn('Síťová chyba ('+t+'), zkouším znovu za 4 s...');
+      setTimeout(startPeer,4000);
+    }else{
+      logConn('Chyba peeru: '+t);
+    }
+  });
+  peer.on('disconnected',()=>{
+    if(peer&&!peer.destroyed){logConn('Odpojeno od serveru, připojuji znovu...');setTimeout(()=>{try{peer.reconnect();}catch(e){}},1500);}
+  });
+  peer.on('connection',conn=>setupConn(conn));
+  if(posInterval) clearInterval(posInterval);
+  posInterval=setInterval(()=>{
+    broadcast({type:'pos',id:myId,name:myName,level:myLevel,x:posRef.x,y:posRef.y,z:posRef.z,yaw:yawRef,ig:inGame,version:GAME_VERSION});
+  },100);
+}
+function handlePlayerDisconnect(peerId){
+  const nm=remote[peerId]&&remote[peerId].name;
+  if(conns[peerId]){try{conns[peerId].close();}catch(e){} delete conns[peerId];}
+  dropRemote(peerId);
+  const oc=camps.find(c=>c.owner===peerId);
+  if(oc){if(oc.group&&scene) scene.remove(oc.group);camps=camps.filter(c=>c!==oc);}
+  if(nm&&inGame) toast('👤 '+nm+' odešel');
+}
+function logConn(t){const el=document.getElementById('connLog');if(el){const d=document.createElement('div');d.textContent=t;el.appendChild(d);el.scrollTop=el.scrollHeight;}}
+function handleData(d,from){
+  if(!d||typeof d!=='object'||!d.type) return;
+  if(d.type==='hello'||d.type==='pos'){
+    if(typeof d.id!=='string') return;
+    if(d.seed && !gameStarted) worldSeed=d.seed;
+    // starý záznam se stejným jménem se maže jen když jeho spojení už není otevřené
+    Object.keys(remote).forEach(oldId=>{
+      if(oldId!==d.id && remote[oldId] && remote[oldId].name===d.name && !(conns[oldId]&&conns[oldId].open)) dropRemote(oldId);
+    });
+    const p=remote[d.id]||(remote[d.id]={id:d.id,x:0,y:0,z:0,yaw:0,ig:false,announced:false});
+    p.name=String(d.name||p.name||'Hráč').slice(0,16);p.level=d.level||p.level||1;p.t=performance.now();
+    if(typeof d.x==='number'&&!isNaN(d.x)&&typeof d.z==='number'&&!isNaN(d.z)){p.x=d.x;p.y=d.y;p.z=d.z;p.yaw=d.yaw||0;}
+    if(typeof d.ig==='boolean') p.ig=d.ig;
+    if(d.type==='hello'){
+      if(d.camp&&typeof d.camp.x==='number') addCamp({x:d.camp.x,z:d.camp.z,owner:d.id,name:p.name});
+      const c=conns[from];
+      if(c&&c.open){try{c.send({type:'peers',ids:Object.keys(conns).filter(k=>k!==from)});}catch(e){}}
+      if(!p.announced){p.announced=true;if(inGame) toast('👤 '+p.name+' se připojil');}
+    }
+    updatePlayerList();
+  }
+  if(d.type==='peers'&&Array.isArray(d.ids)){d.ids.slice(0,20).forEach(id=>{if(typeof id==='string') connectTo(id);});}
+  if(d.type==='playerLeft'){handlePlayerDisconnect(d.id);}
+  if(d.type==='chat'){
+    const txt=String(d.text||'').slice(0,120);const nm=String(d.name||'?').slice(0,16);
+    addChat(nm,txt);if(typeof d.id==='string') setBubble(d.id,txt,5000);
+  }
+  if(d.type==='emote'&&typeof d.id==='string'){setBubble(d.id,String(d.e||'').slice(0,12),3000);}
+  if(d.type==='camp'&&typeof d.x==='number'&&typeof d.z==='number'&&d.owner!==myId){
+    addCamp({x:d.x,z:d.z,owner:String(d.owner),name:String(d.name||'?').slice(0,16)});
+  }
+  if(d.type==='updateAvailable'){const saved=parseInt(localStorage.getItem('wp_game_version')||'0');if(d.newVersion > saved){localStorage.setItem('wp_latest_pushed_version',d.newVersion);document.getElementById('updateScreen').classList.remove('hidden');document.getElementById('newVerNum').textContent=d.newVersion;document.getElementById('updateText').textContent=`${d.from} poslal UPDATE V${d.newVersion}!`;document.getElementById('updateBanner').classList.remove('hidden');document.getElementById('updateBanner').textContent=`🚀 ${d.message}`;codeChunks={};}}
+  if(d.type==='codeChunk'){if(!codeChunks[d.version]) codeChunks[d.version]=[];codeChunks[d.version][d.index]=d.chunk;}
+  if(d.type==='codePushDone'){const ver=d.version;if(codeChunks[ver]){const full=codeChunks[ver].join('');const blob=new Blob([full],{type:'text/html'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${GAME_NAME}_V${ver}_NEW.html`;a.click();URL.revokeObjectURL(url);document.getElementById('updateText').textContent=`✅ V${ver} stažena!`;localStorage.setItem('wp_game_version',ver);}}
+  if(d.type==='killZombie'){const k=enemies.find(e=>e.userData.id===d.zombieId);if(k){scene.remove(k);enemies=enemies.filter(x=>x!==k);}}
+}
+function updatePlayerList(){
+  const list=Object.values(remote);
+  document.getElementById('playerList').textContent='Hráči: '+(list.length?list.map(p=>p.name+' LVL'+p.level+(p.ig?'':' (lobby)')).join(', '):'žádní');
+  setText('seeCount',list.filter(p=>p.ig).length);
+}
+window.copyId=()=>{navigator.clipboard.writeText(shortId(myId));alert('Vault kód zkopírován: '+shortId(myId));}
+window.newCode=()=>{
+  if(inGame){alert('Nový kód jde vytvořit jen v lobby');return;}
+  broadcast({type:'playerLeft',id:myId});
+  const oc=camps.find(c=>c.owner===myId);
+  if(oc){if(oc.group&&scene) scene.remove(oc.group);camps=camps.filter(c=>c!==oc);myCamp=null;}
+  myId=ID_PREFIX+newVaultCode();localStorage.setItem('wp_myId',myId);
+  setText('myIdDisp',shortId(myId));logConn('Nový vault kód: '+shortId(myId));
+  Object.keys(remote).forEach(id=>dropRemote(id));
+  peerStarting=false;peerAttempt=0;if(peer) startPeer();
+};
+window.connectFriend=()=>{
+  const code=document.getElementById('friendId').value.trim().toUpperCase().replace(/\s+/g,'').replace(/^WAYOUT33-/,'').replace(/^VAULT-?/,'');
+  if(!code){alert('Zadej vault kód kamaráda');return;}if(!peer){alert('Peer ne');return;}
+  const fid=ID_PREFIX+code;
+  if(fid===myId){alert('To je tvoje vlastní ID');return;}
+  if(conns[fid]&&conns[fid].open){logConn('Už jsi spojený s vaultem '+shortId(fid));return;}
+  if(peer.disconnected){try{peer.reconnect();}catch(e){}}
+  logConn('Připojuji se k vaultu '+shortId(fid)+'...');
+  connectTo(fid);
+  setTimeout(()=>{if(!(conns[fid]&&conns[fid].open)) logConn('Spojení se nepodařilo - hráč musí být online v lobby a mít správné ID.');},10000);
+};
+window.enterGame=()=>{
+  document.getElementById('lobby').classList.add('hidden');document.getElementById('enterBtn').classList.remove('show');
+  document.getElementById('app').classList.add('hidden');document.getElementById('gameCanvas').classList.remove('hidden');
+  document.getElementById('hud').classList.remove('hidden');document.getElementById('cross').classList.remove('hidden');
+  document.getElementById('hudId').textContent='VAULT '+shortId(myId);document.getElementById('lvl').textContent=myLevel;
+  inGame=true;
+  // svět se vytvoří jen jednou; při návratu z menu se jen znovu ukáže
+  if(!gameStarted){gameStarted=true;init3D();}
+  else if(window.updateAmmo) window.updateAmmo();
+};
+function getTerrainHeight(x,z){return Math.sin(x*0.02)*2 + Math.cos(z*0.02)*2;}
+function init3D(){
+  const canvas=document.getElementById('gameCanvas');canvas.width=innerWidth;canvas.height=innerHeight;
+  rng=seededRandom(worldSeed);const r=()=>rng();
+  let gl=canvas.getContext('webgl',{alpha:false,antialias:false})||canvas.getContext('experimental-webgl',{alpha:false});
+  scene=new THREE.Scene();scene.background=new THREE.Color(0x8a7a55);scene.fog=new THREE.FogExp2(0x8a7a55,0.011);
+  camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,1000);
+  const sx=(r()-0.5)*6,sz=(r()-0.5)*6;camera.position.set(sx,getTerrainHeight(sx,sz)+1.7,sz);posRef={x:sx,y:camera.position.y,z:sz};
+  renderer=new THREE.WebGLRenderer({canvas,context:gl,antialias:false});renderer.setSize(innerWidth,innerHeight);renderer.setClearColor(0x8a7a55);
+  window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+  const ambient=new THREE.AmbientLight(0xffe8c0,0.7);scene.add(ambient);
+  const dirL=new THREE.DirectionalLight(0xffd9a0,0.8);dirL.position.set(50,80,30);scene.add(dirL);
+  scene.add(camera);const lamp=new THREE.PointLight(0xaaffaa,0.2,35);camera.add(lamp);
+  // campy, které dorazily ještě před startem světa
+  camps.forEach(ensureCampMesh);
+  const geo=new THREE.PlaneGeometry(600,600,50,50);const pos=geo.attributes.position;
+  for(let i=0;i<pos.count;i++){pos.setZ(i,Math.sin(pos.getX(i)*0.02)*2 + Math.cos(pos.getY(i)*0.02)*2);}pos.needsUpdate=true;geo.computeVertexNormals();
+  const terr=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0x6b5d3f}));terr.rotation.x=-Math.PI/2;scene.add(terr);
+  const roadGeo=new THREE.PlaneGeometry(20,600);const roadMat=new THREE.MeshStandardMaterial({color:0x3a3a3a});
+  const road1=new THREE.Mesh(roadGeo,roadMat);road1.rotation.x=-Math.PI/2;road1.position.y=0.05;scene.add(road1);
+  const road2=road1.clone();road2.rotation.z=Math.PI/2;scene.add(road2);
+  const bMat=new THREE.MeshStandardMaterial({color:0x6b6b6b});const bMat2=new THREE.MeshStandardMaterial({color:0x4a4a4a});
+  for(let i=0;i<30;i++){
+    const x=(r()-0.5)*400,z=(r()-0.5)*400;if(Math.abs(x)<18&&Math.abs(z)<18) continue;
+    // neblokovat prostor před WAYOUT dveřmi
+    if(Math.hypot(x-DOOR.x,z-DOOR.z)<DOOR.safeR+8) continue;
+    const h=getTerrainHeight(x,z);const bh=8+r()*16;const isShop=r()<0.45;
+    const b=new THREE.Mesh(new THREE.BoxGeometry(12+r()*10,bh,12+r()*10),isShop?bMat2:bMat);
+    b.position.set(x,h+bh/2,z);b.userData={isBuilding:true,isShop,hasZombie:isShop&&r()<0.6};scene.add(b);buildings.push(b);
+  }
+  const trunkMat=new THREE.MeshStandardMaterial({color:0x3d2817});const leavesMat=new THREE.MeshStandardMaterial({color:0x4a4a22});
+  for(let i=0;i<300;i++){
+    let x,z;const zone=Math.floor(r()*3);
+    if(zone===0){x=r()*250+120;z=r()*250+120;}
+    else if(zone===1){x=r()*200-250;z=r()*250+100;}
+    else{x=r()*200+100;z=r()*200-250;}
+    const h=getTerrainHeight(x,z);
+    const trunk=new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.5,4,6),trunkMat);trunk.position.set(x,h+2,z);trunk.userData={noCollision:true};
+    const leaves=new THREE.Mesh(new THREE.SphereGeometry(2.2+r(),6,6),leavesMat);leaves.position.set(x,h+5,z);leaves.userData={noCollision:true};
+    scene.add(trunk);scene.add(leaves);trees.push({x,z,trunk,leaves});
+  }
+  buildings.forEach(b=>{
+    if(b.userData.hasZombie){
+      const ex=b.position.x+(r()-0.5)*5,ez=b.position.z+(r()-0.5)*5;
+      const e=new THREE.Mesh(new THREE.CapsuleGeometry(0.5,1.2,4,8),new THREE.MeshStandardMaterial({color:0x2a5a2a}));
+      e.position.set(ex,getTerrainHeight(ex,ez)+0.9,ez);e.userData={id:'b_'+Math.floor(ex)+'_'+Math.floor(ez),hp:1,speed:1.3,dmg:10,caps:5+Math.floor(r()*6),xp:25};scene.add(e);enemies.push(e);
+    }
+  });
+  for(let i=0;i<18;i++){const t=trees[Math.floor(r()*trees.length)];if(!t) continue;const x=t.x+(r()-0.5)*12,z=t.z+(r()-0.5)*12;const e=new THREE.Mesh(new THREE.CapsuleGeometry(0.5,1.2,4,8),new THREE.MeshStandardMaterial({color:0x1a3a1a}));e.position.set(x,getTerrainHeight(x,z)+0.9,z);e.userData={id:'f_'+Math.floor(x)+'_'+Math.floor(z)+'_'+i,hp:1,speed:1.3,dmg:10,caps:5+Math.floor(r()*6),xp:25};scene.add(e);enemies.push(e);}
+  const chestMat=new THREE.MeshStandardMaterial({color:0x8B4513});
+  buildings.forEach(b=>{
+    if(b.userData.isShop&&r()<0.45){
+      const cx=b.position.x+(r()-0.5)*6,cz=b.position.z+(r()-0.5)*6;
+      const chest=new THREE.Mesh(new THREE.BoxGeometry(1.2,0.8,0.8),chestMat);chest.position.set(cx,getTerrainHeight(cx,cz)+0.5,cz);chest.userData={type:'chest',loot:r()<0.4?'pistol':'ammo',noCollision:true};scene.add(chest);chests.push(chest);
+    }
+  });
+  const pistolMat=new THREE.MeshStandardMaterial({color:0x111});const healMat=new THREE.MeshStandardMaterial({color:0x00ffaa,emissive:0x00ffaa,emissiveIntensity:0.5});
+  for(let i=0;i<10;i++){const b=buildings[Math.floor(r()*buildings.length)];if(!b) continue;const px=b.position.x+(r()-0.5)*6,pz=b.position.z+(r()-0.5)*6;const p=new THREE.Mesh(new THREE.BoxGeometry(0.6,0.2,0.4),pistolMat);p.position.set(px,getTerrainHeight(px,pz)+0.5,pz);p.userData={type:'pistol',ammo:12,noCollision:true};scene.add(p);pistolPickups.push(p);}
+  for(let i=0;i<12;i++){const b=buildings[Math.floor(r()*buildings.length)];if(!b) continue;const px=b.position.x+(r()-0.5)*6,pz=b.position.z+(r()-0.5)*6;const c=new THREE.Mesh(new THREE.SphereGeometry(0.3,8,8),healMat);c.position.set(px,getTerrainHeight(px,pz)+0.6,pz);c.userData={type:'heal',noCollision:true};scene.add(c);pistolPickups.push(c);}
+
+  // ===== FALLOUT VRSTVA (generuje se až po původním světě, aby zůstal stejný) =====
+  // WAYOUT dveře
+  {
+    const dc=document.createElement('canvas');dc.width=512;dc.height=512;const dx=dc.getContext('2d');
+    dx.fillStyle='#2a3a55';dx.fillRect(0,0,512,512);
+    dx.strokeStyle='#d8c25a';dx.lineWidth=14;dx.beginPath();dx.arc(256,256,230,0,Math.PI*2);dx.stroke();
+    dx.lineWidth=6;for(let a=0;a<12;a++){dx.beginPath();dx.moveTo(256+Math.cos(a*Math.PI/6)*150,256+Math.sin(a*Math.PI/6)*150);dx.lineTo(256+Math.cos(a*Math.PI/6)*225,256+Math.sin(a*Math.PI/6)*225);dx.stroke();}
+    dx.fillStyle='#d8c25a';dx.font='bold 76px monospace';dx.textAlign='center';dx.fillText('WAYOUT',256,275);
+    dx.font='bold 34px monospace';dx.fillText('SAFE ZONE',256,330);
+    const tex=new THREE.CanvasTexture(dc);
+    const dh=getTerrainHeight(DOOR.x,DOOR.z);
+    const door=new THREE.Mesh(new THREE.CircleGeometry(7,40),new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide}));
+    door.position.set(DOOR.x,dh+7,DOOR.z);scene.add(door);
+    const frame=new THREE.Mesh(new THREE.TorusGeometry(7,0.8,8,40),new THREE.MeshStandardMaterial({color:0x777766}));
+    frame.position.copy(door.position);scene.add(frame);
+    const ring=new THREE.Mesh(new THREE.RingGeometry(DOOR.safeR-0.6,DOOR.safeR,48),new THREE.MeshBasicMaterial({color:0x44ff88,transparent:true,opacity:0.35,side:THREE.DoubleSide}));
+    ring.rotation.x=-Math.PI/2;ring.position.set(DOOR.x,dh+0.2,DOOR.z);scene.add(ring);
+  }
+  // radiační zóny + ghúlové
+  {
+    const zoneMat=new THREE.MeshBasicMaterial({color:0x66ff00,transparent:true,opacity:0.22,side:THREE.DoubleSide});
+    const barrelMat=new THREE.MeshStandardMaterial({color:0x88aa22,emissive:0x66ff00,emissiveIntensity:0.6});
+    let placed=0,tries=0;
+    while(placed<6&&tries<60){
+      tries++;
+      const zx=(r()-0.5)*360,zz=(r()-0.5)*360,zr=18+r()*12;
+      if(Math.hypot(zx,zz)<70||Math.hypot(zx-DOOR.x,zz-DOOR.z)<DOOR.safeR+zr+10) continue;
+      radZones.push({x:zx,z:zz,r:zr});placed++;
+      const zh=getTerrainHeight(zx,zz);
+      const disc=new THREE.Mesh(new THREE.CircleGeometry(zr,32),zoneMat);disc.rotation.x=-Math.PI/2;disc.position.set(zx,zh+0.25,zz);scene.add(disc);
+      for(let k=0;k<4;k++){
+        const bx=zx+(r()-0.5)*zr,bz=zz+(r()-0.5)*zr;
+        const barrel=new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.5,1.2,8),barrelMat);barrel.position.set(bx,getTerrainHeight(bx,bz)+0.6,bz);scene.add(barrel);
+      }
+      for(let k=0;k<3;k++){
+        const gx=zx+(r()-0.5)*zr*1.2,gz=zz+(r()-0.5)*zr*1.2;
+        const g=new THREE.Mesh(new THREE.CapsuleGeometry(0.5,1.5,4,8),new THREE.MeshStandardMaterial({color:0x7f9a3a}));
+        g.position.set(gx,getTerrainHeight(gx,gz)+1.1,gz);
+        g.userData={id:'g_'+placed+'_'+k,hp:2,speed:2.1,dmg:15,caps:15+Math.floor(r()*11),xp:60,type:'ghoul'};
+        scene.add(g);enemies.push(g);
+      }
+    }
+  }
+  // RadAway, bottle caps, jídlo a voda
+  {
+    const raMat=new THREE.MeshStandardMaterial({color:0xff8800,emissive:0xff6600,emissiveIntensity:0.5});
+    const capMat=new THREE.MeshStandardMaterial({color:0xddcc33,emissive:0x887700,emissiveIntensity:0.4});
+    const foodMat=new THREE.MeshStandardMaterial({color:0xcc8844});
+    const waterMat=new THREE.MeshStandardMaterial({color:0x44aaff,emissive:0x2266aa,emissiveIntensity:0.4});
+    for(let i=0;i<8;i++){const b=buildings[Math.floor(r()*buildings.length)];if(!b) continue;const px=b.position.x+(r()-0.5)*6,pz=b.position.z+(r()-0.5)*6;const p=new THREE.Mesh(new THREE.SphereGeometry(0.3,8,8),raMat);p.position.set(px,getTerrainHeight(px,pz)+0.6,pz);p.userData={type:'radaway',noCollision:true};scene.add(p);pistolPickups.push(p);}
+    for(let i=0;i<30;i++){const x=(r()-0.5)*380,z=(r()-0.5)*380;const p=new THREE.Mesh(new THREE.CylinderGeometry(0.25,0.25,0.08,10),capMat);p.position.set(x,getTerrainHeight(x,z)+0.5,z);p.userData={type:'cap',value:3+Math.floor(r()*8),noCollision:true};scene.add(p);pistolPickups.push(p);}
+    for(let i=0;i<10;i++){const b=buildings[Math.floor(r()*buildings.length)];if(!b) continue;const px=b.position.x+(r()-0.5)*7,pz=b.position.z+(r()-0.5)*7;const p=new THREE.Mesh(new THREE.BoxGeometry(0.4,0.4,0.4),foodMat);p.position.set(px,getTerrainHeight(px,pz)+0.5,pz);p.userData={type:'food',noCollision:true};scene.add(p);pistolPickups.push(p);}
+    for(let i=0;i<10;i++){const b=buildings[Math.floor(r()*buildings.length)];if(!b) continue;const px=b.position.x+(r()-0.5)*7,pz=b.position.z+(r()-0.5)*7;const p=new THREE.Mesh(new THREE.CylinderGeometry(0.15,0.15,0.5,8),waterMat);p.position.set(px,getTerrainHeight(px,pz)+0.5,pz);p.userData={type:'water',noCollision:true};scene.add(p);pistolPickups.push(p);}
+  }
+  // hory na obzoru
+  {
+    const mtMat=new THREE.MeshBasicMaterial({color:0x2a2a22,fog:false});
+    for(let i=0;i<16;i++){const a=i/16*Math.PI*2+r()*0.2,dd=330+r()*40,hh=60+r()*70;const m=new THREE.Mesh(new THREE.ConeGeometry(50+r()*40,hh,6),mtMat);m.position.set(Math.cos(a)*dd,hh/2-5,Math.sin(a)*dd);scene.add(m);}
+  }
+
+  // ===== NUKE zóna (stejná pro všechny hráče podle času, bez synchronizace) =====
+  const nuke={epoch:-1,beam:null,disc:null,zone:null,spawned:false,lastWarn:-1,mat:null};
+  function setupNuke(ep){
+    if(nuke.beam){scene.remove(nuke.beam);scene.remove(nuke.disc);}
+    radZones=radZones.filter(z=>!z.nuke);
+    enemies=enemies.filter(e=>{if(e.userData.nuke){scene.remove(e);return false;}return true;});
+    const rr=seededRandom(ep*7919+13);rr();
+    let x=(rr()-0.5)*300,z=(rr()-0.5)*300;
+    if(Math.hypot(x,z)<70){x+=x<0?-90:90;}
+    if(Math.hypot(x-DOOR.x,z-DOOR.z)<DOOR.safeR+60){z+=120;}
+    const zone={x,z,r:34,nuke:true,active:false};radZones.push(zone);
+    const mat=new THREE.MeshBasicMaterial({color:0xffaa00,transparent:true,opacity:0.3,side:THREE.DoubleSide});
+    const beam=new THREE.Mesh(new THREE.CylinderGeometry(3,3,260,12,1,true),mat);beam.position.set(x,getTerrainHeight(x,z)+130,z);scene.add(beam);
+    const disc=new THREE.Mesh(new THREE.CircleGeometry(34,40),mat);disc.rotation.x=-Math.PI/2;disc.position.set(x,getTerrainHeight(x,z)+0.3,z);scene.add(disc);
+    Object.assign(nuke,{epoch:ep,beam,disc,zone,spawned:false,lastWarn:-1,mat});
+  }
+  function updateNuke(){
+    const cyc=240000,t=Date.now(),ep=Math.floor(t/cyc),ph=(t%cyc)/1000;
+    if(nuke.epoch!==ep) setupNuke(ep);
+    const z=nuke.zone;
+    if(ph<25){
+      z.active=false;
+      const left=Math.ceil(25-ph);
+      if(left%5===0&&nuke.lastWarn!==left){nuke.lastWarn=left;if(inGame) toast('☢ NUKE DOPADNE ZA '+left+'s! Zóna je na mapě (M)',2500);}
+      nuke.mat.color.setHex(0xffaa00);nuke.mat.opacity=0.2+0.15*Math.sin(t/150);
+    }else{
+      if(!z.active){z.active=true;if(inGame) toast('💥 NUKE DOPADL! Radiace a Scorched uvnitř zóny',5000);}
+      nuke.mat.color.setHex(0xff2200);nuke.mat.opacity=0.28;
+      if(!nuke.spawned){
+        nuke.spawned=true;
+        for(let k=0;k<6;k++){
+          const r2=seededRandom(ep*31+k);r2();
+          const a=r2()*Math.PI*2,rad=r2()*z.r*0.8;
+          const ex=z.x+Math.cos(a)*rad,ez=z.z+Math.sin(a)*rad;
+          const e=new THREE.Mesh(new THREE.CapsuleGeometry(0.6,1.6,4,8),new THREE.MeshStandardMaterial({color:0xc2561a,emissive:0x802000,emissiveIntensity:0.4}));
+          e.position.set(ex,getTerrainHeight(ex,ez)+1.2,ez);
+          e.userData={id:'n_'+ep+'_'+k,hp:4,speed:1.9,dmg:20,caps:40,xp:120,type:'scorched',nuke:true};
+          scene.add(e);enemies.push(e);
+        }
+      }
+    }
+  }
+  // den / noc
+  const skyDay=new THREE.Color(0x8a7a55),skyNight=new THREE.Color(0x0b0d1a),skyNow=new THREE.Color();
+  function updateSky(){
+    const tOD=(Date.now()%720000)/720000;
+    const day=0.5+0.5*Math.sin(tOD*Math.PI*2);
+    dayNow=day;
+    skyNow.copy(skyNight).lerp(skyDay,Math.pow(day,0.7));
+    scene.background.copy(skyNow);scene.fog.color.copy(skyNow);renderer.setClearColor(skyNow);
+    ambient.intensity=0.2+0.5*day;dirL.intensity=0.1+0.7*day;lamp.intensity=0.15+1.0*(1-day);
+    setText('clock',day>0.45?'☀ DEN':'☾ NOC');
+  }
+
+  let yaw=0,pitch=0,moveForward=0,moveRight=0;
+  const chatIn=document.getElementById('chatIn');
+  function openChat(){
+    chatOpen=true;moveForward=0;moveRight=0;
+    chatIn.classList.add('show');chatIn.value='';document.exitPointerLock();setTimeout(()=>chatIn.focus(),30);
+  }
+  function closeChat(){
+    chatOpen=false;chatIn.classList.remove('show');chatIn.blur();
+    if(!isInventoryOpen&&!isMapOpen&&!isPipOpen&&!ownerConsoleVisible){try{canvas.requestPointerLock();}catch(e){}}
+  }
+  function sendChat(){
+    const text=chatIn.value.trim().slice(0,120);
+    if(text){broadcast({type:'chat',id:myId,name:myName,text});addChat(myName,text);}
+    closeChat();
+  }
+  function sendEmote(t){broadcast({type:'emote',id:myId,e:t});toast('Ty: '+t,1200);}
+
+  document.addEventListener('keydown',e=>{
+    if(!gameStarted || document.getElementById('gameCanvas').classList.contains('hidden')) return;
+    if(chatOpen){
+      if(e.code==='Escape'){e.preventDefault();closeChat();}
+      else if(e.code==='Enter'||e.code==='NumpadEnter'){e.preventDefault();sendChat();}
+      return;
+    }
+    if(ownerConsoleVisible && e.code!=='KeyC' && e.code!=='Escape') return;
+    if((e.code==='Enter'||e.code==='NumpadEnter')&&!isInventoryOpen&&!isMapOpen&&!isPipOpen&&!ownerConsoleVisible){e.preventDefault();openChat();return;}
+    if(e.repeat &&!['KeyW','KeyA','KeyS','KeyD'].includes(e.code)) return;
+    if(e.code==='KeyW') moveForward=1;
+    if(e.code==='KeyS') moveForward=-1;
+    if(e.code==='KeyA') moveRight=-1;
+    if(e.code==='KeyD') moveRight=1;
+    keys[e.code]=true;
+    if(e.code==='KeyR'){
+      e.preventDefault();
+      if(magAmmo>=30) return;
+      if(reserveAmmo<=0){magAmmo=30;reserveAmmo=90;}else{const need=30-magAmmo;const take=Math.min(need,reserveAmmo);magAmmo+=take;reserveAmmo-=take;}
+      ammo=magAmmo;updateAmmo();playSound('pickup');
+      setTimeout(()=>{keys['KeyR']=false;},80);
+    }
+    if(e.code==='KeyH'){doHeal();}
+    if(e.code==='KeyJ'){useRadaway();}
+    if(e.code==='Digit1'){eat();}
+    if(e.code==='Digit2'){drink();}
+    if(e.code==='KeyE'){interact();}
+    if(e.code==='KeyK'){toggleRadio();}
+    if(e.code==='KeyZ'){sendEmote('👋 Ahoj!');}
+    if(e.code==='KeyX'){sendEmote('👍 OK');}
+    if(e.code==='KeyV'){sendEmote('😂 Haha');}
+    if(e.code==='Tab'){e.preventDefault();toggleInv();}
+    if(e.code==='KeyM'){toggleMap();}
+    if(e.code==='KeyQ'){buildCamp();}
+    if(e.code==='KeyP'){togglePip();}
+    if(e.code==='KeyC'){if(isOwner){e.preventDefault();if(isInventoryOpen) closeInv();if(isMapOpen) closeMap();if(isPipOpen) closePip();toggleOwnerConsole();}}
+    if(e.code==='Escape'){
+      if(ownerConsoleVisible){toggleOwnerConsole();}
+      else if(isPipOpen) closePip();
+      else if(isInventoryOpen) closeInv();
+      else if(isMapOpen) closeMap();
+      else saveAndMenu();
+    }
+  });
+  document.addEventListener('keyup',e=>{
+    if(e.code==='KeyW' && moveForward===1) moveForward=0;
+    if(e.code==='KeyS' && moveForward===-1) moveForward=0;
+    if(e.code==='KeyA' && moveRight===-1) moveRight=0;
+    if(e.code==='KeyD' && moveRight===1) moveRight=0;
+    keys[e.code]=false;
+  });
+  window.addEventListener('blur',()=>{moveForward=0;moveRight=0;Object.keys(keys).forEach(k=>keys[k]=false);});
+  canvas.addEventListener('click',()=>{if(!isInventoryOpen&&!isMapOpen&&!isPipOpen&&!ownerConsoleVisible&&!chatOpen) canvas.requestPointerLock();});
+  document.addEventListener('pointerlockchange',()=>{isPointerLocked=document.pointerLockElement===canvas;});
+  document.addEventListener('mousemove',e=>{if(!isPointerLocked||isInventoryOpen||isMapOpen||isPipOpen||ownerConsoleVisible) return;yaw-=e.movementX*0.002;pitch-=e.movementY*0.002;pitch=Math.max(-1.4,Math.min(1.4,pitch));yawRef=yaw;pitchRef=pitch;});
+  document.addEventListener('mousedown',e=>{if(!isPointerLocked||isInventoryOpen||isMapOpen||isPipOpen||ownerConsoleVisible) return;if(e.button===0||e.button===2) shoot();});
+  document.addEventListener('contextmenu',e=>{if(gameStarted && !document.getElementById('gameCanvas').classList.contains('hidden')) e.preventDefault();});
+
+  function killEnemy(hit){
+    broadcast({type:'killZombie',zombieId:hit.userData.id});
+    scene.remove(hit);enemies=enemies.filter(x=>x!==hit);
+    kills++;
+    const base=hit.userData.caps||5;const gain=Math.round(base*(1+0.05*(special.L-1)));caps+=gain;
+    if(hit.userData.type==='scorched') scorchedKills++;
+    const xpg=hit.userData.xp||25;
+    gainXp(xpg);
+    saveStats();updateAmmo();
+    toast('+'+gain+' CAPS | +'+xpg+' XP'+(hit.userData.type==='ghoul'?' (GHÚL)':hit.userData.type==='scorched'?' (SCORCHED)':''));
+    checkQuests();
+  }
+  function shoot(){
+    if(dead) return;
+    if(magAmmo<=0){
+      if(reserveAmmo>0){const take=Math.min(30,reserveAmmo);magAmmo=take;reserveAmmo-=take;ammo=magAmmo;updateAmmo();playSound('pickup');}else{playSound('empty');return;}
+    }
+    magAmmo--;ammo=magAmmo;updateAmmo();playSound('shoot',0.6);
+    const dir=new THREE.Vector3(0,0,-1);dir.applyEuler(new THREE.Euler(pitch,yaw,0,'YXZ'));
+    const ray=new THREE.Raycaster(camera.position,dir,0,120);
+    const hits=ray.intersectObjects([...enemies,...buildings,...chests]);
+    if(hits.length>0){
+      const hit=hits[0].object;
+      if(enemies.includes(hit)){
+        hit.userData.hp=(hit.userData.hp||1)-1;
+        if(hit.userData.hp>0){playSound('hit',0.4);}else{killEnemy(hit);}
+      }
+    }
+    const flash=new THREE.Mesh(new THREE.SphereGeometry(0.25),new THREE.MeshBasicMaterial({color:0xffffaa}));flash.position.copy(camera.position).add(dir.clone().multiplyScalar(1.2));scene.add(flash);setTimeout(()=>scene.remove(flash),60);
+  }
+  function doHeal(){
+    if(healingCaps<=0){setText('hp',hp+' ŽÁDNÝ STIMPAK');setTimeout(()=>setText('hp',hp),1500);return;}
+    if(hp>=effMax()) return;
+    healingCaps--;hp=Math.min(effMax(),hp+20+3*(special.C-1));setText('hp',hp);updateAmmo();playSound('heal');
+  }
+  function useRadaway(){
+    if(radaway<=0){toast('ŽÁDNÝ RADAWAY');return;}
+    if(rads<=0){toast('Nejsi ozářený');return;}
+    radaway--;rads=Math.max(0,rads-60);updateAmmo();playSound('heal');toast('RADAWAY: -60 RAD');
+  }
+  function eat(){
+    if(food<=0){toast('Žádné jídlo');return;}
+    if(hunger>=95){toast('Nemáš hlad');return;}
+    food--;hunger=Math.min(100,hunger+40);hp=Math.min(effMax(),hp+5);updateAmmo();playSound('heal');toast('🍖 Snědl jsi jídlo (+40 sytost)');
+  }
+  function drink(){
+    if(water<=0){toast('Žádná voda');return;}
+    if(thirst>=95){toast('Nemáš žízeň');return;}
+    water--;thirst=Math.min(100,thirst+40);updateAmmo();playSound('heal');toast('💧 Napil ses (+40 hydratace)');
+  }
+  function interact(){
+    const px=camera.position.x,pz=camera.position.z;
+    const nearDoor=Math.hypot(px-DOOR.x,pz-DOOR.z)<DOOR.safeR;
+    const nearCamp=myCamp&&Math.hypot(px-myCamp.x,pz-myCamp.z)<8;
+    if(!nearDoor&&!nearCamp){toast('E funguje u WAYOUT dveří a u tvého C.A.M.P.');return;}
+    const now=performance.now();
+    if(now-lastRest<30000){toast('Odpočinek za '+Math.ceil((30000-(now-lastRest))/1000)+'s');return;}
+    lastRest=now;hp=maxHp;rads=0;hunger=Math.max(hunger,50);thirst=Math.max(thirst,50);healingCaps=Math.max(healingCaps,1);
+    setText('hp',hp);updateAmmo();playSound('heal');toast(nearDoor?'WAYOUT: plné zdraví, radiace pryč':'C.A.M.P.: odpočinul sis');
+  }
+  function damage(n){
+    if(dead) return;
+    hp-=n;setText('hp',hp);
+    if(hp<=0){
+      hp=0;dead=true;rads=0;caps=Math.floor(caps*0.9);saveStats();updateAmmo();
+      setText('hp','MRTVÝ 3s - pak 2 min ochrana (-10% caps)');
+      setTimeout(()=>{
+        hp=maxHp;dead=false;hunger=Math.max(hunger,60);thirst=Math.max(thirst,60);
+        camera.position.set((Math.random()-0.5)*6,getTerrainHeight(0,-30)+1.7,-30);
+        spawnProtectionUntil=performance.now()+120000;
+        setText('hp',hp+' [OCHRANA 2:00]');updateAmmo();
+      },3000);
+    }
+  }
+  function updateAmmo(){
+    setText('ammo',magAmmo+'/'+reserveAmmo);setText('hCount',healingCaps);setText('radawayCount',radaway);setText('caps',caps);
+    setText('foodCount',food);setText('waterCount',water);setText('hpMax',maxHp);setText('xp',xp+'/'+xpNeed(myLevel));setText('lvl',myLevel);
+    setText('invAmmo',magAmmo+'/'+reserveAmmo);setText('invHeal',healingCaps+' ks');setText('invRadaway',radaway+' ks');setText('invCaps',caps);
+    setText('invFood',food+' jídlo (1)');setText('invWater',water+' voda (2)');
+  }
+  window.updateAmmo=updateAmmo;
+  updateAmmo();updateQuestBox();
+  window.closeInv=()=>{isInventoryOpen=false;document.getElementById('inventory').classList.add('hidden');if(!isMapOpen&&!isPipOpen&&!ownerConsoleVisible) canvas.requestPointerLock();};
+  function toggleInv(){isInventoryOpen=!isInventoryOpen;if(isInventoryOpen){document.getElementById('inventory').classList.remove('hidden');document.exitPointerLock();updateAmmo();}else{document.getElementById('inventory').classList.add('hidden');if(!isMapOpen&&!isPipOpen) canvas.requestPointerLock();}}
+  window.closeMap=()=>{isMapOpen=false;document.getElementById('mapScreen').classList.add('hidden');if(!isInventoryOpen&&!isPipOpen&&!ownerConsoleVisible) canvas.requestPointerLock();};
+  function toggleMap(){isMapOpen=!isMapOpen;if(isMapOpen){document.getElementById('mapScreen').classList.remove('hidden');document.exitPointerLock();drawMap();}else{document.getElementById('mapScreen').classList.add('hidden');if(!isInventoryOpen&&!isPipOpen) canvas.requestPointerLock();}}
+  window.closePip=()=>{isPipOpen=false;document.getElementById('pipboy').classList.add('hidden');if(!isInventoryOpen&&!isMapOpen&&!ownerConsoleVisible) canvas.requestPointerLock();};
+  function togglePip(){isPipOpen=!isPipOpen;if(isPipOpen){document.getElementById('pipboy').classList.remove('hidden');document.exitPointerLock();updateAmmo();renderPip();}else{document.getElementById('pipboy').classList.add('hidden');if(!isInventoryOpen&&!isMapOpen) canvas.requestPointerLock();}}
+  function drawMap(){
+    const c=document.getElementById('mapCanvas');const ctx=c.getContext('2d');ctx.fillStyle='#1a1a1a';ctx.fillRect(0,0,600,600);
+    ctx.fillStyle='#3a3a3a';ctx.fillRect(0,290,600,20);ctx.fillRect(290,0,20,600);
+    radZones.forEach(z=>{
+      if(z.nuke){ctx.fillStyle=z.active?'rgba(255,40,0,0.35)':(Math.floor(Date.now()/300)%2?'rgba(255,170,0,0.35)':'rgba(255,170,0,0.1)');}
+      else ctx.fillStyle='rgba(120,255,0,0.25)';
+      ctx.beginPath();ctx.arc(300+z.x*0.8,300+z.z*0.8,z.r*0.8,0,Math.PI*2);ctx.fill();
+    });
+    ctx.fillStyle='#6b6b6b';buildings.forEach(b=>{const mx=300+b.position.x*0.8,mz=300+b.position.z*0.8;ctx.fillRect(mx-4,mz-4,8,8);});
+    ctx.fillStyle='#2d4a22';trees.forEach(t=>{const mx=300+t.x*0.8,mz=300+t.z*0.8;ctx.fillRect(mx-2,mz-2,4,4);});
+    ctx.fillStyle='#ffcc00';chests.forEach(ch=>{const mx=300+ch.position.x*0.8,mz=300+ch.position.z*0.8;ctx.fillRect(mx-3,mz-3,6,6);});
+    ctx.fillStyle='#ff0000';enemies.forEach(e=>{const mx=300+e.position.x*0.8,mz=300+e.position.z*0.8;ctx.fillRect(mx-2,mz-2,4,4);});
+    ctx.font='11px monospace';
+    camps.forEach(cp=>{const mx=300+cp.x*0.8,mz=300+cp.z*0.8;ctx.fillStyle=cp.owner===myId?'#00ff66':'#00aaff';ctx.fillRect(mx-5,mz-5,10,10);ctx.fillText('CAMP '+(cp.name||''),mx+8,mz+4);});
+    ctx.fillStyle='#ffff00';ctx.fillRect(300+DOOR.x*0.8-7,300+DOOR.z*0.8-7,14,14);ctx.fillText('WAYOUT',300+DOOR.x*0.8+10,300+DOOR.z*0.8+4);
+    Object.values(remote).forEach(p=>{if(!p.ig||typeof p.x!=='number') return;const mx=300+p.x*0.8,mz=300+p.z*0.8;ctx.fillStyle='#4488ff';ctx.beginPath();ctx.arc(mx,mz,5,0,Math.PI*2);ctx.fill();ctx.fillStyle='#8cf';ctx.fillText(p.name,mx+8,mz+4);});
+    ctx.fillStyle='#00ff00';const mx=300+camera.position.x*0.8,mz=300+camera.position.z*0.8;ctx.beginPath();ctx.arc(mx,mz,6,0,Math.PI*2);ctx.fill();
+  }
+  // rychlý přesun (klik na mapě)
+  document.getElementById('mapCanvas').addEventListener('click',ev=>{
+    if(!isMapOpen||dead) return;
+    const c=ev.currentTarget,rc=c.getBoundingClientRect();
+    const mx=(ev.clientX-rc.left)*(600/rc.width),my=(ev.clientY-rc.top)*(600/rc.height);
+    const wx=(mx-300)/0.8,wz=(my-300)/0.8;
+    const targets=[{name:'WAYOUT',x:DOOR.x,z:DOOR.z+8,cost:5}];
+    camps.forEach(cp=>targets.push({name:'C.A.M.P. '+(cp.name||''),x:cp.x+3,z:cp.z,cost:cp.owner===myId?15:25}));
+    Object.values(remote).forEach(p=>{if(p.ig&&typeof p.x==='number') targets.push({name:p.name,x:p.x+2,z:p.z,cost:25});});
+    let best=null,bd=30;
+    targets.forEach(t=>{const d=Math.hypot(t.x-wx,t.z-wz);if(d<bd){bd=d;best=t;}});
+    if(!best){toast('Klikni na WAYOUT, camp nebo hráče');return;}
+    if(caps<best.cost){toast('Rychlý přesun stojí '+best.cost+' caps');return;}
+    caps-=best.cost;
+    camera.position.set(best.x,getTerrainHeight(best.x,best.z)+1.7,best.z);
+    closeMap();updateAmmo();saveStats();toast('⚡ Přesun: '+best.name+' (-'+best.cost+' caps)');
+  });
+  function buildCamp(){
+    if(dead) return;
+    const cx=camera.position.x,cz=camera.position.z;
+    if(Math.hypot(cx-DOOR.x,cz-DOOR.z)<DOOR.safeR+4){toast('Tady camp nejde (WAYOUT zóna)');return;}
+    for(const z of radZones){if((!z.nuke||z.active)&&Math.hypot(cx-z.x,cz-z.z)<z.r){toast('Camp nejde postavit v radiaci');return;}}
+    if(caps<25){toast('C.A.M.P. stojí 25 caps');return;}
+    caps-=25;
+    addCamp({x:cx,z:cz,owner:myId,name:myName});
+    broadcast({type:'camp',owner:myId,name:myName,x:cx,z:cz});
+    playSound('camp');toast('⛺ C.A.M.P. postaven (-25 caps). E u campu = odpočinek');
+    updateAmmo();saveStats();checkQuests();
+  }
+  window.buildCamp=buildCamp;
+  function saveAndMenu(){
+    broadcast({type:'pos',id:myId,name:myName,level:myLevel,x:posRef.x,y:posRef.y,z:posRef.z,yaw:yawRef,ig:false,version:GAME_VERSION});
+    inGame=false;chatOpen=false;chatIn.classList.remove('show');
+    saveStats();localStorage.setItem('wp_game_version',GAME_VERSION);
+    document.getElementById('gameCanvas').classList.add('hidden');document.getElementById('hud').classList.add('hidden');document.getElementById('cross').classList.add('hidden');
+    document.getElementById('radOverlay').style.opacity=0;
+    document.getElementById('inventory').classList.add('hidden');document.getElementById('mapScreen').classList.add('hidden');document.getElementById('pipboy').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');document.getElementById('lobby').classList.remove('hidden');document.getElementById('enterBtn').classList.add('show');
+    document.exitPointerLock();isInventoryOpen=false;isMapOpen=false;isPipOpen=false;ownerConsoleVisible=false;document.getElementById('ownerConsole').classList.remove('show');
+    moveForward=0;moveRight=0;
+    updatePlayerList();
+  }
+  window.saveAndMenu=saveAndMenu;
+
+  const arrows=['⬆','⬉','⬅','⬋','⬇','⬊','➡','⬈'];
+  let lastOnline=0;
+  function updateOnlineBox(now){
+    if(now-lastOnline<500) return;lastOnline=now;
+    const box=document.getElementById('onlineBox');if(!box) return;
+    const lines=['ONLINE','★ '+myName+' LVL '+myLevel];
+    Object.values(remote).forEach(p=>{
+      if(!p.ig||typeof p.x!=='number'){lines.push('▶ '+p.name+' LVL '+p.level+' (lobby)');return;}
+      const dx=p.x-camera.position.x,dz=p.z-camera.position.z;
+      const dist=Math.round(Math.hypot(dx,dz));
+      let rel=Math.atan2(-dx,-dz)-yaw;
+      while(rel>Math.PI) rel-=Math.PI*2;
+      while(rel<-Math.PI) rel+=Math.PI*2;
+      const idx=((Math.round(rel/(Math.PI/4))%8)+8)%8;
+      lines.push('▶ '+p.name+' LVL '+p.level+'  '+dist+'m '+arrows[idx]);
+    });
+    box.textContent=lines.join('\n');
+  }
+
+  let last=performance.now(),qTimer=0;
+  function loop(now){
+    requestAnimationFrame(loop);
+    const dt=Math.min((now-last)/1000,0.1);last=now;
+    if(canvas.classList.contains('hidden')) return;
+    updateNuke();updateSky();
+    updateRemotes(performance.now());updateOnlineBox(now);
+    if(!isPointerLocked || isInventoryOpen || isMapOpen || isPipOpen || ownerConsoleVisible){renderer.render(scene,camera);return;}
+    const forward=new THREE.Vector3(0,0,-1);forward.applyEuler(new THREE.Euler(0,yaw,0));forward.y=0;forward.normalize();
+    const right=new THREE.Vector3(1,0,0);right.applyEuler(new THREE.Euler(0,yaw,0));right.y=0;right.normalize();
+    let move=new THREE.Vector3();
+    if(!dead){
+      if(moveForward!==0) move.add(forward.clone().multiplyScalar(moveForward));
+      if(moveRight!==0) move.add(right.clone().multiplyScalar(moveRight));
+    }
+    if(move.length()>0){
+      move.normalize().multiplyScalar(4.5*(1+0.05*(special.A-1))*dt);
+      const nx=camera.position.x+move.x,nz=camera.position.z+move.z;
+      let blocked=false;
+      for(const b of buildings){
+        const w=b.geometry.parameters.width/2+1.2;const d=b.geometry.parameters.depth/2+1.2;
+        if(Math.abs(b.position.x-nx)<w && Math.abs(b.position.z-nz)<d) blocked=true;
+      }
+      if(!blocked){camera.position.x=nx;camera.position.z=nz;}
+    }
+    const th=getTerrainHeight(camera.position.x,camera.position.z);camera.position.y+=(th+1.7-camera.position.y)*0.2;camera.position.y=Math.max(camera.position.y,th+1.0);
+    posRef={x:camera.position.x,y:camera.position.y,z:camera.position.z};camera.rotation.order='YXZ';camera.rotation.y=yaw;camera.rotation.x=pitch;
+
+    // zóny: safe zone u WAYOUT dveří / vlastního campu a radiace
+    const inDoor=Math.hypot(camera.position.x-DOOR.x,camera.position.z-DOOR.z)<DOOR.safeR;
+    const inCamp=!!myCamp&&Math.hypot(camera.position.x-myCamp.x,camera.position.z-myCamp.z)<10;
+    const inSafe=inDoor||inCamp;
+    let radRate=0,radDepth=0;
+    for(const z of radZones){
+      if(z.nuke&&!z.active) continue;
+      const dz=Math.hypot(camera.position.x-z.x,camera.position.z-z.z);
+      if(dz<z.r){const depth=1-dz/z.r;radDepth=Math.max(radDepth,depth);radRate=Math.max(radRate,z.nuke?8+16*depth:2+6*depth);}
+    }
+    const inZone=radDepth>0;
+    if(!dead){
+      if(inSafe) rads=Math.max(0,rads-8*dt);
+      else if(inZone) rads=Math.min(100,rads+radRate*dt);
+      if(inZone&&Math.random()<0.05+radDepth*0.3) playSound('geiger',0.05);
+      if(hp>effMax()){hp=Math.max(1,effMax());setText('hp',hp);}
+      if(rads>=100){radDmgT+=dt;if(radDmgT>=1){radDmgT=0;damage(3);}}else radDmgT=0;
+      // hlad a žízeň
+      hunger=Math.max(0,hunger-0.12*dt);thirst=Math.max(0,thirst-0.17*dt);
+      if(hunger<=0||thirst<=0){hungerDmgT+=dt;if(hungerDmgT>=3){hungerDmgT=0;damage(2);}}else hungerDmgT=0;
+    }
+    setText('rad',Math.floor(rads));setText('hun',Math.floor(hunger));setText('thi',Math.floor(thirst));
+    document.getElementById('radOverlay').style.opacity=String(Math.min(0.9,rads/100*0.9));
+    qTimer+=dt;if(qTimer>1){qTimer=0;checkQuests();updateQuestBox();}
+
+    const underProtection = performance.now() < spawnProtectionUntil;
+    const inForest=trees.some(t=>Math.hypot(t.x-camera.position.x,t.z-camera.position.z)<30);
+    let locText=inForest?'LES':'MĚSTO';
+    if(inZone) locText='☢ RADIACE';
+    if(inCamp) locText='C.A.M.P.';
+    if(inDoor) locText='WAYOUT SAFE';
+    curLoc=locText;
+    if(underProtection){
+      const left=Math.ceil((spawnProtectionUntil-performance.now())/1000);
+      const m=Math.floor(left/60);const s=left%60;
+      setText('loc',`OCHRANA ${m}:${String(s).padStart(2,'0')}`);
+      document.getElementById('loc').style.color='#0ff';
+    } else {
+      if(spawnProtectionUntil!==0){spawnProtectionUntil=0;document.getElementById('loc').style.color='';}
+      setText('loc',locText);
+    }
+    for(const z of enemies){
+      if(!z) continue;
+      if(underProtection||dead||inSafe){z.rotation.y+=0.005;continue;}
+      const dist=z.position.distanceTo(camera.position);
+      if(dist<18){
+        const d=new THREE.Vector3().subVectors(camera.position,z.position);d.y=0;d.normalize();
+        z.position.add(d.multiplyScalar((z.userData.speed||1.3)*dt));
+        const off=z.userData.type==='ghoul'?1.1:z.userData.type==='scorched'?1.2:0.9;
+        z.position.y=getTerrainHeight(z.position.x,z.position.z)+off;
+        if(dist<1.8&&(!z.lastHit||now-z.lastHit>900)){
+          z.lastHit=now;damage(z.userData.dmg||10);
+        }
+      }
+    }
+    const pr=2+0.2*(special.P-1),ammoCap=90+20*(special.S-1);
+    for(let i=pistolPickups.length-1;i>=0;i--){
+      const p=pistolPickups[i];
+      if(p&&camera.position.distanceTo(p.position)<pr){
+        const t=p.userData.type;
+        if(t==='pistol'){reserveAmmo=Math.min(ammoCap,reserveAmmo+12);toast('+12 AMMO');}
+        else if(t==='heal'){healingCaps++;toast('+1 STIMPAK');}
+        else if(t==='radaway'){radaway++;toast('+1 RADAWAY');}
+        else if(t==='food'){food++;toast('+1 JÍDLO');}
+        else if(t==='water'){water++;toast('+1 VODA');}
+        else if(t==='cap'){caps+=p.userData.value;saveStats();toast('+'+p.userData.value+' CAPS');checkQuests();}
+        scene.remove(p);pistolPickups.splice(i,1);updateAmmo();
+      }
+      if(p) p.rotation.y+=0.02;
+    }
+    for(let i=chests.length-1;i>=0;i--){const ch=chests[i];if(ch&&camera.position.distanceTo(ch.position)<pr+0.5){reserveAmmo=Math.min(ammoCap,reserveAmmo+30);scene.remove(ch);chests.splice(i,1);updateAmmo();toast('+30 AMMO');}}
+    renderer.render(scene,camera);
+  }
+  loop(performance.now());
+}
+</script>
+</body>
+</html>
