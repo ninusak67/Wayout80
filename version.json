@@ -4,7 +4,7 @@
   "files": [
     {
       "name": "wayout.html",
-      "sha256": "6530d43765706343620f64427a6d10b0761ade93b947169cec5a2b87b647f09e"
+      "sha256": "e356169cde4438a3bab74cc5b21bbe4857eb2416f45633d9f6bc9608c1804b16"
     }
   ],
   "notes": "V34: start ve vaultu (po vyjití se zavře), tělo po odpojení zůstane, baterka B, textury a domy"
