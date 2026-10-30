@@ -1,9 +1,11 @@
 {
   "version": 34,
+  "entry": "wayout.html",
   "files": [
     {
       "name": "wayout.html",
-      "sha256": "7bfdec31f31d0e2e2f18d391dc3d8d726cb9218fe70390b65af845671899887c"
+      "sha256": "6530d43765706343620f64427a6d10b0761ade93b947169cec5a2b87b647f09e"
     }
-  ]
+  ],
+  "notes": "V34: start ve vaultu (po vyjití se zavře), tělo po odpojení zůstane, baterka B, textury a domy"
 }
