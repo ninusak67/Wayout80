@@ -1,0 +1,11 @@
+{
+  "version": 35,
+  "entry": "wayout.html",
+  "files": [
+    {
+      "name": "wayout.html",
+      "sha256": "4833b7826d35c81bf00cf22f968d60da5f3ca022bc71dc3e52cad32cc357e94f"
+    }
+  ],
+  "notes": "V35: větší svět s okrajem, opuštěné obchody, skok, nový Pip-Boy, lepší grafika, sdílení zombíků, účty"
+}
