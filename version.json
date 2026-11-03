@@ -1,11 +1,11 @@
 {
-  "version": 36,
+  "version": 37,
   "entry": "wayout.html",
   "files": [
     {
       "name": "wayout.html",
-      "sha256": "8f653b870ae2f80dc111e8805a01498af539be0873b8275c15f7d55cb13d6137"
+      "sha256": "448789f0723bf5695c799859ce64d6dc23daab3ad063db770d40455c52a55fe4"
     }
   ],
-  "notes": "V35.2: optimalizace (plynulejší otáčení), radiační obloha, /givelevel, /givepistol + nabídka pistolí, truhly a věci na zemi se berou klávesou E po pohledu"
+  "notes": "V37: /givelevel (hráč) (level), /givepistol (hráč), optimalizace, radiační obloha, nabídka pistolí, E u truhel"
 }

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WAYOUT V35.2</title>
+<title>WAYOUT V37</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#000;color:#0f0;font-family:'Courier New',monospace;overflow:hidden}
@@ -70,7 +70,7 @@ button:hover{background:#0a0}
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
 </head>
 <body>
-<div id="ownerConsole"><h3 style="color:#f00">👑 OWNER [C]</h3><input id="ownerInput" placeholder="/sendupdateall  /givelevel N  /givepistol"><div id="ownerLog">V35.2 Created By ItzRealLenix</div></div>
+<div id="ownerConsole"><h3 style="color:#f00">👑 OWNER [C]</h3><input id="ownerInput" placeholder="/givelevel hráč počet | /givepistol hráč"><div id="ownerLog">V37 Created By ItzRealLenix</div></div>
 
 <div id="intro" onclick="finishIntro()">
   <h1 id="please">Please stand by</h1>
@@ -82,7 +82,7 @@ button:hover{background:#0a0}
 
 <div id="app" class="hidden">
   <div id="register" class="panel">
-    <h2>WAYOUT V35.2</h2>
+    <h2>WAYOUT V37</h2>
     <p class="small">Created By ItzRealLenix</p>
     <p class="small" style="opacity:0.9">Poslední sklep. Poslední naděje. Najdi cestu ven.</p>
     <input id="nameIn" placeholder="Jméno" maxlength="16">
@@ -92,7 +92,7 @@ button:hover{background:#0a0}
     <div id="versionInfo" class="small"></div>
   </div>
   <div id="lobby" class="panel hidden">
-    <h2>LOBBY V35.2</h2>
+    <h2>LOBBY V37</h2>
     <div>VAULT KÓD: <b id="myIdDisp" style="color:#0ff;font-size:22px;letter-spacing:4px"></b> <button onclick="copyId()" style="width:auto;padding:4px 8px">KOPIE</button> <button onclick="newCode()" style="width:auto;padding:4px 8px;background:#333;color:#0f0">NOVÝ KÓD</button></div>
     <div id="playerList" class="small"></div>
     <input id="friendId" placeholder="Vault kód kamaráda (6 znaků)" maxlength="24">
@@ -108,7 +108,7 @@ button:hover{background:#0a0}
 <div id="toast"></div>
 <div id="hud" class="hidden">
   <div class="hud-box">HP <span id="hp">100</span>/<span id="hpMax">100</span> | LVL <span id="lvl">1</span> (XP <span id="xp">0/120</span>) | <span id="ammo">30/90</span> | H:<span id="hCount">3</span> | J:<span id="radawayCount">1</span> | RAD <span id="rad">0</span> | CAPS <span id="caps">0</span><br>🍖 <span id="hun">100</span>% [1:<span id="foodCount">1</span>] | 💧 <span id="thi">100</span>% [2:<span id="waterCount">1</span>] 🚱 [3:<span id="dirtyCount">0</span>] | <span id="clock">DEN</span></div>
-  <div class="hud-box"><span id="hudId"></span> | <span id="seeCount">0</span> | <span id="loc">MĚSTO</span> | V35.2</div>
+  <div class="hud-box"><span id="hudId"></span> | <span id="seeCount">0</span> | <span id="loc">MĚSTO</span> | V37</div>
   <div id="questBox"></div>
   <div id="onlineBox"></div>
   <div id="chatBox"><div id="chatLog"></div><input id="chatIn" maxlength="120" placeholder="Zpráva... (Enter odeslat, Esc zrušit)"></div>
@@ -122,11 +122,11 @@ button:hover{background:#0a0}
   <div id="pipBody"></div>
   <button onclick="closePip()">ZAVŘÍT</button></div></div>
 <div id="lootTip"></div>
-<div id="updateScreen" class="hidden"><div class="update-box"><h2 style="color:#ff0">🚀 UPDATE V<span id="newVerNum">36</span>!</h2><p id="updateText"></p><button onclick="applyUpdate()" style="background:#ff0;color:#000">AKTUALIZOVAT</button><button onclick="downloadNewVersion()" style="background:#0ff;color:#000;margin-top:8px">STÁHNOUT SOUBOR</button><button onclick="skipUpdate()" style="background:#333;color:#fff;margin-top:8px">PŘESKOČIT</button></div></div>
+<div id="updateScreen" class="hidden"><div class="update-box"><h2 style="color:#ff0">🚀 UPDATE V<span id="newVerNum">37</span>!</h2><p id="updateText"></p><button onclick="applyUpdate()" style="background:#ff0;color:#000">AKTUALIZOVAT</button><button onclick="downloadNewVersion()" style="background:#0ff;color:#000;margin-top:8px">STÁHNOUT SOUBOR</button><button onclick="skipUpdate()" style="background:#333;color:#fff;margin-top:8px">PŘESKOČIT</button></div></div>
 
 <script type="module">
 import * as THREE from 'three';
-const GAME_VERSION = 36;
+const GAME_VERSION = 37;
 const GAME_NAME = 'WAYOUT';
 // localStorage klíče zůstávají 'wp_*', aby se neztratily uložené postavy a PINy
 // každý hráč má vlastní 6místný VAULT KÓD (bez zaměnitelných znaků), ostatním ho pošleš a připojí se přes něj
@@ -442,14 +442,38 @@ window.pipTab=i=>{pipTabIdx=i;renderPip();};
 function logOwner(t){const l=document.getElementById('ownerLog');if(l){const d=document.createElement('div');d.textContent='> '+t;l.appendChild(d);l.scrollTop=l.scrollHeight;}}
 function checkOwner(){if(myName.toLowerCase()==='itzreallenix'){isOwner=true;logOwner(`OWNER V${GAME_VERSION}`);}}
 function toggleOwnerConsole(){if(!isOwner) return;ownerConsoleVisible=!ownerConsoleVisible;const con=document.getElementById('ownerConsole');if(ownerConsoleVisible){con.classList.add('show');document.exitPointerLock();setTimeout(()=>document.getElementById('ownerInput').focus(),100);}else{con.classList.remove('show');try{document.getElementById('gameCanvas').requestPointerLock();}catch(e){}}}
+function applyGiveLevel(n){for(let i=0;i<n;i++){myLevel++;perkPoints++;}xp=0;saveStats();setText('lvl',myLevel);if(window.updateAmmo) window.updateAmmo();toast('⬆ Dostal jsi +'+n+' levelů → LEVEL '+myLevel+' (body: P)',4000);playSound('heal');}
+function applyGivePistol(id){
+  if(!WEAPONS[id]){const free=['pipe','rev','plasma','laser'].filter(k=>!ownedW[k]);const pool=free.length?free:['pipe','rev','plasma','laser'];id=pool[Math.floor(Math.random()*pool.length)];}
+  ownedW[id]=1;equipWeapon(id);toast('🔫 Dostal jsi pistoli: '+WEAPONS[id].n,4000);
+}
 function handleOwnerCommand(cmd){cmd=cmd.trim();if(!cmd) return;logOwner(cmd);
   {const parts=cmd.split(/\s+/),c0=parts[0].toLowerCase();
-   if(c0==='/givelevel'){const n=Math.max(1,Math.min(200,parseInt(parts[1])||1));for(let i=0;i<n;i++){myLevel++;perkPoints++;}xp=0;saveStats();setText('lvl',myLevel);if(window.updateAmmo) window.updateAmmo();toast('⬆ +'+n+' LEVEL → '+myLevel+' (+'+n+' bodů, P)',4000);logOwner('level je '+myLevel);return;}
-   if(c0==='/givepistol'){const id=(parts[1]||'').toLowerCase();
-     if(id==='all'){Object.keys(WEAPONS).forEach(k=>ownedW[k]=1);saveWeapons();toast('🔫 Máš všechny pistole');logOwner('všechny pistole');return;}
-     if(WEAPONS[id]){equipWeapon(id);logOwner('pistole: '+WEAPONS[id].n);return;}
-     logOwner('pistole: '+Object.keys(WEAPONS).join(', ')+' | all');
-     setTimeout(()=>{if(ownerConsoleVisible) toggleOwnerConsole();if(window.__openPip) window.__openPip(5);},60);return;}
+   if(c0==='/givelevel'||c0==='/givepistol'){
+     const isLv=c0==='/givelevel';
+     // /givelevel (hráč) (level)  |  /givepistol (hráč) [pistole]   (bez hráče = ty sám)
+     let who=parts[1],arg=parts[2];
+     const selfForm=isLv?(!who||/^\d+$/.test(who)):(!who||!!WEAPONS[(who||'').toLowerCase()]||(who||'').toLowerCase()==='all');
+     if(selfForm){arg=isLv?who:who;who=null;}
+     if(who){
+       const q=who.toLowerCase();
+       const all=Object.entries(remote).map(([id,p])=>({id,name:p.name||''}));
+       const hit=(myName.toLowerCase()===q)?{id:'self'}:(all.find(p=>p.name.toLowerCase()===q)||all.find(p=>p.name.toLowerCase().startsWith(q)));
+       if(!hit){logOwner('hráč "'+who+'" není online. Online: '+(all.map(p=>p.name).join(', ')||'nikdo'));return;}
+       if(hit.id!=='self'){
+         const c=conns[hit.id];if(!c||!c.open){logOwner('hráč není připojen');return;}
+         if(isLv){const n=Math.max(1,Math.min(200,parseInt(arg)||1));c.send({type:'ownerGive',kind:'level',n});logOwner('→ '+(remote[hit.id].name)+': +'+n+' levelů');}
+         else{const id=(arg||'').toLowerCase();c.send({type:'ownerGive',kind:'pistol',id:WEAPONS[id]?id:''});logOwner('→ '+(remote[hit.id].name)+': pistole '+(WEAPONS[id]?WEAPONS[id].n:'náhodná'));}
+         return;
+       }
+     }
+     if(isLv){const n=Math.max(1,Math.min(200,parseInt(arg)||1));applyGiveLevel(n);logOwner('level je '+myLevel);return;}
+     {const id=(arg||'').toLowerCase();
+      if(id==='all'){Object.keys(WEAPONS).forEach(k=>ownedW[k]=1);saveWeapons();toast('🔫 Máš všechny pistole');logOwner('všechny pistole');return;}
+      if(WEAPONS[id]){equipWeapon(id);logOwner('pistole: '+WEAPONS[id].n);return;}
+      logOwner('pistole: '+Object.keys(WEAPONS).join(', ')+' | all');
+      setTimeout(()=>{if(ownerConsoleVisible) toggleOwnerConsole();if(window.__openPip) window.__openPip(5);},60);return;}
+   }
   }
   if(cmd==='/sendupdateall'){const fullCode=document.documentElement.outerHTML;Object.values(conns).forEach(c=>{if(c.open){c.send({type:'updateAvailable',newVersion:GAME_VERSION,from:'OWNER',message:`UPDATE V${GAME_VERSION}!`});const chunkSize=15000;for(let i=0;i<fullCode.length;i+=chunkSize){c.send({type:'codeChunk',index:i/chunkSize,total:Math.ceil(fullCode.length/chunkSize),chunk:fullCode.slice(i,i+chunkSize),version:GAME_VERSION});}c.send({type:'codePushDone',version:GAME_VERSION});}});localStorage.setItem('wp_latest_pushed_version',GAME_VERSION);}}
 
@@ -497,7 +521,7 @@ let dots=0;
 let introFinished=false;
 const pleaseEl=document.getElementById('please');
 const dotInt=setInterval(()=>{try{if(!pleaseEl) return;dots=(dots+1)%7;pleaseEl.textContent='Please stand by'+'.'.repeat(dots);}catch{}},300);
-const bootLines=['WAYOUT-TEC TERMLINK PROTOCOL','BOOTING SHELTER OS v35.2 ...','GEIGER MODULE ........ OK','STIMPAK DISPENSER .... OK','MULTIPLAYER MESH ..... OK','WASTELAND DATA ....... LOADED','>> NAJDI CESTU VEN <<'];
+const bootLines=['WAYOUT-TEC TERMLINK PROTOCOL','BOOTING SHELTER OS v37.0 ...','GEIGER MODULE ........ OK','STIMPAK DISPENSER .... OK','MULTIPLAYER MESH ..... OK','WASTELAND DATA ....... LOADED','>> NAJDI CESTU VEN <<'];
 let bootI=0;
 const bootInt=setInterval(()=>{const el=document.getElementById('bootLog');if(!el||bootI>=bootLines.length){clearInterval(bootInt);return;}el.textContent+=bootLines[bootI++]+'\n';},220);
 
@@ -728,6 +752,14 @@ function handleData(d,from){
   if(d.type==='updateAvailable'){const saved=parseInt(localStorage.getItem('wp_game_version')||'0');if(d.newVersion > saved){localStorage.setItem('wp_latest_pushed_version',d.newVersion);document.getElementById('updateScreen').classList.remove('hidden');document.getElementById('newVerNum').textContent=d.newVersion;document.getElementById('updateText').textContent=`${d.from} poslal UPDATE V${d.newVersion}!`;document.getElementById('updateBanner').classList.remove('hidden');document.getElementById('updateBanner').textContent=`🚀 ${d.message}`;codeChunks={};}}
   if(d.type==='codeChunk'){if(!codeChunks[d.version]) codeChunks[d.version]=[];codeChunks[d.version][d.index]=d.chunk;}
   if(d.type==='codePushDone'){const ver=d.version;if(codeChunks[ver]){const full=codeChunks[ver].join('');const blob=new Blob([full],{type:'text/html'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${GAME_NAME}_V${ver}_NEW.html`;a.click();URL.revokeObjectURL(url);document.getElementById('updateText').textContent=`✅ V${ver} stažena!`;localStorage.setItem('wp_game_version',ver);}}
+  if(d.type==='ownerGive'){
+    const sn=remote[from]&&remote[from].name;
+    if(sn&&sn.toLowerCase()==='itzreallenix'&&myName.toLowerCase()!=='itzreallenix'){
+      if(d.kind==='level'){const n=Math.max(1,Math.min(200,parseInt(d.n)||1));applyGiveLevel(n);}
+      else if(d.kind==='pistol'){applyGivePistol(typeof d.id==='string'?d.id:'');}
+    }
+    return;
+  }
   if(d.type==='killZombie'&&typeof d.zombieId==='string'){killedIds.add(d.zombieId);const k=enemies.find(e=>e.userData.id===d.zombieId);if(k){scene.remove(k);enemies=enemies.filter(x=>x!==k);}}
   if(d.type==='zk'&&Array.isArray(d.ids)) applyKilled(d.ids);
   if(d.type==='zs'&&Array.isArray(d.l)){
