@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WAYOUT V35</title>
+<title>WAYOUT V35.2</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#000;color:#0f0;font-family:'Courier New',monospace;overflow:hidden}
@@ -46,6 +46,7 @@ button:hover{background:#0a0}
 .update-box{background:#001a00;border:3px solid #ff0;padding:30px;min-width:480px}
 .tabbtn{width:auto;display:inline-block;padding:8px 14px;margin:2px 4px 8px 0;font-size:12px}
 .tabbtn.on{background:#fff}
+#lootTip{position:fixed;left:50%;bottom:22%;transform:translateX(-50%);background:rgba(0,0,0,.72);border:1px solid #6f6;color:#9f9;padding:8px 14px;font:14px monospace;z-index:30;display:none;pointer-events:none;white-space:nowrap}
 #pipBody{min-height:330px;max-height:62vh;overflow-y:auto;font-size:13px;line-height:1.5;padding:6px 2px}
 .map-canvas{width:min(76vh,800px);height:min(76vh,800px);max-width:92vw;display:block;margin:6px auto}
 .pip-box{background:linear-gradient(#031003,#041a04);border:3px solid #0f0;width:min(980px,95vw);padding:16px 22px;box-shadow:0 0 30px rgba(0,255,0,.3),inset 0 0 60px rgba(0,60,0,.5);text-shadow:0 0 6px rgba(0,255,0,.55)}
@@ -69,7 +70,7 @@ button:hover{background:#0a0}
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
 </head>
 <body>
-<div id="ownerConsole"><h3 style="color:#f00">👑 OWNER [C]</h3><input id="ownerInput" placeholder="/sendupdateall"><div id="ownerLog">V35 Created By ItzRealLenix</div></div>
+<div id="ownerConsole"><h3 style="color:#f00">👑 OWNER [C]</h3><input id="ownerInput" placeholder="/sendupdateall  /givelevel N  /givepistol"><div id="ownerLog">V35.2 Created By ItzRealLenix</div></div>
 
 <div id="intro" onclick="finishIntro()">
   <h1 id="please">Please stand by</h1>
@@ -81,7 +82,7 @@ button:hover{background:#0a0}
 
 <div id="app" class="hidden">
   <div id="register" class="panel">
-    <h2>WAYOUT V35</h2>
+    <h2>WAYOUT V35.2</h2>
     <p class="small">Created By ItzRealLenix</p>
     <p class="small" style="opacity:0.9">Poslední sklep. Poslední naděje. Najdi cestu ven.</p>
     <input id="nameIn" placeholder="Jméno" maxlength="16">
@@ -91,7 +92,7 @@ button:hover{background:#0a0}
     <div id="versionInfo" class="small"></div>
   </div>
   <div id="lobby" class="panel hidden">
-    <h2>LOBBY V35</h2>
+    <h2>LOBBY V35.2</h2>
     <div>VAULT KÓD: <b id="myIdDisp" style="color:#0ff;font-size:22px;letter-spacing:4px"></b> <button onclick="copyId()" style="width:auto;padding:4px 8px">KOPIE</button> <button onclick="newCode()" style="width:auto;padding:4px 8px;background:#333;color:#0f0">NOVÝ KÓD</button></div>
     <div id="playerList" class="small"></div>
     <input id="friendId" placeholder="Vault kód kamaráda (6 znaků)" maxlength="24">
@@ -107,7 +108,7 @@ button:hover{background:#0a0}
 <div id="toast"></div>
 <div id="hud" class="hidden">
   <div class="hud-box">HP <span id="hp">100</span>/<span id="hpMax">100</span> | LVL <span id="lvl">1</span> (XP <span id="xp">0/120</span>) | <span id="ammo">30/90</span> | H:<span id="hCount">3</span> | J:<span id="radawayCount">1</span> | RAD <span id="rad">0</span> | CAPS <span id="caps">0</span><br>🍖 <span id="hun">100</span>% [1:<span id="foodCount">1</span>] | 💧 <span id="thi">100</span>% [2:<span id="waterCount">1</span>] 🚱 [3:<span id="dirtyCount">0</span>] | <span id="clock">DEN</span></div>
-  <div class="hud-box"><span id="hudId"></span> | <span id="seeCount">0</span> | <span id="loc">MĚSTO</span> | V35</div>
+  <div class="hud-box"><span id="hudId"></span> | <span id="seeCount">0</span> | <span id="loc">MĚSTO</span> | V35.2</div>
   <div id="questBox"></div>
   <div id="onlineBox"></div>
   <div id="chatBox"><div id="chatLog"></div><input id="chatIn" maxlength="120" placeholder="Zpráva... (Enter odeslat, Esc zrušit)"></div>
@@ -117,14 +118,15 @@ button:hover{background:#0a0}
 <div id="mapScreen" class="hidden"><div class="inv-box" style="min-width:0;max-width:96vw;padding:14px"><h2>MAPA - M/ESC</h2><canvas id="mapCanvas" width="800" height="800" class="map-canvas"></canvas><div class="small">Žlutý čtverec = VAULT 80 | oranžové = opuštěné obchody | zelené kruhy = radiace | modré = hráči a campy | červený okraj = konec světa | KLIK na camp/hráče = rychlý přesun za caps</div><button onclick="closeMap()">ZAVŘÍT</button></div></div>
 <div id="pipboy" class="hidden"><div class="pip-box">
   <div class="pip-top"><span class="pip-title">PIP-BOY 3000</span><span class="pip-sub">TAB inventář | P stav | ESC zavřít</span></div>
-  <div id="pipTabs"><button class="tabbtn on" onclick="pipTab(0)">INVENTÁŘ</button><button class="tabbtn" onclick="pipTab(1)">STAV</button><button class="tabbtn" onclick="pipTab(2)">S.P.E.C.I.A.L.</button><button class="tabbtn" onclick="pipTab(3)">ÚKOLY</button><button class="tabbtn" onclick="pipTab(4)">HRÁČI</button></div>
+  <div id="pipTabs"><button class="tabbtn on" onclick="pipTab(0)">INVENTÁŘ</button><button class="tabbtn" onclick="pipTab(1)">STAV</button><button class="tabbtn" onclick="pipTab(2)">S.P.E.C.I.A.L.</button><button class="tabbtn" onclick="pipTab(3)">ÚKOLY</button><button class="tabbtn" onclick="pipTab(4)">HRÁČI</button><button class="tabbtn" onclick="pipTab(5)">ZBRANĚ</button></div>
   <div id="pipBody"></div>
   <button onclick="closePip()">ZAVŘÍT</button></div></div>
-<div id="updateScreen" class="hidden"><div class="update-box"><h2 style="color:#ff0">🚀 UPDATE V<span id="newVerNum">35</span>!</h2><p id="updateText"></p><button onclick="applyUpdate()" style="background:#ff0;color:#000">AKTUALIZOVAT</button><button onclick="downloadNewVersion()" style="background:#0ff;color:#000;margin-top:8px">STÁHNOUT SOUBOR</button><button onclick="skipUpdate()" style="background:#333;color:#fff;margin-top:8px">PŘESKOČIT</button></div></div>
+<div id="lootTip"></div>
+<div id="updateScreen" class="hidden"><div class="update-box"><h2 style="color:#ff0">🚀 UPDATE V<span id="newVerNum">36</span>!</h2><p id="updateText"></p><button onclick="applyUpdate()" style="background:#ff0;color:#000">AKTUALIZOVAT</button><button onclick="downloadNewVersion()" style="background:#0ff;color:#000;margin-top:8px">STÁHNOUT SOUBOR</button><button onclick="skipUpdate()" style="background:#333;color:#fff;margin-top:8px">PŘESKOČIT</button></div></div>
 
 <script type="module">
 import * as THREE from 'three';
-const GAME_VERSION = 35;
+const GAME_VERSION = 36;
 const GAME_NAME = 'WAYOUT';
 // localStorage klíče zůstávají 'wp_*', aby se neztratily uložené postavy a PINy
 // každý hráč má vlastní 6místný VAULT KÓD (bez zaměnitelných znaků), ostatním ho pošleš a připojí se přes něj
@@ -142,6 +144,23 @@ function seededRandom(s){let seed=s;return()=>{seed=(seed*9301+49297)%233280;ret
 let rng=seededRandom(worldSeed);
 let myName='',myLevel=1,peer=null,conns={},remote={},posRef={x:0,y:2,z:0},yawRef=0,pitchRef=0;
 let scene,camera,renderer,buildings=[],enemies=[],trees=[],chests=[],camps=[],pistolPickups=[],radZones=[];
+const WEAPONS={
+  p10:{n:'10mm pistole',dmg:1,mag:30,cd:120,col:0x2b2f33,fl:0xffffaa},
+  pipe:{n:'Trubková pistole',dmg:1,mag:12,cd:90,col:0x6b6358,fl:0xffddaa},
+  rev:{n:'Revolver .44',dmg:3,mag:6,cd:450,col:0x8a8f96,fl:0xffcc66},
+  plasma:{n:'Plazmová pistole',dmg:2,mag:20,cd:200,col:0x22ff88,fl:0x66ffaa},
+  laser:{n:'Laserová pistole',dmg:2,mag:24,cd:160,col:0xff3a3a,fl:0xff6666},
+  gold:{n:'Zlatá Wayout',dmg:4,mag:15,cd:220,col:0xffcc22,fl:0xffee66}
+};
+let curWeapon='p10',ownedW={p10:1},nextShot=0;
+const magSize=()=>WEAPONS[curWeapon].mag;
+function saveWeapons(){if(!myName) return;try{localStorage.setItem('wp_weapons_'+myName,JSON.stringify({c:curWeapon,o:ownedW}));}catch(e){}}
+function equipWeapon(id){
+  if(!WEAPONS[id]) return;if(!ownedW[id]) ownedW[id]=1;
+  curWeapon=id;magAmmo=Math.min(magAmmo,magSize());ammo=magAmmo;
+  try{if(window.__gunCol) window.__gunCol(WEAPONS[id].col);}catch(e){}
+  saveWeapons();if(window.updateAmmo) window.updateAmmo();toast('🔫 Vybaveno: '+WEAPONS[id].n,2000);
+}
 let keys={},isPointerLocked=false,ammo=30,magAmmo=30,reserveAmmo=90,hp=100,healingCaps=3,maxHp=100,food=1,water=1,isInventoryOpen=false,isMapOpen=false,isPipOpen=false;
 let sounds={ctx:null},isOwner=false,ownerConsoleVisible=false,spawnProtectionUntil=0,codeChunks={},remoteMeshes={};
 let gameStarted=false,dead=false,inGame=false,chatOpen=false;
@@ -362,7 +381,8 @@ function renderPip(){
   if(pipTabIdx===0){
     const grid=el('div','pip-grid'),L=el('div'),R=el('div');grid.appendChild(L);grid.appendChild(R);body.appendChild(grid);
     head(L,'ZBRAŇ');
-    row(L,'10mm pistole','zásobník '+magAmmo+'/30 | rezerva '+reserveAmmo,'PŘEBÍT [R]',U.reload);
+    row(L,WEAPONS[curWeapon].n,'dmg '+WEAPONS[curWeapon].dmg+' | zásobník '+magAmmo+'/'+magSize()+' | rezerva '+reserveAmmo,'PŘEBÍT [R]',U.reload);
+    row(L,'Další pistole','nabídka zbraní','ZBRANĚ',()=>{pipTabIdx=5;});
     head(L,'POMOC');
     row(L,'Stimpak ×'+healingCaps,'+20 HP','POUŽÍT [H]',U.heal);
     row(L,'RadAway ×'+radaway,'-60 RAD','POUŽÍT [J]',U.radaway);
@@ -393,6 +413,16 @@ function renderPip(){
     });
   }else if(pipTabIdx===3){
     QUESTS.forEach(q=>{row(body,(doneQuests[q.id]?'[x] ':'[ ] ')+q.t,doneQuests[q.id]?'splněno':'['+Math.min(q.get(),q.goal)+'/'+q.goal+']');});
+  }else if(pipTabIdx===5){
+    head(body,isOwner?'👑 NABÍDKA PISTOLÍ (OWNER: vezmi si kteroukoliv)':'TVÉ PISTOLE (další najdeš v truhlách)');
+    Object.keys(WEAPONS).forEach(id=>{
+      const w=WEAPONS[id],has=!!ownedW[id],on=curWeapon===id;
+      const info='dmg '+w.dmg+' | zásobník '+w.mag+(on?' | VYBAVENO':'');
+      if(has) row(body,(on?'▶ ':'')+w.n,info,on?'':'VYBAVIT',()=>equipWeapon(id));
+      else if(isOwner) row(body,w.n,info,'VZÍT',()=>equipWeapon(id));
+      else row(body,'🔒 '+w.n,info);
+    });
+    body.appendChild(el('div','pip-small','Pistole se mění přímo - náboje jsou společné. Přebíjení [R].'));
   }else{
     row(body,'★ '+myName+' (ty)','LVL '+myLevel);
     Object.values(remote).forEach(p=>{
@@ -412,7 +442,16 @@ window.pipTab=i=>{pipTabIdx=i;renderPip();};
 function logOwner(t){const l=document.getElementById('ownerLog');if(l){const d=document.createElement('div');d.textContent='> '+t;l.appendChild(d);l.scrollTop=l.scrollHeight;}}
 function checkOwner(){if(myName.toLowerCase()==='itzreallenix'){isOwner=true;logOwner(`OWNER V${GAME_VERSION}`);}}
 function toggleOwnerConsole(){if(!isOwner) return;ownerConsoleVisible=!ownerConsoleVisible;const con=document.getElementById('ownerConsole');if(ownerConsoleVisible){con.classList.add('show');document.exitPointerLock();setTimeout(()=>document.getElementById('ownerInput').focus(),100);}else{con.classList.remove('show');try{document.getElementById('gameCanvas').requestPointerLock();}catch(e){}}}
-function handleOwnerCommand(cmd){cmd=cmd.trim();if(!cmd) return;logOwner(cmd);if(cmd==='/sendupdateall'){const fullCode=document.documentElement.outerHTML;Object.values(conns).forEach(c=>{if(c.open){c.send({type:'updateAvailable',newVersion:GAME_VERSION,from:'OWNER',message:`UPDATE V${GAME_VERSION}!`});const chunkSize=15000;for(let i=0;i<fullCode.length;i+=chunkSize){c.send({type:'codeChunk',index:i/chunkSize,total:Math.ceil(fullCode.length/chunkSize),chunk:fullCode.slice(i,i+chunkSize),version:GAME_VERSION});}c.send({type:'codePushDone',version:GAME_VERSION});}});localStorage.setItem('wp_latest_pushed_version',GAME_VERSION);}}
+function handleOwnerCommand(cmd){cmd=cmd.trim();if(!cmd) return;logOwner(cmd);
+  {const parts=cmd.split(/\s+/),c0=parts[0].toLowerCase();
+   if(c0==='/givelevel'){const n=Math.max(1,Math.min(200,parseInt(parts[1])||1));for(let i=0;i<n;i++){myLevel++;perkPoints++;}xp=0;saveStats();setText('lvl',myLevel);if(window.updateAmmo) window.updateAmmo();toast('⬆ +'+n+' LEVEL → '+myLevel+' (+'+n+' bodů, P)',4000);logOwner('level je '+myLevel);return;}
+   if(c0==='/givepistol'){const id=(parts[1]||'').toLowerCase();
+     if(id==='all'){Object.keys(WEAPONS).forEach(k=>ownedW[k]=1);saveWeapons();toast('🔫 Máš všechny pistole');logOwner('všechny pistole');return;}
+     if(WEAPONS[id]){equipWeapon(id);logOwner('pistole: '+WEAPONS[id].n);return;}
+     logOwner('pistole: '+Object.keys(WEAPONS).join(', ')+' | all');
+     setTimeout(()=>{if(ownerConsoleVisible) toggleOwnerConsole();if(window.__openPip) window.__openPip(5);},60);return;}
+  }
+  if(cmd==='/sendupdateall'){const fullCode=document.documentElement.outerHTML;Object.values(conns).forEach(c=>{if(c.open){c.send({type:'updateAvailable',newVersion:GAME_VERSION,from:'OWNER',message:`UPDATE V${GAME_VERSION}!`});const chunkSize=15000;for(let i=0;i<fullCode.length;i+=chunkSize){c.send({type:'codeChunk',index:i/chunkSize,total:Math.ceil(fullCode.length/chunkSize),chunk:fullCode.slice(i,i+chunkSize),version:GAME_VERSION});}c.send({type:'codePushDone',version:GAME_VERSION});}});localStorage.setItem('wp_latest_pushed_version',GAME_VERSION);}}
 
 function checkForUpdate(){
   const saved=parseInt(localStorage.getItem('wp_game_version')||'0');
@@ -458,7 +497,7 @@ let dots=0;
 let introFinished=false;
 const pleaseEl=document.getElementById('please');
 const dotInt=setInterval(()=>{try{if(!pleaseEl) return;dots=(dots+1)%7;pleaseEl.textContent='Please stand by'+'.'.repeat(dots);}catch{}},300);
-const bootLines=['WAYOUT-TEC TERMLINK PROTOCOL','BOOTING SHELTER OS v35.0 ...','GEIGER MODULE ........ OK','STIMPAK DISPENSER .... OK','MULTIPLAYER MESH ..... OK','WASTELAND DATA ....... LOADED','>> NAJDI CESTU VEN <<'];
+const bootLines=['WAYOUT-TEC TERMLINK PROTOCOL','BOOTING SHELTER OS v35.2 ...','GEIGER MODULE ........ OK','STIMPAK DISPENSER .... OK','MULTIPLAYER MESH ..... OK','WASTELAND DATA ....... LOADED','>> NAJDI CESTU VEN <<'];
 let bootI=0;
 const bootInt=setInterval(()=>{const el=document.getElementById('bootLog');if(!el||bootI>=bootLines.length){clearInterval(bootInt);return;}el.textContent+=bootLines[bootI++]+'\n';},220);
 
@@ -507,7 +546,7 @@ function adoptRecord(r){
 }
 function nameTaken(){
   const nm=myName;
-  try{['pin','lvl','caps','kills','xp','special','quests','pos','sealed','camp','created'].forEach(k=>localStorage.removeItem('wp_'+k+'_'+nm));localStorage.removeItem('wp_name');}catch(e){}
+  try{['pin','lvl','caps','kills','xp','special','quests','pos','sealed','camp','created','weapons'].forEach(k=>localStorage.removeItem('wp_'+k+'_'+nm));localStorage.removeItem('wp_name');}catch(e){}
   alert('Jméno "'+nm+'" už má jiný hráč s jiným heslem (registroval se dřív). Zvol si jiné jméno.');
   location.reload();
 }
@@ -550,6 +589,7 @@ window.doRegister=()=>{
   const sxp=localStorage.getItem('wp_xp_'+name);xp=sxp?(parseInt(sxp)||0):0;
   const ssp=localStorage.getItem('wp_special_'+name);
   if(ssp){try{const o=JSON.parse(ssp);special=Object.assign(special,o.s||{});perkPoints=o.pp||0;}catch(e){}}else{perkPoints=3;}
+  try{const sw=localStorage.getItem('wp_weapons_'+name);if(sw){const o=JSON.parse(sw);ownedW=Object.assign({p10:1},o.o||{});curWeapon=(WEAPONS[o.c]&&ownedW[o.c])?o.c:'p10';}else{ownedW={p10:1};curWeapon='p10';}magAmmo=Math.min(magAmmo,magSize());ammo=magAmmo;}catch(e){}
   const sqs=localStorage.getItem('wp_quests_'+name);if(sqs){try{doneQuests=JSON.parse(sqs)||{};}catch(e){}}
   applySpecial();
   myName=name;
@@ -910,9 +950,9 @@ function buildTextures(){
   x.fillStyle='rgba(0,0,0,0.6)';x.fillRect(40,90,432,76);x.fillStyle='#ff4a2a';x.textAlign='center';x.textBaseline='middle';x.font='bold 54px monospace';x.fillText('KONEC SVĚTA',256,128);
   T.border=_tex(c,1,1);
   // obloha, slunce, měsíc, oblak
-  c=_cv(8,256);x=c.getContext('2d');const gr=x.createLinearGradient(0,0,0,256);gr.addColorStop(0,'#3d6aa8');gr.addColorStop(0.55,'#8fb0d0');gr.addColorStop(0.85,'#cdbb92');gr.addColorStop(1,'#b8a67c');x.fillStyle=gr;x.fillRect(0,0,8,256);
+  c=_cv(8,256);x=c.getContext('2d');const gr=x.createLinearGradient(0,0,0,256);gr.addColorStop(0,'#143d18');gr.addColorStop(0.45,'#3f8a24');gr.addColorStop(0.8,'#9fd03a');gr.addColorStop(1,'#c7e04a');x.fillStyle=gr;x.fillRect(0,0,8,256);
   T.sky=new THREE.CanvasTexture(c);T.sky.colorSpace=THREE.SRGBColorSpace;
-  c=_cv(128,128);x=c.getContext('2d');let g2=x.createRadialGradient(64,64,4,64,64,64);g2.addColorStop(0,'rgba(255,250,220,1)');g2.addColorStop(0.18,'rgba(255,240,190,0.95)');g2.addColorStop(0.35,'rgba(255,220,140,0.35)');g2.addColorStop(1,'rgba(255,200,100,0)');x.fillStyle=g2;x.fillRect(0,0,128,128);
+  c=_cv(128,128);x=c.getContext('2d');let g2=x.createRadialGradient(64,64,4,64,64,64);g2.addColorStop(0,'rgba(235,255,170,1)');g2.addColorStop(0.18,'rgba(200,255,120,0.95)');g2.addColorStop(0.35,'rgba(140,255,80,0.4)');g2.addColorStop(1,'rgba(80,220,60,0)');x.fillStyle=g2;x.fillRect(0,0,128,128);
   T.sun=new THREE.CanvasTexture(c);T.sun.colorSpace=THREE.SRGBColorSpace;
   c=_cv(128,128);x=c.getContext('2d');g2=x.createRadialGradient(64,64,10,64,64,64);g2.addColorStop(0,'rgba(220,230,255,1)');g2.addColorStop(0.3,'rgba(200,215,255,0.9)');g2.addColorStop(0.36,'rgba(190,205,255,0.2)');g2.addColorStop(1,'rgba(190,205,255,0)');x.fillStyle=g2;x.fillRect(0,0,128,128);
   T.moon=new THREE.CanvasTexture(c);T.moon.colorSpace=THREE.SRGBColorSpace;
@@ -943,7 +983,7 @@ function makeStrip(x0,z0,x1,z1,w,tex,y,tileLen,scene){
 function init3D(){
   const canvas=document.getElementById('gameCanvas');canvas.width=innerWidth;canvas.height=innerHeight;
   rng=seededRandom(worldSeed);const r=()=>rng();
-  let gl=canvas.getContext('webgl',{alpha:false,antialias:true})||canvas.getContext('experimental-webgl',{alpha:false});
+  let gl=canvas.getContext('webgl',{alpha:false,antialias:false,powerPreference:'high-performance'})||canvas.getContext('experimental-webgl',{alpha:false});
   scene=new THREE.Scene();scene.background=new THREE.Color(0x8a7a55);scene.fog=new THREE.FogExp2(0xa89a74,0.0062);
   camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,1600);
   r();r();   // zachová pořadí náhodných čísel světa
@@ -961,14 +1001,14 @@ function init3D(){
     hazard:stdm({color:0xc9a227}),vdoorFace:stdm({map:T.vdoor}),houseWall:stdm({map:T.wood}),tin:stdm({map:T.tin}),
     houseDoor:stdm({map:T.door}),rust:stdm({color:0x7a4a32}),tire:stdm({color:0x111111})};
   const concArr=[concM,concM,roofM,roofM,concM,concM],brickArr=[brickM,brickM,roofM,roofM,brickM,brickM];
-  renderer=new THREE.WebGLRenderer({canvas,context:gl,antialias:true});renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));renderer.setSize(innerWidth,innerHeight);renderer.setClearColor(0xa89a74);
-  renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+  renderer=new THREE.WebGLRenderer({canvas,context:gl,antialias:false});renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1));renderer.setSize(innerWidth,innerHeight);renderer.setClearColor(0xa89a74);
+  renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
   window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
   const ambient=new THREE.AmbientLight(0xffe8c0,0.3);scene.add(ambient);
   const hemi=new THREE.HemisphereLight(0xbcd0ff,0x6b5d3f,0.45);scene.add(hemi);
   const dirL=new THREE.DirectionalLight(0xffd9a0,0.9);dirL.position.set(50,80,30);scene.add(dirL);scene.add(dirL.target);
-  dirL.castShadow=true;dirL.shadow.mapSize.set(2048,2048);
-  {const sc=dirL.shadow.camera;sc.left=-80;sc.right=80;sc.top=80;sc.bottom=-80;sc.near=1;sc.far=420;}
+  dirL.castShadow=true;dirL.shadow.mapSize.set(1024,1024);
+  {const sc=dirL.shadow.camera;sc.left=-55;sc.right=55;sc.top=55;sc.bottom=-55;sc.near=1;sc.far=420;}
   dirL.shadow.bias=-0.0004;dirL.shadow.normalBias=0.5;
   const shade=(m,c,rc)=>{m.castShadow=c!==false;m.receiveShadow=rc!==false;return m;};
   scene.add(camera);const lamp=new THREE.PointLight(0xaaffaa,0.2,35);camera.add(lamp);
@@ -979,6 +1019,7 @@ function init3D(){
   const gun=new THREE.Group();let gunKick=0;
   {
     const gm=new THREE.MeshStandardMaterial({color:0x2b2f33,roughness:0.45,metalness:0.6}),gm2=new THREE.MeshStandardMaterial({color:0x5a3a1e,roughness:0.9}),skin=new THREE.MeshStandardMaterial({color:0xe0b48a,roughness:0.9});
+    window.__gunCol=c=>{gm.color.setHex(c);};window.__gunCol(WEAPONS[curWeapon].col);
     const slide=new THREE.Mesh(new THREE.BoxGeometry(0.07,0.09,0.4),gm);gun.add(slide);
     const barrel=new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.02,0.16,8),gm);barrel.rotation.x=Math.PI/2;barrel.position.set(0,0.0,-0.27);gun.add(barrel);
     const grip=new THREE.Mesh(new THREE.BoxGeometry(0.06,0.17,0.075),gm2);grip.position.set(0,-0.12,0.13);grip.rotation.x=0.25;gun.add(grip);
@@ -1012,6 +1053,7 @@ function init3D(){
     b.position.set(x,h+bh/2,z);b.userData={isBuilding:true,isShop,hasZombie:isShop&&r()<0.6};shade(b);scene.add(b);buildings.push(b);
   }
   const trunkMat=stdm({map:T.bark});const leavesMat=stdm({map:T.leaf});
+  const oldT=[];
   for(let i=0;i<300;i++){
     let x,z;const zone=Math.floor(r()*3);
     if(zone===0){x=r()*250+120;z=r()*250+120;}
@@ -1021,10 +1063,7 @@ function init3D(){
     const lr=r();   // pořadí náhodných čísel zůstává stejné
     if(Math.abs(x)<14||Math.abs(z)<14) continue;
     if(buildings.some(bb=>Math.abs(bb.position.x-x)<bb.geometry.parameters.width/2+3.5&&Math.abs(bb.position.z-z)<bb.geometry.parameters.depth/2+3.5)) continue;
-    const trunk=new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.5,4,6),trunkMat);trunk.position.set(x,h+2,z);trunk.userData={noCollision:true};
-    const leaves=new THREE.Mesh(new THREE.SphereGeometry(2.2+lr,6,6),leavesMat);leaves.position.set(x,h+5,z);leaves.userData={noCollision:true};
-    shade(trunk,true,false);shade(leaves,true,false);
-    scene.add(trunk);scene.add(leaves);trees.push({x,z,trunk,leaves});
+    {const it={x,z,h,lr,old:true};trees.push(it);oldT.push(it);}
   }
   buildings.forEach(b=>{
     if(b.userData.hasZombie){
@@ -1394,7 +1433,14 @@ function init3D(){
   {
     const inside=(x,z)=>buildings.some(b=>Math.abs(b.position.x-x)<b.geometry.parameters.width/2+2.5&&Math.abs(b.position.z-z)<b.geometry.parameters.depth/2+2.5)
       ||PLAN.shops.some(q=>Math.abs(q.x-x)<q.w/2+3&&Math.abs(q.z-z)<q.d/2+3);
-    trees=trees.filter(t=>{if(t.trunk&&inside(t.x,t.z)){scene.remove(t.trunk);scene.remove(t.leaves);return false;}return true;});
+    trees=trees.filter(t=>{if(t.old&&inside(t.x,t.z)){t.dead=true;return false;}return true;});
+    {const live=oldT.filter(t=>!t.dead);
+     if(live.length){
+       const tI=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.3,0.5,4,6),trunkMat,live.length),lI=new THREE.InstancedMesh(new THREE.SphereGeometry(2.2,6,6),leavesMat,live.length);
+       const dm=new THREE.Object3D();
+       live.forEach((t,i)=>{dm.rotation.set(0,0,0);dm.scale.set(1,1,1);dm.position.set(t.x,t.h+2,t.z);dm.updateMatrix();tI.setMatrixAt(i,dm.matrix);const k=(2.2+t.lr)/2.2;dm.scale.set(k,k,k);dm.position.set(t.x,t.h+5,t.z);dm.updateMatrix();lI.setMatrixAt(i,dm.matrix);});
+       [tI,lI].forEach(m=>{m.instanceMatrix.needsUpdate=true;m.castShadow=true;m.receiveShadow=false;m.frustumCulled=false;m.matrixAutoUpdate=false;m.userData={noCollision:true};scene.add(m);});
+     }}
     enemies=enemies.filter(e=>{if(killedIds.has(e.userData.id)){scene.remove(e);return false;}return true;});
   }
   // ===== OBLOHA, SLUNCE, MĚSÍC, HVĚZDY, OBLAKY, DEN/NOC =====
@@ -1406,11 +1452,16 @@ function init3D(){
   {const sp=new Float32Array(800*3);for(let i=0;i<800;i++){const u=Math.random(),a=Math.random()*Math.PI*2,rr=Math.sqrt(1-u*u);sp[i*3]=Math.cos(a)*rr*1300;sp[i*3+1]=u*1300;sp[i*3+2]=Math.sin(a)*rr*1300;}starGeo.setAttribute('position',new THREE.BufferAttribute(sp,3));}
   const starMat=new THREE.PointsMaterial({color:0xffffff,size:2.2,sizeAttenuation:false,fog:false,transparent:true,opacity:0,depthWrite:false});
   const stars=new THREE.Points(starGeo,starMat);stars.frustumCulled=false;scene.add(stars);
-  const cloudGroup=new THREE.Group(),clouds=[];
-  const cloudMat=new THREE.MeshBasicMaterial({map:T.cloud,transparent:true,opacity:0.7,depthWrite:false,fog:false,side:THREE.DoubleSide});
-  for(let i=0;i<18;i++){const cm=new THREE.Mesh(new THREE.PlaneGeometry(380+Math.random()*260,200+Math.random()*120),cloudMat);cm.rotation.x=Math.PI/2;cm.frustumCulled=false;cm.userData={ox:Math.random()*2000,oz:Math.random()*2000,sp:4+Math.random()*6,y:260+Math.random()*80};clouds.push(cm);cloudGroup.add(cm);}
-  scene.add(cloudGroup);
-  const skyDay=new THREE.Color(0xa89a74),skyNight=new THREE.Color(0x0b0d1a),skyNow=new THREE.Color();
+  // radiační polární záře (svislé zářící opony) místo mraků
+  const auroraGroup=new THREE.Group();
+  const auroraTex=(()=>{const c=document.createElement('canvas');c.width=256;c.height=128;const x=c.getContext('2d');
+    for(let i=0;i<64;i++){const px=i*4,a=0.25+0.75*Math.random();const g=x.createLinearGradient(0,0,0,128);g.addColorStop(0,'rgba(120,255,80,0)');g.addColorStop(0.55,'rgba(150,255,70,'+(0.5*a)+')');g.addColorStop(1,'rgba(220,255,120,'+a+')');x.fillStyle=g;x.fillRect(px,0,4,128);}
+    const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;})();
+  const auroraMat=new THREE.MeshBasicMaterial({map:auroraTex,transparent:true,opacity:0.5,depthWrite:false,fog:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending});
+  for(let i=0;i<14;i++){const th=i/14*Math.PI*2,cm=new THREE.Mesh(new THREE.PlaneGeometry(560,190),auroraMat);cm.position.set(Math.cos(th)*680,150+30*Math.sin(i*1.7),Math.sin(th)*680);cm.rotation.y=Math.atan2(-Math.cos(th),-Math.sin(th));cm.frustumCulled=false;auroraGroup.add(cm);}
+  scene.add(auroraGroup);
+  const skyDay=new THREE.Color(0x86a636),skyNight=new THREE.Color(0x0b0d1a),skyNow=new THREE.Color();
+  hemi.color.setHex(0xa8e870);dirL.color.setHex(0xefffb0);ambient.color.setHex(0xd8ffb0);
   function updateSky(now){
     const tOD=(Date.now()%720000)/720000,a=tOD*Math.PI*2;
     const day=0.5+0.5*Math.sin(a);dayNow=day;
@@ -1424,10 +1475,8 @@ function init3D(){
     const k=Math.pow(day,0.8);skyMat.color.setRGB(0.05+0.95*k,0.06+0.94*k,0.12+0.88*k);
     sunSp.position.set(cx+sx*1150,cy+sy*1150,cz+sz*1150);sunSp.visible=sy>-0.12;
     moonSp.position.set(cx-sx*1150,cy-sy*1150,cz-sz*1150);moonSp.visible=sy<0.12;
-    starMat.opacity=Math.max(0,Math.min(1,(0.5-day)*2.4));stars.position.set(cx,cy,cz);stars.visible=starMat.opacity>0.02;
-    cloudMat.opacity=0.12+0.62*day;cloudMat.color.setRGB(0.25+0.75*day,0.27+0.73*day,0.34+0.66*day);
-    cloudGroup.position.set(cx,0,cz);
-    clouds.forEach(cm=>{const u=cm.userData;cm.position.set((((u.ox+now*0.001*u.sp)%2000)+2000)%2000-1000,u.y,(((u.oz+now*0.0003*u.sp)%2000)+2000)%2000-1000);});
+    starMat.color.setHex(0xd8ffb8);starMat.opacity=Math.max(0,Math.min(1,(0.5-day)*2.4));stars.position.set(cx,cy,cz);stars.visible=starMat.opacity>0.02;
+    auroraMat.opacity=0.22+0.12*Math.sin(now*0.0007)+0.34*(1-day);auroraGroup.position.set(cx,0,cz);auroraGroup.rotation.y=now*0.00002;
     // stíny sledují hráče; světlo je slunce, v noci měsíc
     let lx=sx,ly=sy,lz=sz;if(sy<0){lx=-sx;ly=-sy;lz=-sz;}ly=Math.max(0.28,ly);const ll=Math.hypot(lx,ly,lz);lx/=ll;ly/=ll;lz/=ll;
     const tx=Math.round(cx/6)*6,tz=Math.round(cz/6)*6,ty=getTerrainHeight(tx,tz);
@@ -1469,8 +1518,8 @@ function init3D(){
     keys[e.code]=true;
     if(e.code==='KeyR'){
       e.preventDefault();
-      if(magAmmo>=30) return;
-      if(reserveAmmo<=0){magAmmo=30;reserveAmmo=90;}else{const need=30-magAmmo;const take=Math.min(need,reserveAmmo);magAmmo+=take;reserveAmmo-=take;}
+      if(magAmmo>=magSize()) return;
+      if(reserveAmmo<=0){magAmmo=magSize();reserveAmmo=90;}else{const need=magSize()-magAmmo;const take=Math.min(need,reserveAmmo);magAmmo+=take;reserveAmmo-=take;}
       ammo=magAmmo;updateAmmo();playSound('pickup');
       setTimeout(()=>{keys['KeyR']=false;},80);
     }
@@ -1539,8 +1588,9 @@ function init3D(){
   }
   function shoot(){
     if(dead) return;
+    {const tn=performance.now();if(tn<nextShot) return;nextShot=tn+WEAPONS[curWeapon].cd;}
     if(magAmmo<=0){
-      if(reserveAmmo>0){const take=Math.min(30,reserveAmmo);magAmmo=take;reserveAmmo-=take;ammo=magAmmo;updateAmmo();playSound('pickup');}else{meleeHit();return;}
+      if(reserveAmmo>0){const take=Math.min(magSize(),reserveAmmo);magAmmo=take;reserveAmmo-=take;ammo=magAmmo;updateAmmo();playSound('pickup');}else{meleeHit();return;}
     }
     magAmmo--;ammo=magAmmo;updateAmmo();playSound('shoot',0.6);gunKick=1;
     const dir=new THREE.Vector3(0,0,-1);dir.applyEuler(new THREE.Euler(pitch,yaw,0,'YXZ'));
@@ -1549,11 +1599,11 @@ function init3D(){
     if(hits.length>0){
       const hit=hits[0].object;
       if(enemies.includes(hit)){
-        hit.userData.hp=(hit.userData.hp||1)-1;
+        hit.userData.hp=(hit.userData.hp||1)-WEAPONS[curWeapon].dmg;
         if(hit.userData.hp>0){playSound('hit',0.4);broadcast({type:'zhit',id:hit.userData.id,hp:hit.userData.hp});}else{killEnemy(hit);}
       }
     }
-    const flash=new THREE.Mesh(new THREE.SphereGeometry(0.25),new THREE.MeshBasicMaterial({color:0xffffaa}));flash.position.copy(camera.position).add(dir.clone().multiplyScalar(1.2));scene.add(flash);setTimeout(()=>scene.remove(flash),60);
+    const flash=new THREE.Mesh(new THREE.SphereGeometry(0.25),new THREE.MeshBasicMaterial({color:WEAPONS[curWeapon].fl}));flash.position.copy(camera.position).add(dir.clone().multiplyScalar(1.2));scene.add(flash);setTimeout(()=>scene.remove(flash),60);
   }
   function doHeal(){
     if(healingCaps<=0){setText('hp',hp+' ŽÁDNÝ STIMPAK');setTimeout(()=>setText('hp',hp),1500);return;}
@@ -1581,25 +1631,56 @@ function init3D(){
     dirtyWater--;thirst=Math.min(100,thirst+30);rads=Math.min(100,rads+12);updateAmmo();playSound('heal');toast('🚱 Špinavá voda (+30 hydratace, +12 RAD)');
   }
   function reloadNow(){
-    if(magAmmo>=30) return;
-    if(reserveAmmo<=0){magAmmo=30;reserveAmmo=90;}else{const need=30-magAmmo;const take=Math.min(need,reserveAmmo);magAmmo+=take;reserveAmmo-=take;}
+    if(magAmmo>=magSize()) return;
+    if(reserveAmmo<=0){magAmmo=magSize();reserveAmmo=90;}else{const need=magSize()-magAmmo;const take=Math.min(need,reserveAmmo);magAmmo+=take;reserveAmmo-=take;}
     ammo=magAmmo;updateAmmo();playSound('pickup');
   }
-  window.__use={heal:doHeal,radaway:useRadaway,eat,drink,dirty:drinkDirty,reload:reloadNow};
+  window.__use={heal:doHeal,radaway:useRadaway,eat,drink,dirty:drinkDirty,reload:reloadNow};window.__openPip=openPip;
+  const chestN=ch=>ch.userData.n||(ch.userData.n=1+Math.floor(Math.random()*2));
+  const chestWeapon=ch=>{if(!ch.userData.wid){const pool=['p10','pipe','pipe','rev','plasma','laser'];ch.userData.wid=pool[Math.floor(Math.random()*pool.length)];}return ch.userData.wid;};
+  function chestContents(ch){
+    const k=ch.userData.loot||'ammo',n=chestN(ch);
+    if(k==='pistol') return WEAPONS[chestWeapon(ch)].n+' + 24 nábojů';
+    if(k==='water') return 'čistá voda ×'+n;
+    if(k==='dirty') return 'špinavá voda ×'+n;
+    if(k==='food') return 'jídlo ×'+n;
+    return '30 nábojů';
+  }
+  function lootLabel(o){
+    const u=o.userData;
+    if(u.type==='chest') return '📦 TRUHLA: '+chestContents(o);
+    const m={pistol:'🔫 Náboje do pistole (+12)',heal:'💉 Stimpak',radaway:'☢ RadAway',food:'🍖 Jídlo',water:'💧 Čistá voda',dirty:'🚱 Špinavá voda',cap:'🪙 Caps ×'+u.value};
+    return m[u.type]||'Věc';
+  }
   function openChest(ch){
-    const k=ch.userData.loot||'ammo',n=1+Math.floor(Math.random()*2),cap=90+20*(special.S-1);
-    if(k==='pistol'){reserveAmmo=Math.min(cap,reserveAmmo+24);toast('🔫 Truhla: pistole 10mm (+24 nábojů)');}
+    const k=ch.userData.loot||'ammo',n=chestN(ch),cap=90+20*(special.S-1);
+    if(k==='pistol'){
+      reserveAmmo=Math.min(cap,reserveAmmo+24);const w=chestWeapon(ch);
+      if(!ownedW[w]){ownedW[w]=1;saveWeapons();toast('🔫 Nová zbraň: '+WEAPONS[w].n+' (Pip-Boy → ZBRANĚ) +24 nábojů',4500);}
+      else toast('🔫 Truhla: '+WEAPONS[w].n+' už máš, +24 nábojů');
+    }
     else if(k==='water'){water+=n;toast('💧 Truhla: čistá voda ×'+n);}
     else if(k==='dirty'){dirtyWater+=n;toast('🚱 Truhla: špinavá voda ×'+n);}
     else if(k==='food'){food+=n;toast('🍖 Truhla: jídlo ×'+n);}
     else{reserveAmmo=Math.min(cap,reserveAmmo+30);toast('+30 AMMO');}
     playSound('pickup');updateAmmo();
   }
+  let lootTarget=null,lootTake=false,lootT=0,forestT=0,forestC=false,shT=0,fpsAcc=0,fpsN=0,prNow=Math.min(window.devicePixelRatio||1,1);
+  function findLoot(){
+    const reach=3.4+0.2*(special.P-1),cp=camera.position;
+    const cy=Math.cos(pitch),dx0=-Math.sin(yaw)*cy,dy0=Math.sin(pitch),dz0=-Math.cos(yaw)*cy;
+    let best=null,bd=1e9;
+    const test=o=>{const dx=o.position.x-cp.x,dy=o.position.y-cp.y,dz=o.position.z-cp.z,d=Math.hypot(dx,dy,dz);if(d>reach) return;const dh=Math.hypot(dx,dz),hl=Math.hypot(dx0,dz0)||1;if(Math.abs(dy)>3.2) return;const dot=dh<0.01?1:(dx*dx0+dz*dz0)/(dh*hl);if(dh>1.2&&dot<0.88) return;if(d<bd){bd=d;best=o;}};
+    for(const p of pistolPickups) if(p) test(p);
+    for(const c of chests) if(c) test(c);
+    return best;
+  }
   function interact(){
     const px=camera.position.x,pz=camera.position.z;
     const nearDoor=!vaultSealed&&Math.abs(px-DOOR.x)<9&&Math.abs(pz-DOOR.z)<9;
     const nearCamp=myCamp&&Math.hypot(px-myCamp.x,pz-myCamp.z)<8;
-    if(!nearDoor&&!nearCamp){toast('E funguje ve vaultu (dokud z něj nevyjdeš) a u tvého C.A.M.P.');return;}
+    {const lt=findLoot();if(lt){lootTarget=lt;lootTake=true;return;}}
+    if(!nearDoor&&!nearCamp) return;
     const now=performance.now();
     if(now-lastRest<30000){toast('Odpočinek za '+Math.ceil((30000-(now-lastRest))/1000)+'s');return;}
     lastRest=now;hp=maxHp;rads=0;hunger=Math.max(hunger,50);thirst=Math.max(thirst,50);healingCaps=Math.max(healingCaps,1);
@@ -1807,7 +1888,8 @@ function init3D(){
     qTimer+=dt;if(qTimer>1){qTimer=0;checkQuests();updateQuestBox();}
 
     const underProtection = performance.now() < spawnProtectionUntil;
-    const inForest=trees.some(t=>Math.hypot(t.x-camera.position.x,t.z-camera.position.z)<30);
+    forestT+=dt;if(forestT>0.5){forestT=0;forestC=trees.some(t=>Math.hypot(t.x-camera.position.x,t.z-camera.position.z)<30);}
+    const inForest=forestC;
     let locText=inForest?'LES':'MĚSTO';
     if(inZone) locText='☢ RADIACE';
     if(inCamp) locText='C.A.M.P.';
@@ -1861,10 +1943,14 @@ function init3D(){
       for(const z of enemies){if(z&&z.userData.mv){out.push([z.userData.id,Math.round(z.position.x*10)/10,Math.round(z.position.z*10)/10,z.userData.hp]);z.userData.mv=false;if(out.length>=50) break;}}
       if(out.length) broadcast({type:'zs',l:out});
     }
+    lootT+=dt;
+    if(lootT>0.08){lootT=0;lootTarget=(dead||isPipOpen||isInventoryOpen||isMapOpen)?null:findLoot();
+      const tip=document.getElementById('lootTip'),txt=lootTarget?lootLabel(lootTarget)+'   [E] vzít':'';
+      if(tip&&tip._t!==txt){tip._t=txt;tip.textContent=txt;tip.style.display=txt?'block':'none';}}
     const pr=2+0.2*(special.P-1),ammoCap=90+20*(special.S-1);
     for(let i=pistolPickups.length-1;i>=0;i--){
       const p=pistolPickups[i];
-      if(p&&camera.position.distanceTo(p.position)<pr){
+      if(p&&lootTake&&p===lootTarget){
         const t=p.userData.type;
         if(t==='pistol'){reserveAmmo=Math.min(ammoCap,reserveAmmo+12);toast('+12 AMMO');}
         else if(t==='heal'){healingCaps++;toast('+1 STIMPAK');}
@@ -1872,12 +1958,18 @@ function init3D(){
         else if(t==='food'){food++;toast('+1 JÍDLO');}
         else if(t==='water'){water++;toast('+1 VODA');}
         else if(t==='cap'){caps+=p.userData.value;saveStats();toast('+'+p.userData.value+' CAPS');checkQuests();}
-        scene.remove(p);pistolPickups.splice(i,1);updateAmmo();
+        scene.remove(p);pistolPickups.splice(i,1);lootTarget=null;updateAmmo();
       }
       if(p) p.rotation.y+=0.02;
     }
     const chestR=1.9+0.1*(special.P-1);
-    for(let i=chests.length-1;i>=0;i--){const ch=chests[i];if(ch&&Math.hypot(camera.position.x-ch.position.x,camera.position.z-ch.position.z)<chestR&&Math.abs(camera.position.y-1.7-ch.position.y)<2.2){openChest(ch);scene.remove(ch);chests.splice(i,1);}}
+    for(let i=chests.length-1;i>=0;i--){const ch=chests[i];if(ch&&lootTake&&ch===lootTarget){openChest(ch);scene.remove(ch);chests.splice(i,1);lootTarget=null;}}
+    lootTake=false;
+    shT+=dt;if(shT>0.09){shT=0;renderer.shadowMap.needsUpdate=true;}
+    fpsAcc+=dt;fpsN++;
+    if(fpsAcc>=1.5){const fps=fpsN/fpsAcc;fpsAcc=0;fpsN=0;
+      if(fps<40&&prNow>0.55){prNow=Math.max(0.55,prNow-0.15);renderer.setPixelRatio(prNow);}
+      else if(fps>57&&prNow<Math.min(window.devicePixelRatio||1,1)){prNow=Math.min(1,prNow+0.1);renderer.setPixelRatio(prNow);}}
     renderer.render(scene,camera);
   }
   loop(performance.now());

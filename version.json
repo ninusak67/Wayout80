@@ -1,11 +1,11 @@
 {
-  "version": 35,
+  "version": 36,
   "entry": "wayout.html",
   "files": [
     {
       "name": "wayout.html",
-      "sha256": "4833b7826d35c81bf00cf22f968d60da5f3ca022bc71dc3e52cad32cc357e94f"
+      "sha256": "8f653b870ae2f80dc111e8805a01498af539be0873b8275c15f7d55cb13d6137"
     }
   ],
-  "notes": "V35: větší svět s okrajem, opuštěné obchody, skok, nový Pip-Boy, lepší grafika, sdílení zombíků, účty"
+  "notes": "V35.2: optimalizace (plynulejší otáčení), radiační obloha, /givelevel, /givepistol + nabídka pistolí, truhly a věci na zemi se berou klávesou E po pohledu"
 }
