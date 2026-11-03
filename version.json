@@ -1,11 +1,11 @@
 {
-  "version": 37,
+  "version": 38,
   "entry": "wayout.html",
   "files": [
     {
       "name": "wayout.html",
-      "sha256": "448789f0723bf5695c799859ce64d6dc23daab3ad063db770d40455c52a55fe4"
+      "sha256": "408c4d8e38b1ea2f4d9b62e8c7875cb04a09a3345cc16e4f1bcbc9b8f3c9b138"
     }
   ],
-  "notes": "V37: /givelevel (hráč) (level), /givepistol (hráč), optimalizace, radiační obloha, nabídka pistolí, E u truhel"
+  "notes": "37.2"
 }

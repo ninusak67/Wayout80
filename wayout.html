@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WAYOUT V37</title>
+<title>WAYOUT 37.2</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#000;color:#0f0;font-family:'Courier New',monospace;overflow:hidden}
@@ -70,7 +70,7 @@ button:hover{background:#0a0}
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
 </head>
 <body>
-<div id="ownerConsole"><h3 style="color:#f00">👑 OWNER [C]</h3><input id="ownerInput" placeholder="/givelevel hráč počet | /givepistol hráč"><div id="ownerLog">V37 Created By ItzRealLenix</div></div>
+<div id="ownerConsole"><h3 style="color:#f00">👑 OWNER [C]</h3><input id="ownerInput" placeholder="/givelevel hráč počet | /givepistol hráč"><div id="ownerLog">37.2 Created By ItzRealLenix</div></div>
 
 <div id="intro" onclick="finishIntro()">
   <h1 id="please">Please stand by</h1>
@@ -82,7 +82,7 @@ button:hover{background:#0a0}
 
 <div id="app" class="hidden">
   <div id="register" class="panel">
-    <h2>WAYOUT V37</h2>
+    <h2>WAYOUT 37.2</h2>
     <p class="small">Created By ItzRealLenix</p>
     <p class="small" style="opacity:0.9">Poslední sklep. Poslední naděje. Najdi cestu ven.</p>
     <input id="nameIn" placeholder="Jméno" maxlength="16">
@@ -92,7 +92,7 @@ button:hover{background:#0a0}
     <div id="versionInfo" class="small"></div>
   </div>
   <div id="lobby" class="panel hidden">
-    <h2>LOBBY V37</h2>
+    <h2>LOBBY 37.2</h2>
     <div>VAULT KÓD: <b id="myIdDisp" style="color:#0ff;font-size:22px;letter-spacing:4px"></b> <button onclick="copyId()" style="width:auto;padding:4px 8px">KOPIE</button> <button onclick="newCode()" style="width:auto;padding:4px 8px;background:#333;color:#0f0">NOVÝ KÓD</button></div>
     <div id="playerList" class="small"></div>
     <input id="friendId" placeholder="Vault kód kamaráda (6 znaků)" maxlength="24">
@@ -108,7 +108,7 @@ button:hover{background:#0a0}
 <div id="toast"></div>
 <div id="hud" class="hidden">
   <div class="hud-box">HP <span id="hp">100</span>/<span id="hpMax">100</span> | LVL <span id="lvl">1</span> (XP <span id="xp">0/120</span>) | <span id="ammo">30/90</span> | H:<span id="hCount">3</span> | J:<span id="radawayCount">1</span> | RAD <span id="rad">0</span> | CAPS <span id="caps">0</span><br>🍖 <span id="hun">100</span>% [1:<span id="foodCount">1</span>] | 💧 <span id="thi">100</span>% [2:<span id="waterCount">1</span>] 🚱 [3:<span id="dirtyCount">0</span>] | <span id="clock">DEN</span></div>
-  <div class="hud-box"><span id="hudId"></span> | <span id="seeCount">0</span> | <span id="loc">MĚSTO</span> | V37</div>
+  <div class="hud-box"><span id="hudId"></span> | <span id="seeCount">0</span> | <span id="loc">MĚSTO</span> | 37.2</div>
   <div id="questBox"></div>
   <div id="onlineBox"></div>
   <div id="chatBox"><div id="chatLog"></div><input id="chatIn" maxlength="120" placeholder="Zpráva... (Enter odeslat, Esc zrušit)"></div>
@@ -122,11 +122,11 @@ button:hover{background:#0a0}
   <div id="pipBody"></div>
   <button onclick="closePip()">ZAVŘÍT</button></div></div>
 <div id="lootTip"></div>
-<div id="updateScreen" class="hidden"><div class="update-box"><h2 style="color:#ff0">🚀 UPDATE V<span id="newVerNum">37</span>!</h2><p id="updateText"></p><button onclick="applyUpdate()" style="background:#ff0;color:#000">AKTUALIZOVAT</button><button onclick="downloadNewVersion()" style="background:#0ff;color:#000;margin-top:8px">STÁHNOUT SOUBOR</button><button onclick="skipUpdate()" style="background:#333;color:#fff;margin-top:8px">PŘESKOČIT</button></div></div>
+<div id="updateScreen" class="hidden"><div class="update-box"><h2 style="color:#ff0">🚀 UPDATE <span id="newVerNum">37.2</span>!</h2><p id="updateText"></p><button onclick="applyUpdate()" style="background:#ff0;color:#000">AKTUALIZOVAT</button><button onclick="downloadNewVersion()" style="background:#0ff;color:#000;margin-top:8px">STÁHNOUT SOUBOR</button><button onclick="skipUpdate()" style="background:#333;color:#fff;margin-top:8px">PŘESKOČIT</button></div></div>
 
 <script type="module">
 import * as THREE from 'three';
-const GAME_VERSION = 37;
+const GAME_VERSION = 38;   // zobrazuje se jako 37.2 (launcher chce celé číslo)
 const GAME_NAME = 'WAYOUT';
 // localStorage klíče zůstávají 'wp_*', aby se neztratily uložené postavy a PINy
 // každý hráč má vlastní 6místný VAULT KÓD (bez zaměnitelných znaků), ostatním ho pošleš a připojí se přes něj
@@ -152,7 +152,7 @@ const WEAPONS={
   laser:{n:'Laserová pistole',dmg:2,mag:24,cd:160,col:0xff3a3a,fl:0xff6666},
   gold:{n:'Zlatá Wayout',dmg:4,mag:15,cd:220,col:0xffcc22,fl:0xffee66}
 };
-let curWeapon='p10',ownedW={p10:1},nextShot=0;
+let curWeapon='p10',ownedW={p10:1},nextShot=0,nuka=0;
 const magSize=()=>WEAPONS[curWeapon].mag;
 function saveWeapons(){if(!myName) return;try{localStorage.setItem('wp_weapons_'+myName,JSON.stringify({c:curWeapon,o:ownedW}));}catch(e){}}
 function equipWeapon(id){
@@ -390,6 +390,7 @@ function renderPip(){
     row(L,'Jídlo ×'+food,'+40 sytost','SNÍST [1]',U.eat);
     row(L,'Čistá voda ×'+water,'+40 hydratace','PÍT [2]',U.drink);
     row(L,'Špinavá voda ×'+dirtyWater,'+30 hydratace, +12 RAD','PÍT [3]',U.dirty);
+    row(L,'Nuka-Cola ×'+nuka,'+30 hydratace, +5 HP, +2 RAD','PÍT [4]',U.nuka);
     head(L,'RŮZNÉ');
     row(L,'Bottle caps',String(caps));
     row(L,'C.A.M.P.',myCamp?('postaven ('+Math.round(myCamp.x)+', '+Math.round(myCamp.z)+')'):'nemáš [Q = 25 caps]');
@@ -440,7 +441,7 @@ function renderPip(){
 window.pipTab=i=>{pipTabIdx=i;renderPip();};
 
 function logOwner(t){const l=document.getElementById('ownerLog');if(l){const d=document.createElement('div');d.textContent='> '+t;l.appendChild(d);l.scrollTop=l.scrollHeight;}}
-function checkOwner(){if(myName.toLowerCase()==='itzreallenix'){isOwner=true;logOwner(`OWNER V${GAME_VERSION}`);}}
+function checkOwner(){if(myName.toLowerCase()==='itzreallenix'){isOwner=true;logOwner('OWNER 37.2');}}
 function toggleOwnerConsole(){if(!isOwner) return;ownerConsoleVisible=!ownerConsoleVisible;const con=document.getElementById('ownerConsole');if(ownerConsoleVisible){con.classList.add('show');document.exitPointerLock();setTimeout(()=>document.getElementById('ownerInput').focus(),100);}else{con.classList.remove('show');try{document.getElementById('gameCanvas').requestPointerLock();}catch(e){}}}
 function applyGiveLevel(n){for(let i=0;i<n;i++){myLevel++;perkPoints++;}xp=0;saveStats();setText('lvl',myLevel);if(window.updateAmmo) window.updateAmmo();toast('⬆ Dostal jsi +'+n+' levelů → LEVEL '+myLevel+' (body: P)',4000);playSound('heal');}
 function applyGivePistol(id){
@@ -521,7 +522,7 @@ let dots=0;
 let introFinished=false;
 const pleaseEl=document.getElementById('please');
 const dotInt=setInterval(()=>{try{if(!pleaseEl) return;dots=(dots+1)%7;pleaseEl.textContent='Please stand by'+'.'.repeat(dots);}catch{}},300);
-const bootLines=['WAYOUT-TEC TERMLINK PROTOCOL','BOOTING SHELTER OS v37.0 ...','GEIGER MODULE ........ OK','STIMPAK DISPENSER .... OK','MULTIPLAYER MESH ..... OK','WASTELAND DATA ....... LOADED','>> NAJDI CESTU VEN <<'];
+const bootLines=['WAYOUT-TEC TERMLINK PROTOCOL','BOOTING SHELTER OS v37.2 ...','GEIGER MODULE ........ OK','STIMPAK DISPENSER .... OK','MULTIPLAYER MESH ..... OK','WASTELAND DATA ....... LOADED','>> NAJDI CESTU VEN <<'];
 let bootI=0;
 const bootInt=setInterval(()=>{const el=document.getElementById('bootLog');if(!el||bootI>=bootLines.length){clearInterval(bootInt);return;}el.textContent+=bootLines[bootI++]+'\n';},220);
 
@@ -850,6 +851,15 @@ function planWorld(){
   return {shops,zones,towns};
 }
 const PLAN=planWorld();
+const FLATS=[],CRATERS=[],COLS=new Map();
+PLAN.zones.forEach(q=>CRATERS.push({x:q.x,z:q.z,r:q.r,h:baseHeight(q.x,q.z),dep:3.2}));
+// rovná plošina pod budovou (stavba stojí přesně na zemi)
+function addFlat(x,z,w,d){const h=getTerrainHeight(x,z);FLATS.push({x,z,hw:w/2+3,hd:d/2+3,h,bl:9});return h;}
+// kruhové kolize (stromy, kameny, tyče, auta ...)
+function addCol(x,z,r){const k=(Math.floor(x/12)+300)*1000+(Math.floor(z/12)+300);let a=COLS.get(k);if(!a){a=[];COLS.set(k,a);}a.push({x,z,r});}
+function colBlocked(nx,nz){const cx=Math.floor(nx/12),cz=Math.floor(nz/12);for(let i=-1;i<=1;i++)for(let j=-1;j<=1;j++){const a=COLS.get((cx+i+300)*1000+(cz+j+300));if(a)for(const c of a){const dx=nx-c.x,dz=nz-c.z,rr=c.r+0.45;if(dx*dx+dz*dz<rr*rr) return true;}}return false;}
+// hladina radioaktivní vody v dírách
+function waterLevelAt(x,z){for(const c of CRATERS){if(Math.abs(x-c.x)>c.r||Math.abs(z-c.z)>c.r) continue;if(Math.hypot(x-c.x,z-c.z)<c.r*0.62) return c.h-1.3;}return null;}
 // kolem vaultu a obchodů je rovná plošina, která plynule přechází do krajiny
 function getTerrainHeight(x,z){
   let b=baseHeight(x,z);
@@ -859,6 +869,21 @@ function getTerrainHeight(x,z){
     const dx=x-q.x,dz=z-q.z;
     if(Math.abs(dx)<22&&Math.abs(dz)<22){const dd=Math.hypot(dx,dz);if(dd<22){if(dd<=13) return q.h;let t=(dd-13)/9;t=t*t*(3-2*t);b=q.h+(b-q.h)*t;}}
   }
+  for(const q of FLATS){
+    const dx=Math.abs(x-q.x)-q.hw,dz=Math.abs(z-q.z)-q.hd;
+    if(dx>q.bl||dz>q.bl) continue;
+    if(dx<=0&&dz<=0) return q.h;
+    const dd=Math.hypot(Math.max(dx,0),Math.max(dz,0));
+    if(dd<q.bl){let t=dd/q.bl;t=t*t*(3-2*t);b=q.h+(b-q.h)*t;}
+  }
+  for(const c of CRATERS){
+    const dx=x-c.x,dz=z-c.z;
+    if(Math.abs(dx)>c.r+8||Math.abs(dz)>c.r+8) continue;
+    const d=Math.hypot(dx,dz);
+    if(d>=c.r+8) continue;
+    if(d<=c.r){const t=d/c.r,u=1-t*t;return c.h-c.dep*u*u;}
+    let t=(d-c.r)/8;t=t*t*(3-2*t);b=c.h+(b-c.h)*t;
+  }
   return b;
 }
 function wallBlocked(nx,nz){for(const r of vaultRects){if(nx>r.x0&&nx<r.x1&&nz>r.z0&&nz<r.z1) return true;}return false;}
@@ -867,6 +892,7 @@ function isBlocked(nx,nz){
     const w=b.geometry.parameters.width/2+1.2,d=b.geometry.parameters.depth/2+1.2;
     if(Math.abs(b.position.x-nx)<w && Math.abs(b.position.z-nz)<d) return true;
   }
+  if(colBlocked(nx,nz)) return true;
   for(const r of vaultRects){if(nx>r.x0&&nx<r.x1&&nz>r.z0&&nz<r.z1) return true;}
   // zavřené dveře vaultu
   if(vaultSealed&&nx>DOOR.x+7.5&&nx<DOOR.x+9.3&&Math.abs(nz-DOOR.z)<3.4) return true;
@@ -998,6 +1024,49 @@ function buildTextures(){
   return T;
 }
 // UV souřadnice krabice se přepočítají podle skutečné velikosti (textura se neroztahuje)
+// ===== GHÚL / ZOMBIE (jako ve Falloutu 76: ožralá kůže, roztrhané hadry, žluté oči) =====
+const GHA={};
+function ghoulAssets(){
+  if(GHA.ok) return GHA;
+  const mk=(draw,w,h)=>{const c=_cv(w,h),x=c.getContext('2d');draw(x,w,h);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;};
+  const skinTex=(base,glow)=>mk((x,w,h)=>{x.fillStyle=base;x.fillRect(0,0,w,h);
+    for(let i=0;i<70;i++){const v=Math.random();x.fillStyle=v<0.3?'rgba(60,35,25,0.4)':v<0.55?'rgba(160,70,60,0.32)':v<0.8?'rgba(35,50,20,0.3)':'rgba(215,200,160,0.25)';x.beginPath();x.arc(Math.random()*w,Math.random()*h,1+Math.random()*5,0,7);x.fill();}
+    if(glow){for(let i=0;i<40;i++){x.fillStyle='rgba(170,255,90,'+(0.2+Math.random()*0.4)+')';x.fillRect(Math.random()*w,Math.random()*h,2,2+Math.random()*4);}}},64,64);
+  const clothTex=base=>mk((x,w,h)=>{x.fillStyle=base;x.fillRect(0,0,w,h);
+    for(let i=0;i<30;i++){x.fillStyle='rgba(0,0,0,'+(Math.random()*0.35)+')';x.fillRect(Math.random()*w,0,1+Math.random()*3,h);}
+    for(let i=0;i<9;i++){x.fillStyle='rgba(140,110,85,0.9)';x.fillRect(Math.random()*w,Math.random()*h,3+Math.random()*7,3+Math.random()*7);}
+    for(let i=0;i<14;i++){x.fillStyle='rgba(50,20,10,0.45)';x.beginPath();x.arc(Math.random()*w,Math.random()*h,2+Math.random()*4,0,7);x.fill();}},64,64);
+  const sm=(t,o)=>new THREE.MeshStandardMaterial(Object.assign({map:t,roughness:0.95},o||{}));
+  GHA.skin=[sm(skinTex('#8c7a58')),sm(skinTex('#76704f')),sm(skinTex('#6f7f45'))];
+  GHA.skinGlow=sm(skinTex('#7fae3c',true),{emissive:0x2f8a10,emissiveIntensity:0.9});
+  GHA.shirt=['#5a6a78','#7a5a40','#4a5a42','#6a6a60','#2a4aaa','#8a8a7a'].map(c=>sm(clothTex(c)));
+  GHA.pants=['#3a3a44','#4a4030','#2a3a2a','#55504a'].map(c=>sm(clothTex(c)));
+  GHA.eye=new THREE.MeshBasicMaterial({color:0xffe14a});GHA.eyeG=new THREE.MeshBasicMaterial({color:0xaaff44});GHA.mouth=new THREE.MeshBasicMaterial({color:0x3a0e0a});
+  GHA.torsoG=new THREE.BoxGeometry(0.56,0.62,0.30);
+  GHA.legG=new THREE.BoxGeometry(0.2,0.85,0.22);GHA.legG.translate(0,-0.425,0);
+  GHA.armG=new THREE.BoxGeometry(0.14,0.62,0.15);GHA.armG.translate(0,-0.31,0);
+  GHA.headG=new THREE.SphereGeometry(0.22,8,6);GHA.eyeGeo=new THREE.BoxGeometry(0.05,0.03,0.03);GHA.mouthG=new THREE.BoxGeometry(0.13,0.045,0.06);
+  GHA.hit=new THREE.CapsuleGeometry(0.5,1.2,4,8);GHA.hitM=new THREE.MeshBasicMaterial({visible:false});
+  GHA.ok=true;return GHA;
+}
+// kind: 0 obchod/zombie, 1 les, 2 městečko, 3 zářící ghúl (radiace)
+function makeGhoul(kind){
+  const A=ghoulAssets(),pk=a=>a[Math.floor(Math.random()*a.length)],glow=kind===3;
+  const skin=glow?A.skinGlow:(kind===1?A.skin[2]:pk(A.skin.slice(0,2))),shirt=pk(A.shirt),pants=pk(A.pants);
+  const g=new THREE.Mesh(A.hit,A.hitM);   // neviditelný hitbox (střelba/pěst), model jsou děti
+  const mkp=(geo,mat,x,y,z)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);return m;};
+  const legL=new THREE.Group(),legR=new THREE.Group();legL.position.set(-0.12,-0.05,0);legR.position.set(0.12,-0.05,0);
+  legL.add(new THREE.Mesh(A.legG,pants));legR.add(new THREE.Mesh(A.legG,pants));
+  const tp=new THREE.Group();tp.position.set(0,-0.05,0);tp.rotation.x=0.32;
+  tp.add(mkp(A.torsoG,shirt,0,0.31,0));
+  const head=mkp(A.headG,skin,0,0.76,0.07);head.scale.set(0.95,1.15,1);tp.add(head);
+  const eg=glow?A.eyeG:A.eye;head.add(mkp(A.eyeGeo,eg,-0.08,0.03,0.2));head.add(mkp(A.eyeGeo,eg,0.08,0.03,0.2));head.add(mkp(A.mouthG,A.mouth,0,-0.11,0.17));
+  const armL=new THREE.Group(),armR=new THREE.Group();armL.position.set(-0.36,0.52,0);armR.position.set(0.36,0.52,0);armL.rotation.x=-1.25;armR.rotation.x=-1.1;
+  armL.add(new THREE.Mesh(A.armG,skin));armR.add(new THREE.Mesh(A.armG,skin));tp.add(armL);tp.add(armR);
+  const body=new THREE.Group();body.add(legL);body.add(legR);body.add(tp);g.add(body);
+  g.parts={legL,legR,armL,armR,tp,body,ph:Math.random()*6};
+  return g;
+}
 function boxUV(geo,w,h,d,tile){
   const uv=geo.attributes.uv,dims=[[d,h],[d,h],[w,d],[w,d],[w,h],[w,h]];
   for(let f=0;f<6;f++){const a=dims[f][0],b=dims[f][1];for(let i=0;i<4;i++){const k=f*4+i;uv.setXY(k,uv.getX(k)*a/tile,uv.getY(k)*b/tile);}}
@@ -1081,8 +1150,13 @@ function init3D(){
     // neblokovat prostor před WAYOUT dveřmi
     if(Math.hypot(x-DOOR.x,z-DOOR.z)<DOOR.safeR+8) continue;
     const h=getTerrainHeight(x,z);const bh=8+r()*16;const isShop=r()<0.45;
-    const b=new THREE.Mesh(new THREE.BoxGeometry(12+r()*10,bh,12+r()*10),isShop?brickArr:concArr);{const gp=b.geometry.parameters;boxUV(b.geometry,gp.width,gp.height,gp.depth,4);}
-    b.position.set(x,h+bh/2,z);b.userData={isBuilding:true,isShop,hasZombie:isShop&&r()<0.6};shade(b);scene.add(b);buildings.push(b);
+    const b=new THREE.Mesh(new THREE.BoxGeometry(12+r()*10,bh+1.2,12+r()*10),isShop?brickArr:concArr);{const gp=b.geometry.parameters;boxUV(b.geometry,gp.width,gp.height,gp.depth,4);addFlat(x,z,gp.width,gp.depth);}
+    b.position.set(x,h+bh/2-0.6,z);b.userData={isBuilding:true,isShop,hasZombie:isShop&&r()<0.6};shade(b);scene.add(b);buildings.push(b);
+  }
+  const waterMats=[];
+  function mkWater(c){
+    const m=new THREE.MeshBasicMaterial({color:0x5cf01c,transparent:true,opacity:0.8});waterMats.push(m);
+    const w=new THREE.Mesh(new THREE.CircleGeometry(c.r*0.64,40),m);w.rotation.x=-Math.PI/2;w.position.set(c.x,c.h-1.3,c.z);scene.add(w);
   }
   const trunkMat=stdm({map:T.bark});const leavesMat=stdm({map:T.leaf});
   const oldT=[];
@@ -1100,11 +1174,11 @@ function init3D(){
   buildings.forEach(b=>{
     if(b.userData.hasZombie){
       const ex=b.position.x+(r()-0.5)*5,ez=b.position.z+(r()-0.5)*5;
-      const e=new THREE.Mesh(new THREE.CapsuleGeometry(0.5,1.2,4,8),new THREE.MeshStandardMaterial({color:0x2a5a2a}));
+      const e=makeGhoul(0);
       e.position.set(ex,getTerrainHeight(ex,ez)+0.9,ez);e.userData={id:'b_'+Math.floor(ex)+'_'+Math.floor(ez),hp:1,speed:1.3,dmg:10,caps:5+Math.floor(r()*6),xp:25};scene.add(e);enemies.push(e);
     }
   });
-  for(let i=0;i<18;i++){const t=trees[Math.floor(r()*trees.length)];if(!t) continue;const x=t.x+(r()-0.5)*12,z=t.z+(r()-0.5)*12;const e=new THREE.Mesh(new THREE.CapsuleGeometry(0.5,1.2,4,8),new THREE.MeshStandardMaterial({color:0x1a3a1a}));e.position.set(x,getTerrainHeight(x,z)+0.9,z);e.userData={id:'f_'+Math.floor(x)+'_'+Math.floor(z)+'_'+i,hp:1,speed:1.3,dmg:10,caps:5+Math.floor(r()*6),xp:25};scene.add(e);enemies.push(e);}
+  for(let i=0;i<18;i++){const t=trees[Math.floor(r()*trees.length)];if(!t) continue;const x=t.x+(r()-0.5)*12,z=t.z+(r()-0.5)*12;const e=makeGhoul(1);e.position.set(x,getTerrainHeight(x,z)+0.9,z);e.userData={id:'f_'+Math.floor(x)+'_'+Math.floor(z)+'_'+i,hp:1,speed:1.3,dmg:10,caps:5+Math.floor(r()*6),xp:25};scene.add(e);enemies.push(e);}
   const chestMat=new THREE.MeshStandardMaterial({color:0x8B4513});
   buildings.forEach(b=>{
     if(b.userData.isShop&&r()<0.45){
@@ -1188,15 +1262,14 @@ function init3D(){
       const zx=(r()-0.5)*360,zz=(r()-0.5)*360,zr=18+r()*12;
       if(Math.hypot(zx,zz)<70||Math.hypot(zx-DOOR.x,zz-DOOR.z)<DOOR.safeR+zr+10) continue;
       radZones.push({x:zx,z:zz,r:zr});placed++;
-      const zh=getTerrainHeight(zx,zz);
-      const disc=new THREE.Mesh(new THREE.CircleGeometry(zr,32),zoneMat);disc.rotation.x=-Math.PI/2;disc.position.set(zx,zh+0.25,zz);scene.add(disc);
+      {const cr={x:zx,z:zz,r:zr,h:baseHeight(zx,zz),dep:3.2};CRATERS.push(cr);mkWater(cr);}
       for(let k=0;k<4;k++){
-        const bx=zx+(r()-0.5)*zr,bz=zz+(r()-0.5)*zr;
+        let bx=zx+(r()-0.5)*zr,bz=zz+(r()-0.5)*zr;{const dd=Math.hypot(bx-zx,bz-zz)||1,rr=zr*(0.8+0.03*k);bx=zx+(bx-zx)/dd*rr;bz=zz+(bz-zz)/dd*rr;}
         const barrel=new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.5,1.2,8),barrelMat);barrel.position.set(bx,getTerrainHeight(bx,bz)+0.6,bz);scene.add(barrel);
       }
       for(let k=0;k<3;k++){
-        const gx=zx+(r()-0.5)*zr*1.2,gz=zz+(r()-0.5)*zr*1.2;
-        const g=new THREE.Mesh(new THREE.CapsuleGeometry(0.5,1.5,4,8),new THREE.MeshStandardMaterial({color:0x7f9a3a}));
+        const gx=zx+(r()-0.5)*zr*0.7,gz=zz+(r()-0.5)*zr*0.7;
+        const g=makeGhoul(3);
         g.position.set(gx,getTerrainHeight(gx,gz)+1.1,gz);
         g.userData={id:'g_'+placed+'_'+k,hp:2,speed:2.1,dmg:15,caps:15+Math.floor(r()*11),xp:60,type:'ghoul'};
         scene.add(g);enemies.push(g);
@@ -1220,7 +1293,7 @@ function init3D(){
     const LOOT=['pistol','water','dirty','food','water','food','ammo'];
     function house(x,z,w,d,h){
       const g=new THREE.BoxGeometry(w,h+1.4,d);boxUV(g,w,h+1.4,d,4);
-      const b=new THREE.Mesh(g,M.houseWall);b.position.set(x,getTerrainHeight(x,z)+h/2-0.7,z);shade(b);
+      const b=new THREE.Mesh(g,M.houseWall);{const gh=addFlat(x,z,w,d);b.position.set(x,gh+h/2-0.7,z);}shade(b);
       b.userData={isBuilding:true,isShop:false,house:true};
       const rg=new THREE.ConeGeometry(Math.max(w,d)*0.78,2.8,4);rg.rotateY(Math.PI/4);
       const roof=new THREE.Mesh(rg,M.tin);roof.scale.set(w/Math.max(w,d),1,d/Math.max(w,d));roof.position.y=(h+1.4)/2+1.4;shade(roof,true,false);b.add(roof);
@@ -1241,7 +1314,7 @@ function init3D(){
     // lampy podél cesty
     for(let i=0;i<7;i++){
       const lx=DOOR.x+16+i*8,lz=DOOR.z+(i%2?3.5:-3.5),gy=getTerrainHeight(lx,lz);
-      const pole=new THREE.Mesh(new THREE.CylinderGeometry(0.1,0.12,5,6),M.vwall);pole.position.set(lx,gy+2.5,lz);scene.add(pole);
+      const pole=new THREE.Mesh(new THREE.CylinderGeometry(0.1,0.12,5,6),M.vwall);pole.position.set(lx,gy+2.5,lz);scene.add(pole);addCol(lx,lz,0.2);
       const bulb=new THREE.Mesh(new THREE.SphereGeometry(0.28,8,6),new THREE.MeshBasicMaterial({color:0xffe9a0}));bulb.position.set(lx,gy+5.1,lz);scene.add(bulb);
     }
     // vraky aut
@@ -1251,7 +1324,7 @@ function init3D(){
       const body=new THREE.Mesh(new THREE.BoxGeometry(4.2,1,1.9),M.rust);body.position.y=0.8;car.add(body);
       const cab=new THREE.Mesh(new THREE.BoxGeometry(2.2,0.9,1.7),M.rust);cab.position.set(-0.2,1.7,0);car.add(cab);
       [[-1.4,-1],[1.4,-1],[-1.4,1],[1.4,1]].forEach(p=>{const wh=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.4,0.3,10),M.tire);wh.rotation.x=Math.PI/2;wh.position.set(p[0],0.4,p[1]*0.95);car.add(wh);});
-      car.position.set(ax,getTerrainHeight(ax,az),az);car.rotation.y=vr()*Math.PI;scene.add(car);
+      car.position.set(ax,getTerrainHeight(ax,az),az);car.rotation.y=vr()*Math.PI;scene.add(car);{const ca=Math.cos(car.rotation.y),sa=-Math.sin(car.rotation.y);addCol(ax+ca*1.3,az+sa*1.3,1.1);addCol(ax-ca*1.3,az-sa*1.3,1.1);}
     }
     // další domy rozeseté po mapě
     let placed=0,tries=0;
@@ -1274,7 +1347,7 @@ function init3D(){
       }
       for(let k=0;k<4;k++){
         const zx=tw.x+(vr()-0.5)*40,zz=tw.z+(vr()-0.5)*40;
-        const e=new THREE.Mesh(new THREE.CapsuleGeometry(0.5,1.2,4,8),tzm);e.position.set(zx,getTerrainHeight(zx,zz)+0.9,zz);
+        const e=makeGhoul(2);e.position.set(zx,getTerrainHeight(zx,zz)+0.9,zz);
         e.userData={id:'tz'+ti+'_'+k,hp:2,speed:1.5,dmg:12,caps:8+Math.floor(vr()*10),xp:35};shade(e,true,false);scene.add(e);enemies.push(e);
       }
     });
@@ -1299,7 +1372,7 @@ function init3D(){
     };
     const zmat=new THREE.MeshStandardMaterial({color:0x3a6a3a,roughness:0.9});
     const zombie=(id,x,z,hp,dmg)=>{
-      const e=new THREE.Mesh(new THREE.CapsuleGeometry(0.5,1.2,4,8),zmat);
+      const e=makeGhoul(0);
       e.position.set(x,getTerrainHeight(x,z)+0.9,z);
       e.userData={id,hp,speed:1.5,dmg,caps:8+Math.floor(sr()*10),xp:35};shade(e,true,false);scene.add(e);enemies.push(e);
     };
@@ -1341,11 +1414,11 @@ function init3D(){
     const zr=seededRandom(888111);
     PLAN.zones.forEach((q,i)=>{
       radZones.push({x:q.x,z:q.z,r:q.r});
-      const disc=new THREE.Mesh(new THREE.CircleGeometry(q.r,32),zoneMat);disc.rotation.x=-Math.PI/2;disc.position.set(q.x,getTerrainHeight(q.x,q.z)+0.3,q.z);scene.add(disc);
-      for(let k=0;k<5;k++){const bx=q.x+(zr()-0.5)*q.r*1.4,bz=q.z+(zr()-0.5)*q.r*1.4;const b=new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.5,1.2,8),barrelMat);b.position.set(bx,getTerrainHeight(bx,bz)+0.6,bz);shade(b,true,false);scene.add(b);}
+      {const cr=CRATERS.find(c=>c.x===q.x&&c.z===q.z);if(cr) mkWater(cr);}
+      for(let k=0;k<5;k++){let bx=q.x+(zr()-0.5)*q.r*1.4,bz=q.z+(zr()-0.5)*q.r*1.4;{const dd=Math.hypot(bx-q.x,bz-q.z)||1,rr=q.r*(0.8+0.03*k);bx=q.x+(bx-q.x)/dd*rr;bz=q.z+(bz-q.z)/dd*rr;}const b=new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.5,1.2,8),barrelMat);b.position.set(bx,getTerrainHeight(bx,bz)+0.6,bz);shade(b,true,false);scene.add(b);}
       for(let k=0;k<3;k++){
-        const gx=q.x+(zr()-0.5)*q.r*1.2,gz=q.z+(zr()-0.5)*q.r*1.2;
-        const g=new THREE.Mesh(new THREE.CapsuleGeometry(0.5,1.5,4,8),new THREE.MeshStandardMaterial({color:0x7f9a3a}));
+        const gx=q.x+(zr()-0.5)*q.r*0.7,gz=q.z+(zr()-0.5)*q.r*0.7;
+        const g=makeGhoul(3);
         g.position.set(gx,getTerrainHeight(gx,gz)+1.1,gz);
         g.userData={id:'g2_'+i+'_'+k,hp:2,speed:2.1,dmg:15,caps:15+Math.floor(zr()*11),xp:60,type:'ghoul'};
         shade(g,true,false);scene.add(g);enemies.push(g);
@@ -1396,7 +1469,7 @@ function init3D(){
         const cs=1.8+tr()*1.2,chh=hy*1.3+2;dummy.scale.set(cs,chh,cs);dummy.position.set(x,gy+hy*0.6+chh/2,z);dummy.updateMatrix();crownP.setMatrixAt(nP,dummy.matrix);
         col.setHSL(0.27+0.05*tr(),0.4,0.16+0.1*tr());crownP.setColorAt(nP,col);nP++;
       }
-      trees.push({x,z});nT++;
+      trees.push({x,z});addCol(x,z,0.7);nT++;
     }
     trunkI.count=nT;crownS.count=nS;crownP.count=nP;
     [trunkI,crownS,crownP].forEach(m=>{m.instanceMatrix.needsUpdate=true;if(m.instanceColor) m.instanceColor.needsUpdate=true;m.castShadow=true;m.frustumCulled=false;scene.add(m);});
@@ -1407,7 +1480,7 @@ function init3D(){
       tries++;const x=(tr()-0.5)*1380,z=(tr()-0.5)*1380;
       if(Math.abs(x)>WORLD-20||Math.abs(z)>WORLD-20||!spotOk(x,z,2)) continue;
       const s0=0.8+tr()*2.4;dummy.rotation.set(tr()*3,tr()*6,tr()*3);dummy.scale.set(s0*(0.8+tr()*0.6),s0*(0.5+tr()*0.5),s0*(0.8+tr()*0.6));
-      dummy.position.set(x,getTerrainHeight(x,z)+s0*0.2,z);dummy.updateMatrix();rockI.setMatrixAt(nR,dummy.matrix);
+      dummy.position.set(x,getTerrainHeight(x,z)+dummy.scale.y*0.62,z);dummy.updateMatrix();rockI.setMatrixAt(nR,dummy.matrix);addCol(x,z,s0*0.95);
       col.setHSL(0.09,0.06,0.45+0.2*tr());rockI.setColorAt(nR,col);nR++;
     }
     rockI.count=nR;rockI.instanceMatrix.needsUpdate=true;if(rockI.instanceColor) rockI.instanceColor.needsUpdate=true;rockI.castShadow=true;rockI.receiveShadow=true;rockI.frustumCulled=false;scene.add(rockI);
@@ -1429,7 +1502,7 @@ function init3D(){
         if(Math.abs(a[0])>WORLD-20||Math.abs(a[1])>WORLD-20) return;
         if(Math.hypot(a[0]-DOOR.x,a[1]-DOOR.z)<30) return;
         const gy=getTerrainHeight(a[0],a[1]);
-        dummy.rotation.set(0,0,0);dummy.scale.set(1,1,1);dummy.position.set(a[0],gy+4,a[1]);dummy.updateMatrix();poleI.setMatrixAt(nPo,dummy.matrix);
+        dummy.rotation.set(0,0,0);dummy.scale.set(1,1,1);dummy.position.set(a[0],gy+4,a[1]);dummy.updateMatrix();poleI.setMatrixAt(nPo,dummy.matrix);addCol(a[0],a[1],0.3);
         dummy.rotation.set(0,a[2],0);dummy.position.set(a[0],gy+7.4,a[1]);dummy.updateMatrix();barI.setMatrixAt(nPo,dummy.matrix);nPo++;
       });
     }
@@ -1461,6 +1534,131 @@ function init3D(){
   }
   let grassCx=Math.round(camera.position.x/40)*40,grassCz=Math.round(camera.position.z/40)*40;
 
+  // ===== VĚCI Z FALLOUTU 76: Red Rocket, Nuka-Cola, Vault-Tec, Power Armor, sudy, vraky, výstražné cedule =====
+  {
+    const fr=seededRandom(760076);
+    const treeNear=(x,z,rad)=>trees.some(t=>Math.abs(t.x-x)<rad&&Math.abs(t.z-z)<rad);
+    const free=(x,z,rad)=>{
+      if(Math.abs(x)>WORLD-40||Math.abs(z)>WORLD-40) return false;
+      if(Math.abs(x)<12+rad||Math.abs(z)<12+rad) return false;
+      if(Math.hypot(x-DOOR.x,z-DOOR.z)<50) return false;
+      for(const b of buildings){if(Math.abs(b.position.x-x)<b.geometry.parameters.width/2+rad&&Math.abs(b.position.z-z)<b.geometry.parameters.depth/2+rad) return false;}
+      for(const q of PLAN.shops){if(Math.abs(q.x-x)<q.w/2+rad+8&&Math.abs(q.z-z)<q.d/2+rad+8) return false;}
+      for(const q of CRATERS){if(Math.hypot(q.x-x,q.z-z)<q.r+rad+6) return false;}
+      if(treeNear(x,z,rad+1.5)) return false;
+      return true;
+    };
+    const pick=(rad,cx,cz,spread)=>{
+      for(let t=0;t<90;t++){
+        const x=cx===undefined?(fr()-0.5)*(WORLD*2-140):cx+(fr()-0.5)*spread,z=cz===undefined?(fr()-0.5)*(WORLD*2-140):cz+(fr()-0.5)*spread;
+        if(free(x,z,rad)) return [x,z];
+      }
+      return null;
+    };
+    const tex=(w,h,draw)=>{const c=_cv(w,h),x=c.getContext('2d');draw(x,w,h);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;};
+    const decor=(m,cast)=>{m.castShadow=cast!==false;m.receiveShadow=true;scene.add(m);return m;};
+    const metal=stdm({color:0x4d5b45,roughness:0.55,metalness:0.5}),darkM=stdm({color:0x2a2c2e,roughness:0.7,metalness:0.4});
+
+    // --- Red Rocket čerpací stanice ---
+    const rrTex=tex(256,64,(x,w,h)=>{x.fillStyle='#d8d4c6';x.fillRect(0,0,w,h);x.fillStyle='#c4281c';x.fillRect(0,0,w,10);x.fillRect(0,h-10,w,10);x.fillStyle='#222';x.font='bold 30px Arial';x.textAlign='center';x.textBaseline='middle';x.fillText('RED ROCKET',w/2,h/2);});
+    for(let i=0;i<4;i++){
+      const p=pick(14);if(!p) continue;const x=Math.round(p[0]),z=Math.round(p[1]);
+      const gy=addFlat(x,z,22,16);
+      const bld=new THREE.Mesh(new THREE.BoxGeometry(9,4.8,6),stdm({color:0xe3dfd0,roughness:0.9}));bld.position.set(x,gy+1.8,z);bld.userData={isBuilding:true,isShop:false,decor:true};decor(bld);buildings.push(bld);
+      const stripe=new THREE.Mesh(new THREE.BoxGeometry(9.06,0.8,6.06),stdm({color:0xc4281c}));stripe.position.set(x,gy+3.1,z);decor(stripe,false);
+      const sign=new THREE.Mesh(new THREE.PlaneGeometry(6,1.5),new THREE.MeshBasicMaterial({map:rrTex}));sign.position.set(x,gy+4.55,z+3.05);scene.add(sign);
+      const door=new THREE.Mesh(new THREE.PlaneGeometry(1.4,2.4),darkM);door.position.set(x+2,gy+1.2,z+3.04);scene.add(door);
+      // stříška + sloupy + pumpy
+      const roof=new THREE.Mesh(new THREE.BoxGeometry(12,0.4,6),stdm({color:0xc4281c}));roof.position.set(x,gy+5.0,z+9);decor(roof);
+      [[-5.5,6.5],[5.5,6.5],[-5.5,11.5],[5.5,11.5]].forEach(o=>{const po=new THREE.Mesh(new THREE.CylinderGeometry(0.25,0.3,5,8),stdm({color:0xd8d4c6}));po.position.set(x+o[0],gy+2.5,z+o[1]);decor(po);addCol(x+o[0],z+o[1],0.35);});
+      [-2.4,2.4].forEach(o=>{const pu=new THREE.Mesh(new THREE.BoxGeometry(0.8,1.7,0.7),stdm({color:0xc4281c}));pu.position.set(x+o,gy+0.85,z+9);decor(pu);addCol(x+o,z+9,0.55);});
+      // raketa na tyči
+      const pole=new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.28,9,8),darkM);pole.position.set(x+8.5,gy+4.5,z-5);decor(pole);addCol(x+8.5,z-5,0.4);
+      const rk=new THREE.Mesh(new THREE.ConeGeometry(0.9,3.2,12),stdm({color:0xd8281c,emissive:0x550a05,emissiveIntensity:0.6}));rk.position.set(x+8.5,gy+10.6,z-5);decor(rk);
+      const rb=new THREE.Mesh(new THREE.CylinderGeometry(0.9,0.9,2.2,12),stdm({color:0xe9e4d4}));rb.position.set(x+8.5,gy+8.2,z-5);decor(rb);
+      // zombíci a věci
+      for(let k=0;k<2;k++){const zx=x+(fr()-0.5)*14,zz=z+9+(fr()-0.5)*4,e=makeGhoul(0);e.position.set(zx,getTerrainHeight(zx,zz)+0.9,zz);e.userData={id:'rr'+i+'_'+k,hp:2,speed:1.5,dmg:12,caps:8+Math.floor(fr()*10),xp:35};scene.add(e);enemies.push(e);}
+    }
+    // --- Nuka-Cola automaty + lahve ---
+    const nukaTex=tex(128,256,(x,w,h)=>{x.fillStyle='#c8201a';x.fillRect(0,0,w,h);x.fillStyle='#fff';x.fillRect(8,8,w-16,44);x.fillStyle='#c8201a';x.font='italic bold 24px Arial';x.textAlign='center';x.textBaseline='middle';x.fillText('Nuka-Cola',w/2,30);
+      x.fillStyle='#f4f0e0';for(let i=0;i<3;i++){x.beginPath();x.arc(30+i*34,100,13,0,7);x.fill();x.fillRect(24+i*34,112,12,50);}x.fillStyle='#222';x.fillRect(20,190,w-40,10);x.fillRect(w-40,210,22,30);});
+    const machG=new THREE.BoxGeometry(0.95,1.9,0.85),machM=stdm({color:0xc8201a,roughness:0.6}),machF=new THREE.MeshBasicMaterial({map:nukaTex}),planeG=new THREE.PlaneGeometry(0.85,1.7);
+    const nukaMat=stdm({color:0xc8201a,emissive:0x551100,emissiveIntensity:0.5}),nukaQ=stdm({color:0x33aaff,emissive:0x1166ff,emissiveIntensity:0.9});
+    const nukaBottle=(x,z,quantum,y)=>{const m=new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.09,0.34,8),quantum?nukaQ:nukaMat);m.position.set(x,(y===undefined?getTerrainHeight(x,z):y)+0.45,z);m.userData={type:'nuka',n:quantum?2:1,noCollision:true};scene.add(m);pistolPickups.push(m);};
+    for(let i=0;i<14;i++){
+      const hb=buildings[Math.floor(fr()*buildings.length)];if(!hb) continue;
+      const p=pick(1.5,hb.position.x,hb.position.z,26);if(!p) continue;
+      const gy=getTerrainHeight(p[0],p[1]),ry=Math.floor(fr()*4)*Math.PI/2;
+      const m=new THREE.Mesh(machG,machM);m.position.set(p[0],gy+0.95,p[1]);m.rotation.y=ry;decor(m);
+      const f=new THREE.Mesh(planeG,machF);f.position.set(0,0,0.435);m.add(f);addCol(p[0],p[1],0.8);
+      const fx=p[0]+Math.sin(ry)*1.2,fz=p[1]+Math.cos(ry)*1.2;nukaBottle(fx,fz,false);nukaBottle(fx+0.4,fz+0.3,false);
+    }
+    for(let i=0;i<26;i++){const hb=buildings[Math.floor(fr()*buildings.length)];if(!hb) continue;const p=pick(0.6,hb.position.x,hb.position.z,34);if(p) nukaBottle(p[0],p[1],false);}
+    CRATERS.forEach((c,i)=>{if(i%2===0){const a=fr()*6.28;nukaBottle(c.x+Math.cos(a)*(c.r+1.5),c.z+Math.sin(a)*(c.r+1.5),true);}});
+    // --- Vault-Tec billboardy ---
+    const vtTex=tex(512,256,(x,w,h)=>{x.fillStyle='#17418f';x.fillRect(0,0,w,h);x.strokeStyle='#f0c818';x.lineWidth=10;x.strokeRect(8,8,w-16,h-16);x.fillStyle='#f0c818';x.font='bold 70px Arial';x.textAlign='center';x.textBaseline='middle';x.fillText('VAULT-TEC',w/2,95);x.fillStyle='#fff';x.font='bold 30px Arial';x.fillText('PŘIPRAVEN NA BUDOUCNOST!',w/2,170);x.font='22px Arial';x.fillText('Vaše bezpečí je naše priorita',w/2,212);});
+    const vtM=new THREE.MeshBasicMaterial({map:vtTex,side:THREE.DoubleSide}),vtG=new THREE.PlaneGeometry(8,4);
+    for(let i=0;i<8;i++){
+      const p=pick(5);if(!p) continue;const gy=getTerrainHeight(p[0],p[1]),ry=fr()*Math.PI;
+      const g=new THREE.Group();g.position.set(p[0],gy,p[1]);g.rotation.y=ry;
+      [-3.4,3.4].forEach(o=>{const po=new THREE.Mesh(new THREE.CylinderGeometry(0.2,0.25,7,8),darkM);po.position.set(o,3.5,0);po.castShadow=true;g.add(po);addCol(p[0]+Math.cos(ry)*o,p[1]-Math.sin(ry)*o,0.35);});
+      const pl=new THREE.Mesh(vtG,vtM);pl.position.set(0,6.4,0);g.add(pl);scene.add(g);
+    }
+    // --- Power Armor rámy ---
+    for(let i=0;i<8;i++){
+      const p=pick(3);if(!p) continue;const gy=getTerrainHeight(p[0],p[1]),g=new THREE.Group();g.position.set(p[0],gy,p[1]);g.rotation.y=fr()*6.28;
+      const add=(geo,mat,x,y,z)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.castShadow=true;g.add(m);return m;};
+      add(new THREE.BoxGeometry(2.4,0.3,2.4),darkM,0,0.15,0);
+      add(new THREE.BoxGeometry(0.55,1.5,0.65),metal,-0.45,1.05,0);add(new THREE.BoxGeometry(0.55,1.5,0.65),metal,0.45,1.05,0);
+      add(new THREE.BoxGeometry(1.4,1.25,0.9),metal,0,2.4,0);
+      add(new THREE.BoxGeometry(0.65,0.6,0.7),metal,-1.0,2.85,0);add(new THREE.BoxGeometry(0.65,0.6,0.7),metal,1.0,2.85,0);
+      add(new THREE.BoxGeometry(0.42,1.25,0.46),metal,-1.05,2.0,0);add(new THREE.BoxGeometry(0.42,1.25,0.46),metal,1.05,2.0,0);
+      add(new THREE.BoxGeometry(0.72,0.66,0.72),metal,0,3.35,0);
+      add(new THREE.BoxGeometry(0.58,0.18,0.1),new THREE.MeshBasicMaterial({color:0xffb13a}),0,3.38,0.38);
+      add(new THREE.BoxGeometry(0.16,3.7,0.16),darkM,-0.9,1.95,-0.9);add(new THREE.BoxGeometry(0.16,3.7,0.16),darkM,0.9,1.95,-0.9);
+      scene.add(g);addCol(p[0],p[1],1.35);
+    }
+    // --- sudy ---
+    {
+      const barG=new THREE.CylinderGeometry(0.42,0.42,1.05,10),barI=new THREE.InstancedMesh(barG,stdm({color:0xffffff,roughness:0.8,metalness:0.3}),160),col=new THREE.Color(),dmy=new THREE.Object3D();
+      const bc=[0x8a3a24,0xb89a22,0x2a4a7a,0x5a7a2a,0x6a6a6a];let n=0;
+      for(let i=0;i<34&&n<150;i++){
+        const p=pick(2);if(!p) continue;const k=3+Math.floor(fr()*4);
+        for(let j=0;j<k;j++){
+          const x=p[0]+(fr()-0.5)*3,z=p[1]+(fr()-0.5)*3;
+          dmy.rotation.set(0,fr()*6,0);dmy.scale.set(1,1,1);dmy.position.set(x,getTerrainHeight(x,z)+0.52,z);dmy.updateMatrix();barI.setMatrixAt(n,dmy.matrix);
+          col.setHex(bc[Math.floor(fr()*bc.length)]);barI.setColorAt(n,col);addCol(x,z,0.5);n++;
+        }
+      }
+      barI.count=n;barI.instanceMatrix.needsUpdate=true;if(barI.instanceColor) barI.instanceColor.needsUpdate=true;barI.castShadow=true;barI.frustumCulled=false;scene.add(barI);
+    }
+    // --- vraky aut (instancing) ---
+    {
+      const N=30,bodyI=new THREE.InstancedMesh(new THREE.BoxGeometry(4.2,0.9,1.9),stdm({color:0xffffff,roughness:0.9,metalness:0.2}),N),cabI=new THREE.InstancedMesh(new THREE.BoxGeometry(2.2,0.85,1.7),stdm({color:0xffffff,roughness:0.9}),N),chI=new THREE.InstancedMesh(new THREE.BoxGeometry(3.8,0.5,1.7),darkM,N);
+      const col=new THREE.Color(),dmy=new THREE.Object3D();let n=0;
+      for(let i=0;i<N;i++){
+        const p=pick(3.2);if(!p) continue;const th=fr()*Math.PI,gy=getTerrainHeight(p[0],p[1]),c=Math.cos(th),sn=-Math.sin(th);
+        dmy.rotation.set(0,th,0);dmy.scale.set(1,1,1);
+        dmy.position.set(p[0],gy+0.75,p[1]);dmy.updateMatrix();bodyI.setMatrixAt(n,dmy.matrix);
+        dmy.position.set(p[0]-0.2*c,gy+1.6,p[1]-0.2*sn);dmy.updateMatrix();cabI.setMatrixAt(n,dmy.matrix);
+        dmy.position.set(p[0],gy+0.25,p[1]);dmy.updateMatrix();chI.setMatrixAt(n,dmy.matrix);
+        col.setHSL(0.02+fr()*0.1,0.45,0.22+fr()*0.14);bodyI.setColorAt(n,col);cabI.setColorAt(n,col);
+        addCol(p[0]+1.3*c,p[1]+1.3*sn,1.1);addCol(p[0]-1.3*c,p[1]-1.3*sn,1.1);addCol(p[0],p[1],1.1);
+        n++;
+      }
+      [bodyI,cabI,chI].forEach(m=>{m.count=n;m.instanceMatrix.needsUpdate=true;if(m.instanceColor) m.instanceColor.needsUpdate=true;m.castShadow=true;m.frustumCulled=false;scene.add(m);});
+    }
+    // --- výstražné cedule kolem děr ---
+    {
+      const sTex=tex(128,128,(x,w,h)=>{x.fillStyle='#e8c81a';x.fillRect(0,0,w,h);x.strokeStyle='#111';x.lineWidth=6;x.strokeRect(4,4,w-8,h-8);x.fillStyle='#111';x.font='bold 74px Arial';x.textAlign='center';x.textBaseline='middle';x.fillText('☢',w/2,h/2-4);x.font='bold 14px Arial';x.fillText('RADIACE',w/2,h-14);});
+      const sM=new THREE.MeshBasicMaterial({map:sTex,side:THREE.DoubleSide}),sG=new THREE.PlaneGeometry(1.1,1.1),pG=new THREE.CylinderGeometry(0.06,0.06,2.4,6);
+      CRATERS.forEach(c=>{for(let k=0;k<3;k++){
+        const a=fr()*6.28,x=c.x+Math.cos(a)*(c.r+3.5),z=c.z+Math.sin(a)*(c.r+3.5),gy=getTerrainHeight(x,z);
+        const po=new THREE.Mesh(pG,darkM);po.position.set(x,gy+1.2,z);scene.add(po);
+        const pl=new THREE.Mesh(sG,sM);pl.position.set(x,gy+2.2,z);pl.rotation.y=a+Math.PI/2;scene.add(pl);addCol(x,z,0.2);
+      }});
+    }
+  }
   // úklid: stromy uvnitř budov/obchodů pryč, už zabití zombíci pryč
   {
     const inside=(x,z)=>buildings.some(b=>Math.abs(b.position.x-x)<b.geometry.parameters.width/2+2.5&&Math.abs(b.position.z-z)<b.geometry.parameters.depth/2+2.5)
@@ -1469,11 +1667,24 @@ function init3D(){
     {const live=oldT.filter(t=>!t.dead);
      if(live.length){
        const tI=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.3,0.5,4,6),trunkMat,live.length),lI=new THREE.InstancedMesh(new THREE.SphereGeometry(2.2,6,6),leavesMat,live.length);
-       const dm=new THREE.Object3D();
-       live.forEach((t,i)=>{dm.rotation.set(0,0,0);dm.scale.set(1,1,1);dm.position.set(t.x,t.h+2,t.z);dm.updateMatrix();tI.setMatrixAt(i,dm.matrix);const k=(2.2+t.lr)/2.2;dm.scale.set(k,k,k);dm.position.set(t.x,t.h+5,t.z);dm.updateMatrix();lI.setMatrixAt(i,dm.matrix);});
+       const dm=new THREE.Object3D();live.forEach(t=>addCol(t.x,t.z,0.75));
+       live.forEach((t,i)=>{dm.rotation.set(0,0,0);dm.scale.set(1,1,1);dm.position.set(t.x,getTerrainHeight(t.x,t.z)+2,t.z);dm.updateMatrix();tI.setMatrixAt(i,dm.matrix);const k=(2.2+t.lr)/2.2;dm.scale.set(k,k,k);dm.position.set(t.x,getTerrainHeight(t.x,t.z)+5,t.z);dm.updateMatrix();lI.setMatrixAt(i,dm.matrix);});
        [tI,lI].forEach(m=>{m.instanceMatrix.needsUpdate=true;m.castShadow=true;m.receiveShadow=false;m.frustumCulled=false;m.matrixAutoUpdate=false;m.userData={noCollision:true};scene.add(m);});
      }}
     enemies=enemies.filter(e=>{if(killedIds.has(e.userData.id)){scene.remove(e);return false;}return true;});
+  }
+  // ===== terén znovu: plošiny pod domy a díry s radiací =====
+  {
+    const pos=geo.attributes.position;
+    for(let i=0;i<pos.count;i++){
+      const px=pos.getX(i),pz=-pos.getY(i);pos.setZ(i,getTerrainHeight(px,pz));
+      for(const c of CRATERS){
+        const d=Math.hypot(px-c.x,pz-c.z),R=c.r*1.15;
+        if(d<R){let k=1-d/R;k=k*k*(3-2*k)*0.85;tcol[i*3]*=(1-k)+k*0.35;tcol[i*3+1]*=(1-k)+k*0.7;tcol[i*3+2]*=(1-k)+k*0.18;}
+      }
+    }
+    pos.needsUpdate=true;geo.computeVertexNormals();
+    const ca=geo.attributes.color;if(ca) ca.needsUpdate=true;
   }
   // ===== OBLOHA, SLUNCE, MĚSÍC, HVĚZDY, OBLAKY, DEN/NOC =====
   const skyMat=new THREE.MeshBasicMaterial({map:T.sky,side:THREE.BackSide,fog:false,depthWrite:false});
@@ -1560,6 +1771,7 @@ function init3D(){
     if(e.code==='Digit1'){eat();}
     if(e.code==='Digit2'){drink();}
     if(e.code==='Digit3'){drinkDirty();}
+    if(e.code==='Digit4'){drinkNuka();}
     if(e.code==='Space'){e.preventDefault();if(jumpY<=0.02&&!dead&&!isPipOpen&&!isMapOpen) jumpV=6.4;}
     if(e.code==='KeyE'){interact();}
     if(e.code==='KeyK'){toggleRadio();}
@@ -1657,6 +1869,11 @@ function init3D(){
     if(thirst>=95){toast('Nemáš žízeň');return;}
     water--;thirst=Math.min(100,thirst+40);updateAmmo();playSound('heal');toast('💧 Napil ses (+40 hydratace)');
   }
+  function drinkNuka(){
+    if(nuka<=0){toast('Žádná Nuka-Cola');return;}
+    if(thirst>=95){toast('Nemáš žízeň');return;}
+    nuka--;thirst=Math.min(100,thirst+30);hp=Math.min(effMax(),hp+5);rads=Math.min(100,rads+2);updateAmmo();playSound('heal');toast('🥤 Nuka-Cola (+30 hydratace)');
+  }
   function drinkDirty(){
     if(dirtyWater<=0){toast('Žádná špinavá voda');return;}
     if(thirst>=95){toast('Nemáš žízeň');return;}
@@ -1667,7 +1884,7 @@ function init3D(){
     if(reserveAmmo<=0){magAmmo=magSize();reserveAmmo=90;}else{const need=magSize()-magAmmo;const take=Math.min(need,reserveAmmo);magAmmo+=take;reserveAmmo-=take;}
     ammo=magAmmo;updateAmmo();playSound('pickup');
   }
-  window.__use={heal:doHeal,radaway:useRadaway,eat,drink,dirty:drinkDirty,reload:reloadNow};window.__openPip=openPip;
+  window.__use={nuka:drinkNuka,heal:doHeal,radaway:useRadaway,eat,drink,dirty:drinkDirty,reload:reloadNow};window.__openPip=openPip;
   const chestN=ch=>ch.userData.n||(ch.userData.n=1+Math.floor(Math.random()*2));
   const chestWeapon=ch=>{if(!ch.userData.wid){const pool=['p10','pipe','pipe','rev','plasma','laser'];ch.userData.wid=pool[Math.floor(Math.random()*pool.length)];}return ch.userData.wid;};
   function chestContents(ch){
@@ -1681,7 +1898,7 @@ function init3D(){
   function lootLabel(o){
     const u=o.userData;
     if(u.type==='chest') return '📦 TRUHLA: '+chestContents(o);
-    const m={pistol:'🔫 Náboje do pistole (+12)',heal:'💉 Stimpak',radaway:'☢ RadAway',food:'🍖 Jídlo',water:'💧 Čistá voda',dirty:'🚱 Špinavá voda',cap:'🪙 Caps ×'+u.value};
+    const m={nuka:u.n>1?'🥤 Nuka-Cola Quantum ×'+u.n:'🥤 Nuka-Cola',pistol:'🔫 Náboje do pistole (+12)',heal:'💉 Stimpak',radaway:'☢ RadAway',food:'🍖 Jídlo',water:'💧 Čistá voda',dirty:'🚱 Špinavá voda',cap:'🪙 Caps ×'+u.value};
     return m[u.type]||'Věc';
   }
   function openChest(ch){
@@ -1941,7 +2158,7 @@ function init3D(){
     const others=Object.values(remote).filter(p=>p.ig&&p.hasPos&&isFinite(p.x)&&isFinite(p.z));
     for(const z of enemies){
       if(!z) continue;
-      const ud=z.userData,off=ud.type==='ghoul'?1.1:ud.type==='scorched'?1.2:0.9;
+      const ud=z.userData,off=0.9;
       const dist=Math.hypot(camera.position.x-z.position.x,camera.position.z-z.position.z);
       let best=null,bd=1e9;
       if(!dead&&!mySafe){bd=dist;best='me';}
@@ -1951,6 +2168,7 @@ function init3D(){
         if(p.sf) continue;
         if(dd<bd-1e-6||(Math.abs(dd-bd)<=1e-6&&best!==null&&p.id<(best==='me'?myId:best))){bd=dd;best=p.id;}
       }
+      z.visible=dist<170;
       if(minD>70) continue;
       if(best==='me'){
         if(bd<18&&bd>0.01){
@@ -1964,7 +2182,21 @@ function init3D(){
       }else if(ud.tx!==undefined){
         const k=Math.min(1,dt*8);z.position.x+=(ud.tx-z.position.x)*k;z.position.z+=(ud.tz-z.position.z)*k;
       }else z.rotation.y+=0.005;
-      z.position.y=getTerrainHeight(z.position.x,z.position.z)+off;
+      {
+        const wl=waterLevelAt(z.position.x,z.position.z),gh=getTerrainHeight(z.position.x,z.position.z);
+        const swim=wl!==null&&gh<wl;
+        z.position.y=swim?wl-0.3+Math.sin(now*0.003+(z.parts?z.parts.ph:0))*0.07:gh+off;
+        const P=z.parts;
+        if(P){
+          const mx=z.position.x-(z._lx===undefined?z.position.x:z._lx),mz=z.position.z-(z._lz===undefined?z.position.z:z._lz);z._lx=z.position.x;z._lz=z.position.z;
+          const mv=Math.hypot(mx,mz);
+          if(mv>0.0005){z._ph=(z._ph||0)+mv*5;let dr=Math.atan2(mx,mz)-z.rotation.y;dr=Math.atan2(Math.sin(dr),Math.cos(dr));z.rotation.y+=dr*Math.min(1,dt*8);}
+          const mvg=mv>0.0005,sw=mvg?Math.sin(z._ph||0):0;
+          if(swim){const a=Math.sin(now*0.004+P.ph);P.legL.rotation.x=0.2*a;P.legR.rotation.x=-0.2*a;P.armL.rotation.x=-1.5+0.6*a;P.armR.rotation.x=-1.5-0.6*a;}
+          else{P.legL.rotation.x=sw*0.7;P.legR.rotation.x=-sw*0.7;P.armL.rotation.x=-1.25+(mvg?-sw*0.35:Math.sin(now*0.002+P.ph)*0.08);P.armR.rotation.x=-1.1+(mvg?sw*0.35:Math.sin(now*0.0023+P.ph)*0.08);}
+          P.tp.rotation.x=0.32+(mvg?0.08*Math.abs(sw):0.03*Math.sin(now*0.0015+P.ph));
+        }
+      }
       if(!dead&&!mySafe&&Math.hypot(camera.position.x-z.position.x,camera.position.z-z.position.z)<1.8&&(!z.lastHit||now-z.lastHit>900)){
         z.lastHit=now;damage(ud.dmg||10);
       }
@@ -1979,6 +2211,7 @@ function init3D(){
     if(lootT>0.08){lootT=0;lootTarget=(dead||isPipOpen||isInventoryOpen||isMapOpen)?null:findLoot();
       const tip=document.getElementById('lootTip'),txt=lootTarget?lootLabel(lootTarget)+'   [E] vzít':'';
       if(tip&&tip._t!==txt){tip._t=txt;tip.textContent=txt;tip.style.display=txt?'block':'none';}}
+    waterMats.forEach((m,i)=>{m.opacity=0.74+0.08*Math.sin(now*0.002+i);});
     const pr=2+0.2*(special.P-1),ammoCap=90+20*(special.S-1);
     for(let i=pistolPickups.length-1;i>=0;i--){
       const p=pistolPickups[i];
@@ -1989,6 +2222,7 @@ function init3D(){
         else if(t==='radaway'){radaway++;toast('+1 RADAWAY');}
         else if(t==='food'){food++;toast('+1 JÍDLO');}
         else if(t==='water'){water++;toast('+1 VODA');}
+        else if(t==='nuka'){const nn=p.userData.n||1;nuka+=nn;toast('🥤 +'+nn+' NUKA-COLA');}
         else if(t==='cap'){caps+=p.userData.value;saveStats();toast('+'+p.userData.value+' CAPS');checkQuests();}
         scene.remove(p);pistolPickups.splice(i,1);lootTarget=null;updateAmmo();
       }
