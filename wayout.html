@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WAYOUT 39.1</title>
+<title>WAYOUT 40.1</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#000;color:#0f0;font-family:'Courier New',monospace;overflow:hidden}
@@ -66,11 +66,64 @@ button:hover{background:#0a0}
 #ownerConsole.show{display:block}
 #ownerInput{width:100%;background:#000;border:1px solid #f00;color:#f00;padding:10px;font-family:inherit}
 #ownerLog{max-height:140px;overflow-y:auto;font-size:11px;color:#ff0;margin-top:8px;background:#111;padding:6px}
+/* ===== 40.1 ===== */
+#mainMenu{position:fixed;inset:0;z-index:6000;background:radial-gradient(ellipse at 70% 40%,#10260f 0%,#060d06 60%,#000 100%);display:flex;align-items:center;padding-left:9vw}
+#mainMenu .mm-wrap{display:flex;flex-direction:column;gap:6px;min-width:340px}
+.logoImg{display:block}
+.mm-title{font-size:54px;letter-spacing:10px;color:#3dff5a;text-shadow:0 0 18px #0f0,0 0 42px #0a0;margin:8px 0 0}
+.mm-user{color:#7dff7d;opacity:.8;margin-bottom:26px;letter-spacing:2px}
+.mm-btn,.esc-btn{display:block;width:100%;text-align:left;background:transparent;color:#3dff5a;border:0;border-left:4px solid transparent;font:bold 30px 'Courier New',monospace;letter-spacing:6px;padding:10px 18px;cursor:pointer;text-shadow:0 0 8px #0a0}
+.mm-btn:hover,.esc-btn:hover{background:rgba(40,255,80,.14);border-left-color:#3dff5a;color:#b8ffc4;text-shadow:0 0 14px #0f0}
+.mm-btn .mm-atoms{float:right;font-size:18px;letter-spacing:2px;color:#4de1ff;margin-top:8px}
+.mm-foot{margin-top:30px;font-size:13px;opacity:.55}
+.mm-foot a{color:#0ff;cursor:pointer;text-decoration:underline}
+#mmAtom{position:absolute;right:6vw;top:50%;transform:translateY(-50%);opacity:.9;text-align:center}
+#mmAtom img{width:min(34vh,34vw);filter:drop-shadow(0 0 28px #1b7cd6)}
+#escMenu,#quitBox,#shopScreen,#socialScreen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,12,0,.78)}
+#escMenu{z-index:6100}#quitBox{z-index:6300}#shopScreen{z-index:6200}#socialScreen{z-index:6200}
+.esc-box,.big-box{background:#050a05;border:2px solid #3dff5a;box-shadow:0 0 30px rgba(0,255,60,.35);padding:26px 30px;min-width:360px;max-width:94vw;max-height:92vh;overflow:auto}
+.esc-box h2,.big-box h2{color:#3dff5a;letter-spacing:6px;margin-bottom:14px}
+.esc-btn{font-size:24px}
+.big-box{min-width:min(900px,94vw)}
+.big-box button,.sbtn{background:#0a2a0a;color:#3dff5a;border:1px solid #3dff5a;padding:8px 14px;font:bold 14px 'Courier New',monospace;cursor:pointer;letter-spacing:1px}
+.big-box button:hover,.sbtn:hover{background:#3dff5a;color:#000}
+.big-box button:disabled{opacity:.35;cursor:default}
+.shop-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.shop-atoms{color:#4de1ff;font-size:22px;letter-spacing:2px}
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-top:10px}
+.cos-card{border:1px solid #1d6b2a;background:#071007;padding:10px;text-align:center}
+.cos-card .ic{font-size:40px;line-height:1.3}
+.cos-card .nm{font-size:13px;min-height:34px}
+.cos-card .rr{font-size:11px;letter-spacing:2px;margin:2px 0 6px}
+.cos-card .pr{color:#4de1ff;margin-bottom:6px;font-weight:bold}
+.cos-card .pr.free{color:#ffe34d}
+.cos-card.eq{border-color:#ffe34d;box-shadow:0 0 12px rgba(255,227,77,.4)}
+.r0{color:#9aa}.r1{color:#4da6ff}.r2{color:#c27dff}.r3{color:#ffb12e}
+#invitePop{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:8000;background:#041004;border:2px solid #4de1ff;padding:12px 18px;text-align:center;box-shadow:0 0 24px rgba(77,225,255,.5)}
+#invitePop button{margin:8px 6px 0;background:#0a2a0a;color:#3dff5a;border:1px solid #3dff5a;padding:6px 12px;font:bold 13px 'Courier New',monospace;cursor:pointer}
+#socList .row{display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid #123;padding:5px 0}
+#socMsg{min-height:20px;color:#ffe34d;margin:6px 0}
+#loadScreen{position:fixed;inset:0;z-index:9000;background:#1a1020;overflow:hidden;cursor:wait}
+#loadScreen svg.bg{position:absolute;inset:0;width:100%;height:100%}
+#loadScreen .ld-logo{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);text-align:center}
+#loadScreen .ld-logo img{width:min(30vh,36vw);filter:drop-shadow(0 0 26px rgba(30,130,230,.8));animation:ldp 3s ease-in-out infinite alternate}
+@keyframes ldp{from{transform:scale(1)}to{transform:scale(1.06)}}
+#ldSrv{position:absolute;top:18px;left:0;right:0;text-align:center;color:#fff;text-shadow:0 0 6px #000,0 0 12px #000;letter-spacing:3px;font-size:15px}
+#ldBar{position:absolute;left:3%;right:3%;bottom:3%;background:rgba(10,10,12,.82);border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;gap:16px;padding:10px 16px;color:#f2e7c9;font-family:Arial,Helvetica,sans-serif}
+#ldBar .gl{font-style:italic;color:#ffcf5a;white-space:nowrap;font-size:14px}
+#ldBar .tip{flex:1;font-size:15px;line-height:1.3}
+#ldBar .rt{text-align:right;font-size:12px;letter-spacing:2px;white-space:nowrap;line-height:1.4}
+#ldBar .rt b{font-size:15px;color:#fff}
+#ldBar img{width:44px;height:44px;object-fit:contain}
+#ldProg{position:absolute;left:3%;right:3%;bottom:calc(3% + 66px);height:5px;background:rgba(255,255,255,.18)}
+#ldFill{height:100%;width:0;background:linear-gradient(90deg,#2f86d8,#7fd0ff);box-shadow:0 0 10px #4db4ff}
+#ldTime{position:absolute;right:3%;bottom:calc(3% + 78px);color:#fff;font:bold 14px Arial;text-shadow:0 0 4px #000}
+#closeScreen{position:fixed;inset:0;z-index:99990;background:#000;display:flex;align-items:center;justify-content:center;color:#3dff5a;font-size:22px;text-align:center;padding:20px}
 </style>
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
 </head>
 <body>
-<div id="ownerConsole"><h3 style="color:#f00">👑 OWNER [C]</h3><input id="ownerInput" placeholder="/givelevel hráč počet | /givepistol hráč"><div id="ownerLog">39.1 Created By ItzRealLenix</div></div>
+<div id="ownerConsole"><h3 style="color:#f00">👑 OWNER [C]</h3><input id="ownerInput" placeholder="/givelevel hráč počet | /givepistol hráč"><div id="ownerLog">40.1 Created By ItzRealLenix</div></div>
 
 <div id="intro" onclick="finishIntro()">
   <h1 id="please">Please stand by</h1>
@@ -82,7 +135,7 @@ button:hover{background:#0a0}
 
 <div id="app" class="hidden">
   <div id="register" class="panel">
-    <h2>WAYOUT 39.1</h2>
+    <h2>WAYOUT 40.1</h2>
     <p class="small">Created By ItzRealLenix</p>
     <p class="small" style="opacity:0.9">Poslední sklep. Poslední naděje. Najdi cestu ven.</p>
     <input id="nameIn" placeholder="Jméno" maxlength="16">
@@ -92,7 +145,7 @@ button:hover{background:#0a0}
     <div id="versionInfo" class="small"></div>
   </div>
   <div id="lobby" class="panel hidden">
-    <h2>LOBBY 39.1</h2>
+    <h2>LOBBY 40.1</h2>
     <div>VAULT KÓD: <b id="myIdDisp" style="color:#0ff;font-size:22px;letter-spacing:4px"></b> <button onclick="copyId()" style="width:auto;padding:4px 8px">KOPIE</button> <button onclick="newCode()" style="width:auto;padding:4px 8px;background:#333;color:#0f0">NOVÝ KÓD</button></div>
     <div id="playerList" class="small"></div>
     <input id="friendId" placeholder="Vault kód kamaráda (6 znaků)" maxlength="24">
@@ -108,25 +161,78 @@ button:hover{background:#0a0}
 <div id="toast"></div>
 <div id="hud" class="hidden">
   <div class="hud-box">HP <span id="hp">100</span>/<span id="hpMax">100</span> | LVL <span id="lvl">1</span> (XP <span id="xp">0/120</span>) | <span id="ammo">30/90</span> | H:<span id="hCount">3</span> | J:<span id="radawayCount">1</span> | RAD <span id="rad">0</span> | CAPS <span id="caps">0</span><br>🍖 <span id="hun">100</span>% [1:<span id="foodCount">1</span>] | 💧 <span id="thi">100</span>% [2:<span id="waterCount">1</span>] 🚱 [3:<span id="dirtyCount">0</span>] | <span id="clock">DEN</span></div>
-  <div class="hud-box"><span id="hudId"></span> | <span id="seeCount">0</span> | <span id="loc">MĚSTO</span> | 39.1</div>
+  <div class="hud-box"><span id="hudId"></span> | <span id="seeCount">0</span> | <span id="loc">MĚSTO</span> | 40.1</div>
   <div id="questBox"></div>
   <div id="onlineBox"></div>
   <div id="chatBox"><div id="chatLog"></div><input id="chatIn" maxlength="120" placeholder="Zpráva... (Enter odeslat, Esc zrušit)"></div>
 </div>
 <div id="cross" class="hidden"></div>
 <div id="inventory" class="hidden"></div>
-<div id="mapScreen" class="hidden"><div class="inv-box" style="min-width:0;max-width:96vw;padding:14px"><h2>MAPA - M/ESC</h2><canvas id="mapCanvas" width="800" height="800" class="map-canvas"></canvas><div class="small">Žlutý čtverec = VAULT 80 | oranžové = opuštěné obchody | zelené kruhy = radiace | modré = hráči a campy | červený okraj = konec světa | KLIK na camp/hráče = rychlý přesun za caps</div><button onclick="closeMap()">ZAVŘÍT</button></div></div>
+<div id="mapScreen" class="hidden"><div class="inv-box" style="min-width:0;max-width:96vw;padding:14px"><h2>MAPA - M/ESC</h2><canvas id="mapCanvas" width="800" height="800" class="map-canvas"></canvas><div class="small">Žlutý čtverec = VAULT 80 | oranžové = opuštěné obchody | zelené kruhy = radiace | modré = hráči a campy | červený okraj = konec světa | KLIK na camp / Top of the World / člena týmu = rychlý přesun za caps</div><button onclick="closeMap()">ZAVŘÍT</button></div></div>
 <div id="pipboy" class="hidden"><div class="pip-box">
   <div class="pip-top"><span class="pip-title">PIP-BOY 3000</span><span class="pip-sub">TAB inventář | P stav | ESC zavřít</span></div>
   <div id="pipTabs"><button class="tabbtn on" onclick="pipTab(0)">INVENTÁŘ</button><button class="tabbtn" onclick="pipTab(1)">STAV</button><button class="tabbtn" onclick="pipTab(2)">S.P.E.C.I.A.L.</button><button class="tabbtn" onclick="pipTab(3)">ÚKOLY</button><button class="tabbtn" onclick="pipTab(4)">HRÁČI</button><button class="tabbtn" onclick="pipTab(5)">ZBRANĚ</button></div>
   <div id="pipBody"></div>
   <button onclick="closePip()">ZAVŘÍT</button></div></div>
 <div id="lootTip"></div>
-<div id="updateScreen" class="hidden"><div class="update-box"><h2 style="color:#ff0">🚀 UPDATE <span id="newVerNum">39.1</span>!</h2><p id="updateText"></p><button onclick="applyUpdate()" style="background:#ff0;color:#000">AKTUALIZOVAT</button><button onclick="downloadNewVersion()" style="background:#0ff;color:#000;margin-top:8px">STÁHNOUT SOUBOR</button><button onclick="skipUpdate()" style="background:#333;color:#fff;margin-top:8px">PŘESKOČIT</button></div></div>
+<div id="updateScreen" class="hidden"><div class="update-box"><h2 style="color:#ff0">🚀 UPDATE <span id="newVerNum">40.1</span>!</h2><p id="updateText"></p><button onclick="applyUpdate()" style="background:#ff0;color:#000">AKTUALIZOVAT</button><button onclick="downloadNewVersion()" style="background:#0ff;color:#000;margin-top:8px">STÁHNOUT SOUBOR</button><button onclick="skipUpdate()" style="background:#333;color:#fff;margin-top:8px">PŘESKOČIT</button></div></div>
+
+<div id="mainMenu" class="hidden">
+  <div class="mm-wrap">
+    <img class="logoImg" style="width:88px;margin-bottom:6px" alt="">
+    <div class="mm-title">WAYOUT</div>
+    <div class="mm-user" id="mmUser">40.1</div>
+    <button class="mm-btn" onclick="mmPlay()">PLAY</button>
+    <button class="mm-btn" onclick="openShop()">ATOMIC SHOP <span class="mm-atoms">⚛ <b id="mmAtoms">0</b></span></button>
+    <button class="mm-btn" onclick="mmQuit()">QUIT</button>
+    <div class="mm-foot">WAYOUT 40.1 · Created By ItzRealLenix · <a onclick="mmLogout()">odhlásit se</a></div>
+  </div>
+  <div id="mmAtom"><img class="logoImg" alt=""></div>
+</div>
+<div id="escMenu" class="hidden"><div class="esc-box">
+  <h2>WAYOUT 40.1</h2>
+  <button class="esc-btn" onclick="escBack()">BACK TO GAME</button>
+  <button class="esc-btn" onclick="openShop()">ATOMIC SHOP</button>
+  <button class="esc-btn" onclick="openSocial()">SOCIAL</button>
+  <button class="esc-btn" onclick="escQuit()">QUIT</button>
+  <div class="small" id="escSrv" style="margin-top:14px;opacity:.7"></div>
+</div></div>
+<div id="quitBox" class="hidden"><div class="esc-box">
+  <h2>QUIT</h2>
+  <button class="esc-btn" style="font-size:20px" onclick="quitToMenu()">QUIT TO MAIN MENU</button>
+  <button class="esc-btn" style="font-size:20px" onclick="quitDesktop()">QUIT TO DESKTOP</button>
+  <button class="esc-btn" style="font-size:16px;opacity:.7" onclick="hide('quitBox')">ZPĚT</button>
+  <div class="small" style="margin-top:10px;opacity:.6">Quit to desktop uloží, kde jsi skončil, a vypne hru.</div>
+</div></div>
+<div id="shopScreen" class="hidden"><div class="big-box">
+  <div class="shop-top"><h2 style="margin:0">⚛ ATOMIC SHOP</h2><div class="shop-atoms">⚛ <b id="shAtoms">0</b></div></div>
+  <div><button onclick="shopTabSet(0)" id="shT0">DNEŠNÍ NABÍDKA</button> <button onclick="shopTabSet(1)" id="shT1">MOJE VĚCI</button> <button onclick="shopDaily()" style="border-color:#ffe34d;color:#ffe34d">🎁 DENNÍ ODMĚNA</button> <button onclick="shopRefresh()">OBNOVIT NABÍDKU (-20 ⚛)</button></div>
+  <div id="shopBody"></div>
+  <div style="margin-top:14px"><button onclick="closeShop()">ZAVŘÍT</button></div>
+</div></div>
+<div id="socialScreen" class="hidden"><div class="big-box" style="min-width:min(640px,94vw)">
+  <h2>SOCIAL</h2>
+  <div class="small" id="socSrv"></div>
+  <div style="margin:12px 0"><input id="socName" placeholder="Jméno hráče (i z jiného serveru)" maxlength="16" style="width:260px"> <button onclick="socInvite()">SEND INVITE</button></div>
+  <div id="socMsg"></div>
+  <div id="socList"></div>
+  <div style="margin-top:14px"><button onclick="closeSocial()">ZAVŘÍT</button></div>
+</div></div>
+<div id="invitePop" class="hidden"></div>
+<div id="loadScreen" class="hidden">
+  <svg class="bg" id="ldBg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"></svg>
+  <div id="ldSrv"></div>
+  <div class="ld-logo"><img class="logoImg" alt=""></div>
+  <div id="ldTime">1:50</div>
+  <div id="ldProg"><div id="ldFill"></div></div>
+  <div id="ldBar"><span class="gl">Survival Guide</span><span class="tip" id="ldTip"></span><span class="rt">LOADING<br><b id="ldPct">0 %</b></span><img class="logoImg" alt=""></div>
+</div>
+<div id="closeScreen" class="hidden"><div id="closeMsg">Ukládám a zavírám hru…</div></div>
 
 <script type="module">
 import * as THREE from 'three';
-const GAME_VERSION = 40;   // zobrazuje se jako 39.1
+const VERMAP={41:'40.1',40:'39.1',39:'39',38:'37.2'};const verNum=n=>VERMAP[n]||String(n);
+const GAME_VERSION = 41;   // zobrazuje se jako 40.1
 const GAME_NAME = 'WAYOUT';
 // localStorage klíče zůstávají 'wp_*', aby se neztratily uložené postavy a PINy
 // každý hráč má vlastní 6místný VAULT KÓD (bez zaměnitelných znaků), ostatním ho pošleš a připojí se přes něj
@@ -190,7 +296,7 @@ function saveStats(){
 function gainXp(n){
   n=Math.round(n*(1+0.1*(special.I-1)));xp+=n;let up=false;
   while(xp>=xpNeed(myLevel)){xp-=xpNeed(myLevel);myLevel++;perkPoints++;up=true;}
-  if(up){toast('⬆ LEVEL '+myLevel+'! +1 bod S.P.E.C.I.A.L. (P)',4000);playSound('heal');}
+  if(up){toast('⬆ LEVEL '+myLevel+'! +1 bod S.P.E.C.I.A.L. (P) · +5 ⚛',4000);playSound('levelup');try{addAtoms(5);}catch(e){}}
   setText('lvl',myLevel);
 }
 function broadcast(msg){Object.values(conns).forEach(c=>{try{if(c.open) c.send(msg);}catch(e){}});}
@@ -283,8 +389,31 @@ function makeAvatar(){
   const legL=mk(-0.2,0.8,0.32,0.8),legR=mk(0.2,0.8,0.32,0.8),armL=mk(-0.55,1.65,0.25,0.75),armR=mk(0.55,1.65,0.25,0.75);
   const plate=makeTextSprite(256,64,3.4,0.85);plate.sprite.position.y=2.7;g.add(plate.sprite);
   const bubble=makeTextSprite(768,64,9,0.75);bubble.sprite.position.y=3.5;bubble.sprite.visible=false;g.add(bubble.sprite);
-  g.userData={legL,legR,armL,armR,plate,bubble,bubbleUntil:0,lx:0,lz:0,phase:0};
+  g.userData={legL,legR,armL,armR,plate,bubble,bubbleUntil:0,lx:0,lz:0,phase:0,suitMat:suit};
   return g;
+}
+// kosmetika na avatarech (Atomic Shop)
+function applyCos(m,sig){
+  const ud=m.userData;ud.cs=sig;
+  if(ud.cosG){m.remove(ud.cosG);ud.cosG.traverse(o=>{if(o.geometry) o.geometry.dispose();if(o.material&&o.material.dispose) o.material.dispose();});ud.cosG=null;}
+  const parts=String(sig||'').split('|'),hat=parts[0]||'',back=parts[1]||'',suit=parts[2]||'',aura=parts[3]||'';
+  const SC={suit_red:0xc02020,suit_green:0x2fd02f,suit_pink:0xff6fb5,suit_black:0x1a1a1e,suit_gold:0xe0b030};
+  if(ud.suitMat) ud.suitMat.color.setHex(SC[suit]||0x2a4aaa);
+  const g=new THREE.Group();ud.cosG=g;m.add(g);
+  const M=(c,o)=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:0.7},o||{}));
+  const B=c=>new THREE.MeshBasicMaterial({color:c});
+  const add=(geo,mat,x,y,z,rx,ry,rz)=>{const o=new THREE.Mesh(geo,mat);o.position.set(x,y,z);if(rx||ry||rz) o.rotation.set(rx||0,ry||0,rz||0);g.add(o);return o;};
+  if(hat==='hat_cow'){add(new THREE.CylinderGeometry(0.5,0.5,0.04,16),M(0x7a4a22),0,2.2,0);add(new THREE.CylinderGeometry(0.2,0.25,0.24,12),M(0x8a5a2a),0,2.33,0);}
+  else if(hat==='hat_top'){add(new THREE.CylinderGeometry(0.38,0.38,0.03,16),M(0x111111),0,2.2,0);add(new THREE.CylinderGeometry(0.24,0.24,0.42,14),M(0x161616),0,2.43,0);add(new THREE.CylinderGeometry(0.245,0.245,0.07,14),M(0xb02020),0,2.28,0);}
+  else if(hat==='hat_party'){add(new THREE.ConeGeometry(0.22,0.52,12),M(0xff4fa3),0,2.48,0);add(new THREE.SphereGeometry(0.06,8,6),B(0xffe34d),0,2.76,0);}
+  else if(hat==='hat_horns'){add(new THREE.ConeGeometry(0.07,0.32,8),M(0xb01010),-0.17,2.3,0,0,0,0.4);add(new THREE.ConeGeometry(0.07,0.32,8),M(0xb01010),0.17,2.3,0,0,0,-0.4);}
+  else if(hat==='hat_halo'){add(new THREE.TorusGeometry(0.26,0.035,8,22),B(0xfff08a),0,2.48,0,Math.PI/2,0,0);}
+  else if(hat==='hat_crown'){const gm=M(0xe8b830,{metalness:0.8,roughness:0.3});add(new THREE.CylinderGeometry(0.25,0.22,0.15,12),gm,0,2.27,0);for(let i=0;i<6;i++){const a=i/6*Math.PI*2;add(new THREE.ConeGeometry(0.05,0.14,6),gm,Math.cos(a)*0.22,2.41,Math.sin(a)*0.22);}}
+  if(back==='back_capr'||back==='back_capb'){const c=back==='back_capr'?0xb01818:0x1f4bb0;const cp=add(new THREE.BoxGeometry(0.78,1.15,0.04),M(c,{side:THREE.DoubleSide}),0,1.2,0.3,0.12,0,0);}
+  else if(back==='back_pack'){add(new THREE.BoxGeometry(0.46,0.62,0.22),M(0x6a6e74,{metalness:0.6}),0,1.3,0.34);add(new THREE.CylinderGeometry(0.07,0.1,0.35,8),B(0xff8a1e),-0.12,0.88,0.34);add(new THREE.CylinderGeometry(0.07,0.1,0.35,8),B(0xff8a1e),0.12,0.88,0.34);}
+  else if(back==='back_wings'){const wm=B(0xf4f4ff);add(new THREE.BoxGeometry(0.06,1.0,0.55),wm,-0.55,1.55,0.35,0,0,0.55);add(new THREE.BoxGeometry(0.06,1.0,0.55),wm,0.55,1.55,0.35,0,0,-0.55);}
+  if(aura){const col=aura==='aura_rad'?0x35ff35:aura==='aura_blue'?0x3db4ff:0xff6a1a;
+    add(new THREE.SphereGeometry(1.35,16,12),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0.14,depthWrite:false,blending:THREE.AdditiveBlending}),0,1.3,0);}
 }
 function setBubble(id,text,ms){
   const m=remoteMeshes[id];if(!m) return;
@@ -324,6 +453,7 @@ function updateRemotes(now){
     if(!m){m=makeAvatar();m.position.set(p.x,getTerrainHeight(p.x,p.z),p.z);m.userData.lx=p.x;m.userData.lz=p.z;scene.add(m);remoteMeshes[p.id]=m;}
     m.visible=true;
     const ud=m.userData;
+    if(typeof p.cs==='string'&&p.cs!==ud.cs) applyCos(m,p.cs);
     setLying(m,!!lying);
     if(lying){
       m.position.set(p.x,getTerrainHeight(p.x,p.z)+0.25,p.z);m.rotation.y=p.yaw||0;ud.lx=p.x;ud.lz=p.z;
@@ -429,7 +559,7 @@ function renderPip(){
     Object.values(remote).forEach(p=>{
       let d='v lobby';
       if(p.ig&&camera&&typeof p.x==='number') d=Math.round(Math.hypot(p.x-camera.position.x,p.z-camera.position.z))+' m';
-      row(body,'▶ '+p.name,'LVL '+p.level+' - '+d);
+      row(body,(p.team&&p.team===myTeam?'♦ ':'▶ ')+p.name,'LVL '+p.level+' - '+d);
     });
     if(!Object.keys(remote).length) body.appendChild(el('div','pip-small','Nikdo další není připojen.'));
     head(body,'C.A.M.P.');
@@ -441,9 +571,9 @@ function renderPip(){
 window.pipTab=i=>{pipTabIdx=i;renderPip();};
 
 function logOwner(t){const l=document.getElementById('ownerLog');if(l){const d=document.createElement('div');d.textContent='> '+t;l.appendChild(d);l.scrollTop=l.scrollHeight;}}
-function checkOwner(){if(myName.toLowerCase()==='itzreallenix'){isOwner=true;logOwner('OWNER 39.1');}}
+function checkOwner(){if(myName.toLowerCase()==='itzreallenix'){isOwner=true;logOwner('OWNER 40.1');}}
 function toggleOwnerConsole(){if(!isOwner) return;ownerConsoleVisible=!ownerConsoleVisible;const con=document.getElementById('ownerConsole');if(ownerConsoleVisible){con.classList.add('show');document.exitPointerLock();setTimeout(()=>document.getElementById('ownerInput').focus(),100);}else{con.classList.remove('show');try{document.getElementById('gameCanvas').requestPointerLock();}catch(e){}}}
-function applyGiveLevel(n){for(let i=0;i<n;i++){myLevel++;perkPoints++;}xp=0;saveStats();setText('lvl',myLevel);if(window.updateAmmo) window.updateAmmo();toast('⬆ Dostal jsi +'+n+' levelů → LEVEL '+myLevel+' (body: P)',4000);playSound('heal');}
+function applyGiveLevel(n){for(let i=0;i<n;i++){myLevel++;perkPoints++;}xp=0;saveStats();setText('lvl',myLevel);if(window.updateAmmo) window.updateAmmo();toast('⬆ Dostal jsi +'+n+' levelů → LEVEL '+myLevel+' (body: P)',4000);playSound('levelup');}
 function applyGivePistol(id){
   if(!WEAPONS[id]){const free=['pipe','rev','plasma','laser'].filter(k=>!ownedW[k]);const pool=free.length?free:['pipe','rev','plasma','laser'];id=pool[Math.floor(Math.random()*pool.length)];}
   ownedW[id]=1;equipWeapon(id);toast('🔫 Dostal jsi pistoli: '+WEAPONS[id].n,4000);
@@ -484,37 +614,148 @@ function checkForUpdate(){
   const latest=Math.max(GAME_VERSION,pushed);
   const banner=document.getElementById('updateBanner');
   const verInfo=document.getElementById('versionInfo');
-  if(verInfo) verInfo.textContent=`V${GAME_VERSION} | Uložená V${saved}`;
+  if(verInfo) verInfo.textContent=`${verNum(GAME_VERSION)} | Uložená ${verNum(saved)}`;
   if(saved >= GAME_VERSION && (pushed===0 || saved >= pushed)){if(banner) banner.classList.add('hidden');document.getElementById('updateScreen').classList.add('hidden');return false;}
-  if(saved>=27 && latest>saved){if(banner){banner.classList.remove('hidden');banner.textContent=`🚀 UPDATE V${latest}!`;}document.getElementById('updateScreen').classList.remove('hidden');document.getElementById('newVerNum').textContent=latest;document.getElementById('updateText').textContent=`Je V${latest}, ty máš V${saved}.`;return true;}
+  if(saved>=27 && latest>saved){if(banner){banner.classList.remove('hidden');banner.textContent=`🚀 UPDATE ${verNum(latest)}!`;}document.getElementById('updateScreen').classList.remove('hidden');document.getElementById('newVerNum').textContent=verNum(latest);document.getElementById('updateText').textContent=`Je ${verNum(latest)}, ty máš ${verNum(saved)}.`;return true;}
   if(!saved) localStorage.setItem('wp_game_version',GAME_VERSION);return false;
 }
 window.applyUpdate=()=>{const pushed=parseInt(localStorage.getItem('wp_latest_pushed_version')||'0');const latest=Math.max(GAME_VERSION,pushed);localStorage.setItem('wp_game_version',latest);localStorage.removeItem('wp_latest_pushed_version');document.getElementById('updateScreen').classList.add('hidden');document.getElementById('updateBanner').classList.add('hidden');location.reload();}
 window.skipUpdate=()=>{document.getElementById('updateScreen').classList.add('hidden');document.getElementById('updateBanner').classList.add('hidden');localStorage.removeItem('wp_latest_pushed_version');}
 window.downloadNewVersion=()=>{const code=document.documentElement.outerHTML;const blob=new Blob([code],{type:'text/html'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${GAME_NAME}_V${GAME_VERSION}_NEW.html`;a.click();URL.revokeObjectURL(url);}
 
-function ensureAudio(){try{if(!sounds.ctx) sounds.ctx=new (window.AudioContext||window.webkitAudioContext)();if(sounds.ctx.state==='suspended') sounds.ctx.resume();return sounds.ctx;}catch(e){return null;}}
-function playSound(n,v=0.5){
-  const ctx=ensureAudio();if(!ctx) return;
+function ensureAudio(){
   try{
-    const g=ctx.createGain();g.gain.value=v;g.connect(ctx.destination);
-    const o=ctx.createOscillator();
-    o.type=(n==='shoot'||n==='geiger')?'square':'sine';
-    o.frequency.value=n==='shoot'?800:n==='geiger'?1900:n==='hit'?300:500;
-    const dur=n==='geiger'?0.03:0.2;
-    g.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+dur);
-    o.connect(g);o.start();o.stop(ctx.currentTime+dur);
+    if(!sounds.ctx){
+      const ctx=new (window.AudioContext||window.webkitAudioContext)();
+      const comp=ctx.createDynamicsCompressor();comp.threshold.value=-16;comp.knee.value=24;comp.ratio.value=5;comp.attack.value=0.003;comp.release.value=0.22;
+      const master=ctx.createGain();master.gain.value=0.9;master.connect(comp);comp.connect(ctx.destination);
+      sounds.ctx=ctx;sounds.out=master;
+      const nb=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate),nd=nb.getChannelData(0);for(let i=0;i<nd.length;i++) nd[i]=Math.random()*2-1;sounds.noise=nb;
+      const len=Math.floor(ctx.sampleRate*1.5),ir=ctx.createBuffer(2,len,ctx.sampleRate);
+      for(let c=0;c<2;c++){const d=ir.getChannelData(c);for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6);}
+      const conv=ctx.createConvolver();conv.buffer=ir;const rg=ctx.createGain();rg.gain.value=0.3;conv.connect(rg);rg.connect(master);sounds.rev=conv;
+    }
+    if(sounds.ctx.state==='suspended') sounds.ctx.resume();
+    return sounds.ctx;
+  }catch(e){return null;}
+}
+// šum (výstřely, kroky, vítr...)
+function nz(ctx,t,dur,o){
+  o=o||{};const s=ctx.createBufferSource();s.buffer=sounds.noise;s.loop=true;
+  const f=ctx.createBiquadFilter();f.type=o.type||'lowpass';f.Q.value=o.q||1;f.frequency.setValueAtTime(o.f0||2000,t);if(o.f1) f.frequency.exponentialRampToValueAtTime(o.f1,t+dur);
+  const g=ctx.createGain();g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(0.0002,o.g||0.4),t+(o.a||0.002));g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  s.connect(f);f.connect(g);g.connect(o.dest||sounds.out);
+  if(o.wet){const w=ctx.createGain();w.gain.value=o.wet;g.connect(w);w.connect(sounds.rev);}
+  s.start(t,Math.random()*1.5);s.stop(t+dur+0.05);
+}
+// tón
+function tone(ctx,t,o){
+  const dur=o.dur||0.2,or=ctx.createOscillator();or.type=o.type||'sine';or.frequency.setValueAtTime(o.f0||440,t);
+  if(o.f1) or.frequency.exponentialRampToValueAtTime(Math.max(20,o.f1),t+dur);
+  if(o.det) or.detune.value=o.det;
+  if(o.vib){const l=ctx.createOscillator(),lg=ctx.createGain();l.frequency.value=o.vib;lg.gain.value=(o.f0||440)*0.012;l.connect(lg);lg.connect(or.frequency);l.start(t);l.stop(t+dur+0.05);}
+  const g=ctx.createGain();g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(0.0002,o.g||0.3),t+(o.a||0.005));g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  let n=or;if(o.lp){const f=ctx.createBiquadFilter();f.type='lowpass';f.frequency.value=o.lp;or.connect(f);n=f;}
+  n.connect(g);g.connect(o.dest||sounds.out);
+  if(o.wet){const w=ctx.createGain();w.gain.value=o.wet;g.connect(w);w.connect(sounds.rev);}
+  or.start(t);or.stop(t+dur+0.05);
+}
+const midiHz=m=>440*Math.pow(2,(m-69)/12);
+function playSound(n,v,variant){
+  if(v===undefined) v=0.5;
+  const ctx=ensureAudio();if(!ctx||!sounds.noise) return;
+  try{
+    const t=ctx.currentTime+0.005,pv=0.96+Math.random()*0.08;
+    switch(n){
+      case 'shoot':{
+        const w=variant||'p10';
+        if(w==='pipe'){
+          nz(ctx,t,0.2,{f0:3200,f1:300,g:1.0*v,a:0.001,wet:0.15});tone(ctx,t,{f0:120*pv,f1:40,dur:0.16,g:0.9*v});tone(ctx,t,{type:'square',f0:900,f1:300,dur:0.05,g:0.12*v});
+        }else if(w==='rev'){
+          nz(ctx,t,0.5,{f0:6000,f1:200,g:1.3*v,a:0.001,wet:0.5});nz(ctx,t,0.06,{type:'highpass',f0:2500,g:0.7*v});tone(ctx,t,{f0:95*pv,f1:28,dur:0.35,g:1.2*v});tone(ctx,t+0.08,{f0:60,f1:30,dur:0.3,g:0.5*v,wet:0.3});
+        }else if(w==='plasma'){
+          tone(ctx,t,{type:'sawtooth',f0:1500,f1:180,dur:0.38,g:0.35*v,lp:3500,wet:0.3});tone(ctx,t,{f0:700,f1:70,dur:0.3,g:0.6*v});tone(ctx,t,{type:'square',f0:90,f1:60,dur:0.3,g:0.18*v,vib:30});nz(ctx,t,0.25,{type:'bandpass',f0:3000,f1:600,g:0.25*v,wet:0.3});
+        }else if(w==='laser'){
+          tone(ctx,t,{type:'square',f0:2600,f1:420,dur:0.2,g:0.22*v,lp:6000,wet:0.2});tone(ctx,t,{f0:1300,f1:260,dur:0.22,g:0.4*v});nz(ctx,t,0.04,{type:'highpass',f0:5000,g:0.2*v});
+        }else{
+          nz(ctx,t,0.2,{f0:7000,f1:500,g:1.0*v,a:0.001,wet:0.25});nz(ctx,t,0.05,{type:'highpass',f0:3000,g:0.6*v});tone(ctx,t,{f0:170*pv,f1:45,dur:0.15,g:0.9*v});
+          if(w==='gold') tone(ctx,t+0.03,{f0:2300,dur:0.35,g:0.07*v,wet:0.5});
+        }
+        break;}
+      case 'hit':tone(ctx,t,{f0:230*pv,f1:65,dur:0.13,g:0.8*v});nz(ctx,t,0.1,{f0:1800,f1:200,g:0.45*v});break;
+      case 'hurt':tone(ctx,t,{type:'sawtooth',f0:190,f1:80,dur:0.22,g:0.4*v,lp:900});tone(ctx,t,{f0:90,f1:40,dur:0.18,g:0.8*v});nz(ctx,t,0.12,{f0:1200,f1:200,g:0.4*v});break;
+      case 'death':tone(ctx,t,{type:'sawtooth',f0:220,f1:35,dur:1.4,g:0.4*v,lp:700,wet:0.4});tone(ctx,t,{f0:80,f1:25,dur:1.2,g:0.9*v});nz(ctx,t,0.9,{f0:2500,f1:80,g:0.5*v,wet:0.4});break;
+      case 'pickup':tone(ctx,t,{type:'triangle',f0:660,dur:0.09,g:0.3*v});tone(ctx,t+0.07,{type:'triangle',f0:990,dur:0.14,g:0.3*v,wet:0.2});break;
+      case 'coin':tone(ctx,t,{type:'triangle',f0:1568,dur:0.08,g:0.3*v});tone(ctx,t+0.07,{type:'triangle',f0:2093,dur:0.3,g:0.3*v,wet:0.4});break;
+      case 'heal':[523,659,784,1047].forEach((f,i)=>tone(ctx,t+i*0.07,{type:'triangle',f0:f,dur:0.22,g:0.28*v,wet:0.3}));break;
+      case 'levelup':[523,659,784,1047,1319].forEach((f,i)=>{tone(ctx,t+i*0.09,{type:'triangle',f0:f,dur:0.5,g:0.3*v,wet:0.45});tone(ctx,t+i*0.09,{type:'sine',f0:f/2,dur:0.5,g:0.2*v});});break;
+      case 'camp':[130.8,164.8,196].forEach(f=>tone(ctx,t,{type:'triangle',f0:f,dur:1.1,g:0.25*v,wet:0.4}));for(let i=0;i<3;i++){nz(ctx,t+i*0.18,0.08,{f0:1500,f1:300,g:0.5*v});tone(ctx,t+i*0.18,{f0:150,f1:70,dur:0.1,g:0.5*v});}break;
+      case 'geiger':nz(ctx,t,0.018,{type:'highpass',f0:2800,g:0.5*v*3});if(Math.random()<0.3) nz(ctx,t+0.04,0.014,{type:'highpass',f0:3200,g:0.4*v*3});break;
+      case 'step':nz(ctx,t,0.09,{f0:700+Math.random()*300,f1:180,g:0.35*v*2,a:0.004});tone(ctx,t,{f0:90,f1:50,dur:0.08,g:0.18*v*2});break;
+      case 'splash':nz(ctx,t,0.35,{type:'bandpass',f0:900,f1:300,q:0.8,g:0.5*v,wet:0.2});break;
+      case 'reload':nz(ctx,t,0.03,{type:'bandpass',f0:2600,g:0.45*v});tone(ctx,t+0.14,{type:'square',f0:300,f1:200,dur:0.04,g:0.15*v});nz(ctx,t+0.3,0.05,{type:'bandpass',f0:1800,g:0.55*v});tone(ctx,t+0.3,{f0:140,f1:80,dur:0.08,g:0.4*v});break;
+      case 'empty':nz(ctx,t,0.02,{type:'highpass',f0:3000,g:0.5*v});tone(ctx,t,{type:'square',f0:220,dur:0.03,g:0.1*v});break;
+      case 'groan':{const f=70+Math.random()*30;tone(ctx,t,{type:'sawtooth',f0:f*1.5,f1:f*0.8,dur:0.95,g:0.3*v,lp:520,vib:5.5,a:0.12,wet:0.25});nz(ctx,t,0.9,{type:'bandpass',f0:600,f1:350,q:2,g:0.14*v,a:0.15});break;}
+      case 'invite':tone(ctx,t,{f0:880,dur:0.25,g:0.3*v,wet:0.4});tone(ctx,t+0.13,{f0:1320,dur:0.4,g:0.3*v,wet:0.5});break;
+      case 'ui':tone(ctx,t,{type:'square',f0:1200,f1:800,dur:0.04,g:0.08*v});tone(ctx,t,{f0:600,dur:0.06,g:0.12*v});break;
+      case 'hover':tone(ctx,t,{f0:900,dur:0.03,g:0.04*v});break;
+      case 'error':tone(ctx,t,{type:'square',f0:180,dur:0.16,g:0.15*v,lp:900});break;
+      default:tone(ctx,t,{f0:500,dur:0.15,g:0.25*v});
+    }
   }catch(e){}
 }
-// rádio
-let radioOn=false,radioInt=null;
+// ambient: 'menu' (pad) | 'game' (vítr) | null
+function ambience(kind){
+  const ctx=ensureAudio();if(!ctx||!sounds.noise) return;
+  const old=sounds.amb;
+  if(old){try{old.out.gain.cancelScheduledValues(ctx.currentTime);old.out.gain.setValueAtTime(old.out.gain.value,ctx.currentTime);old.out.gain.linearRampToValueAtTime(0,ctx.currentTime+0.8);}catch(e){}clearInterval(old.timer);setTimeout(()=>{old.nodes.forEach(n=>{try{n.stop();}catch(e){}});try{old.out.disconnect();}catch(e){}},900);sounds.amb=null;}
+  if(!kind) return;
+  try{
+    const out=ctx.createGain();out.gain.value=0.0001;out.connect(sounds.out);out.gain.linearRampToValueAtTime(1,ctx.currentTime+2);
+    const nodes=[],A={out,nodes,timer:null,kind};
+    const lfo=(freq,depth,param)=>{const l=ctx.createOscillator(),g=ctx.createGain();l.frequency.value=freq;g.gain.value=depth;l.connect(g);g.connect(param);l.start();nodes.push(l);};
+    const noiseSrc=()=>{const s=ctx.createBufferSource();s.buffer=sounds.noise;s.loop=true;s.start();nodes.push(s);return s;};
+    if(kind==='game'){
+      const w=noiseSrc(),bp=ctx.createBiquadFilter();bp.type='bandpass';bp.frequency.value=420;bp.Q.value=0.7;const wg=ctx.createGain();wg.gain.value=0.07;
+      w.connect(bp);bp.connect(wg);wg.connect(out);lfo(0.07,260,bp.frequency);lfo(0.05,0.035,wg.gain);
+      const r=noiseSrc(),lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=110;const rg=ctx.createGain();rg.gain.value=0.12;r.connect(lp);lp.connect(rg);rg.connect(out);
+      A.timer=setInterval(()=>{if(!sounds.ctx||sounds.amb!==A) return;const t=ctx.currentTime+0.05,k=Math.random();
+        if(k<0.35){tone(ctx,t,{type:'sawtooth',f0:320,f1:250,dur:1.1,g:0.05,lp:700,vib:3,a:0.2,wet:0.5,dest:out});}   // skřípění kovu
+        else if(k<0.6){tone(ctx,t,{type:'sine',f0:420,f1:300,dur:1.4,g:0.04,vib:4,a:0.4,wet:0.7,dest:out});}          // vzdálené kvílení
+        else if(k<0.8){nz(ctx,t,1.2,{f0:500,f1:150,g:0.05,a:0.3,wet:0.6,dest:out});tone(ctx,t,{f0:55,f1:35,dur:1.2,g:0.18,dest:out});}  // dunění
+      },9000);
+    }else{
+      const lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=520;lp.Q.value=2;lfo(0.09,260,lp.frequency);
+      const pg=ctx.createGain();pg.gain.value=0.09;lp.connect(pg);pg.connect(out);
+      [55,82.4,110.3,164.9].forEach((f,i)=>{const o=ctx.createOscillator();o.type=i<2?'sawtooth':'triangle';o.frequency.value=f;o.detune.value=(i-1.5)*5;o.connect(lp);o.start();nodes.push(o);});
+      const sc=[220,261.6,293.7,329.6,392,440];
+      A.timer=setInterval(()=>{if(!sounds.ctx||sounds.amb!==A) return;const t=ctx.currentTime+0.05;tone(ctx,t,{type:'sine',f0:sc[Math.floor(Math.random()*sc.length)],dur:3.2,g:0.07,a:0.08,wet:0.9,dest:out});},3300);
+      const c=noiseSrc(),hp=ctx.createBiquadFilter();hp.type='highpass';hp.frequency.value=4200;const cg=ctx.createGain();cg.gain.value=0.012;c.connect(hp);hp.connect(cg);cg.connect(out);lfo(5,0.01,cg.gain);
+    }
+    sounds.amb=A;
+  }catch(e){}
+}
+// rádio: swingový "WAYOUT FM"
+let radioOn=false,radioInt=null,radioStep=0,radioBus=null;
 function toggleRadio(){
   radioOn=!radioOn;
-  if(radioOn){
-    const sc=[220,247,277,330,370,440];
-    radioInt=setInterval(()=>{const ctx=ensureAudio();if(!ctx) return;try{const g=ctx.createGain();g.gain.value=0.08;g.connect(ctx.destination);const o=ctx.createOscillator();o.type='triangle';o.frequency.value=sc[Math.floor(Math.random()*sc.length)];g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.4);o.connect(g);o.start();o.stop(ctx.currentTime+0.4);}catch(e){}},420);
+  const ctx=ensureAudio();
+  if(radioOn&&ctx&&sounds.noise){
+    radioBus=ctx.createGain();radioBus.gain.value=0.5;const bp=ctx.createBiquadFilter();bp.type='bandpass';bp.frequency.value=1500;bp.Q.value=0.35;radioBus.connect(bp);bp.connect(sounds.out);
+    const roots=[45,50,52,45],minor=[0,3,7,10],dom=[0,4,7,10],pent=[69,72,74,76,79,81,84];let mel=2;
+    radioStep=0;
+    radioInt=setInterval(()=>{
+      try{
+        const c=ensureAudio();if(!c) return;const t=c.currentTime+0.02,st=radioStep++,bar=Math.floor(st/8)%4,e=st%8,root=roots[bar],ch=bar===2?dom:minor,d=radioBus;
+        if(e%2===0){const bn=root+[0,7,12,7][(e/2)%4];tone(c,t,{type:'triangle',f0:midiHz(bn),dur:0.4,g:0.3,dest:d});}
+        if(e===2||e===6){ch.forEach(iv=>tone(c,t,{type:'triangle',f0:midiHz(root+24+iv),dur:0.3,g:0.07,dest:d,wet:0.2}));}
+        if(e%2===1) nz(c,t,0.05,{type:'highpass',f0:6000,g:0.05,dest:d});
+        if(Math.random()<0.65){mel=Math.max(0,Math.min(pent.length-1,mel+Math.floor(Math.random()*3)-1));tone(c,t,{type:'sine',f0:midiHz(pent[mel]),dur:0.38,g:0.12,vib:5,dest:d,wet:0.3});}
+        if(Math.random()<0.25) nz(c,t+Math.random()*0.3,0.012,{type:'highpass',f0:2000,g:0.12,dest:d});
+      }catch(e){}
+    },300);
     toast('📻 WAYOUT FM - ON');
-  }else{clearInterval(radioInt);toast('📻 RADIO OFF');}
+  }else{clearInterval(radioInt);radioOn=false;toast('📻 RADIO OFF');}
 }
 
 // intro: Pip-Boy terminál
@@ -522,7 +763,7 @@ let dots=0;
 let introFinished=false;
 const pleaseEl=document.getElementById('please');
 const dotInt=setInterval(()=>{try{if(!pleaseEl) return;dots=(dots+1)%7;pleaseEl.textContent='Please stand by'+'.'.repeat(dots);}catch{}},300);
-const bootLines=['WAYOUT-TEC TERMLINK PROTOCOL','BOOTING SHELTER OS v39.1 ...','GEIGER MODULE ........ OK','STIMPAK DISPENSER .... OK','MULTIPLAYER MESH ..... OK','WASTELAND DATA ....... LOADED','>> NAJDI CESTU VEN <<'];
+const bootLines=['WAYOUT-TEC TERMLINK PROTOCOL','BOOTING SHELTER OS v40.1 ...','GEIGER MODULE ........ OK','STIMPAK DISPENSER .... OK','MULTIPLAYER MESH ..... OK','WASTELAND DATA ....... LOADED','>> NAJDI CESTU VEN <<'];
 let bootI=0;
 const bootInt=setInterval(()=>{const el=document.getElementById('bootLog');if(!el||bootI>=bootLines.length){clearInterval(bootInt);return;}el.textContent+=bootLines[bootI++]+'\n';},220);
 
@@ -537,6 +778,7 @@ function finishIntro(){
   const nameIn=document.getElementById('nameIn');
   if(nameIn) nameIn.value=localStorage.getItem('wp_name')||'';
   checkForUpdate();
+  try{const nm=localStorage.getItem('wp_name'),pn=nm&&localStorage.getItem('wp_pin_'+nm);if(localStorage.getItem('wp_auto')!=='0'&&nm&&pn){document.getElementById('pinIn').value=pn;window.doRegister();}}catch(e){}
 }
 window.finishIntro=finishIntro;
 window.ensureAudio=ensureAudio;
@@ -623,8 +865,8 @@ window.doRegister=()=>{
    const loc=cleanRec({n:name,h,c:cr,u:Date.now(),lvl:myLevel,xp,caps,kills,sp:{s:special,pp:perkPoints},q:doneQuests});
    if(recA&&recA.h===h&&acctProg(recA)>acctProg(loc)){accounts[k]=Object.assign({},recA,{c:Math.min(recA.c,cr)});adoptRecord(accounts[k]);}
    else{accounts[k]=loc;saveAccounts();}}
-  document.getElementById('register').classList.add('hidden');document.getElementById('lobby').classList.remove('hidden');
-  document.getElementById('myIdDisp').textContent=shortId(myId);document.getElementById('enterBtn').classList.add('show');
+  loadCos();try{localStorage.setItem('wp_auto','1');}catch(e){}
+  document.getElementById('myIdDisp').textContent=shortId(myId);showMainMenu();
   checkOwner();restoreCamp();initPeer();
   if(isOwner){const inp=document.getElementById('ownerInput');inp.addEventListener('keydown',e=>{if(e.key==='Enter'){handleOwnerCommand(inp.value);inp.value='';}});}
 };
@@ -644,15 +886,16 @@ function initPeer(){
   load();
 }
 function setupConn(conn){
-  const pid=conn.peer;
+  const pid=conn.peer;conn._g=srvGen;
   conn.on('open',()=>{
+    if(conn._g!==srvGen){try{conn.close();}catch(e){}return;}
     delete pending[pid];
     conns[pid]=conn;
-    try{conn.send({type:'hello',id:myId,name:myName,level:myLevel,version:GAME_VERSION,seed:worldSeed,ig:inGame,camp:myCamp?{x:myCamp.x,z:myCamp.z}:null,zk:[...killedIds].slice(-300)});}catch(e){}
+    try{conn.send({type:'hello',id:myId,name:myName,level:myLevel,version:GAME_VERSION,seed:worldSeed,ig:inGame,team:myTeam,cs:cosSig(),camp:myCamp?{x:myCamp.x,z:myCamp.z}:null,zk:[...killedIds].slice(-300)});}catch(e){}
     logConn('Spojeno s vaultem '+shortId(pid));
     sendAccounts(conn);
   });
-  conn.on('data',d=>handleData(d,pid));
+  conn.on('data',d=>{if(conn._g!==srvGen) return;handleData(d,pid);});
   conn.on('close',()=>{if(conns[pid]===conn||!conns[pid]||!conns[pid].open) handlePlayerDisconnect(pid);});
   conn.on('error',()=>{delete pending[pid];if(conns[pid]===conn||!conns[pid]||!conns[pid].open) handlePlayerDisconnect(pid);});
 }
@@ -671,9 +914,10 @@ function startPeer(){
     {urls:'stun:stun1.l.google.com:19302'},
     {urls:'stun:stun.cloudflare.com:3478'}
   ]}});
-  peer.on('open',()=>{peerStarting=false;peerAttempt=0;logConn('✅ Tvůj vault kód: '+shortId(myId)+' (V'+GAME_VERSION+')');});
+  peer.on('open',()=>{peerStarting=false;peerAttempt=0;logConn('✅ Tvůj vault kód: '+shortId(myId)+' (V'+GAME_VERSION+')');startInbox();if(curServer&&!leavingSrv){const n=curServer;curServer=0;setTimeout(()=>{serial(()=>joinServerN(n,true));},500);}});
   peer.on('error',err=>{
     const t=err&&err.type?err.type:String(err);
+    if(t==='peer-unavailable'){const em=String(err.message||'');let hitP=false;for(const k in probeWait){if(em.endsWith(k)){hitP=true;probeWait[k]();}}if(hitP) return;}
     if(t==='unavailable-id'){
       peerStarting=false;peerAttempt++;
       if(peerAttempt<=2){
@@ -700,10 +944,10 @@ function startPeer(){
   peer.on('disconnected',()=>{
     if(peer&&!peer.destroyed){logConn('Odpojeno od serveru, připojuji znovu...');setTimeout(()=>{try{peer.reconnect();}catch(e){}},1500);}
   });
-  peer.on('connection',conn=>setupConn(conn));
+  peer.on('connection',conn=>{if(!curServer||leavingSrv){try{conn.on('open',()=>{try{conn.close();}catch(e){}});}catch(e){}return;}setupConn(conn);});
   if(posInterval) clearInterval(posInterval);
   posInterval=setInterval(()=>{
-    broadcast({type:'pos',id:myId,name:myName,level:myLevel,x:posRef.x,y:posRef.y,z:posRef.z,yaw:yawRef,ig:inGame,version:GAME_VERSION,sf:mySafe||dead});
+    broadcast({type:'pos',id:myId,name:myName,level:myLevel,x:posRef.x,y:posRef.y,z:posRef.z,yaw:yawRef,ig:inGame,version:GAME_VERSION,sf:mySafe||dead,team:myTeam,cs:cosSig()});
   },100);
 }
 function handlePlayerDisconnect(peerId){
@@ -712,7 +956,8 @@ function handlePlayerDisconnect(peerId){
   dropRemote(peerId,true);
   const oc=camps.find(c=>c.owner===peerId);
   if(oc){if(oc.group&&scene) scene.remove(oc.group);camps=camps.filter(c=>c!==oc);}
-  if(nm&&inGame) toast('👤 '+nm+' odešel');
+  if(nm&&inGame&&!leavingSrv) toast('👤 '+nm+' odešel');
+  if(curServer&&!hubPeer&&!leavingSrv) setTimeout(()=>ensureHub(0),400+Math.random()*2500);
 }
 function logConn(t){const el=document.getElementById('connLog');if(el){const d=document.createElement('div');d.textContent=t;el.appendChild(d);el.scrollTop=el.scrollHeight;}}
 function handleData(d,from){
@@ -731,6 +976,7 @@ function handleData(d,from){
     if(typeof d.x==='number'&&!isNaN(d.x)&&typeof d.z==='number'&&!isNaN(d.z)){p.x=d.x;p.y=d.y;p.z=d.z;p.yaw=d.yaw||0;p.hasPos=true;}
     if(typeof d.sf==='boolean') p.sf=d.sf;
     if(typeof d.ig==='boolean') p.ig=d.ig;
+    p.team=(typeof d.team==='string')?d.team.slice(0,40):null;if(typeof d.cs==='string') p.cs=d.cs.slice(0,80);
     if(d.type==='hello'){
       if(d.camp&&typeof d.camp.x==='number') addCamp({x:d.camp.x,z:d.camp.z,owner:d.id,name:p.name});
       const c=conns[from];
@@ -780,6 +1026,7 @@ function applyKilled(ids){
   });
 }
 function updatePlayerList(){
+  try{updateSrvInfo();renderSocial();}catch(e){}
   const list=Object.values(remote);
   document.getElementById('playerList').textContent='Hráči: '+(list.length?list.map(p=>p.name+' LVL'+p.level+(p.ig?'':' (lobby)')).join(', '):'žádní');
   setText('seeCount',list.filter(p=>p.ig).length);
@@ -807,15 +1054,401 @@ window.connectFriend=()=>{
   setTimeout(()=>{if(!(conns[fid]&&conns[fid].open)) logConn('Spojení se nepodařilo - hráč musí být online v lobby a mít správné ID.');},10000);
 };
 window.enterGame=()=>{
-  document.getElementById('lobby').classList.add('hidden');document.getElementById('enterBtn').classList.remove('show');
-  document.getElementById('app').classList.add('hidden');document.getElementById('gameCanvas').classList.remove('hidden');
+  ['lobby','mainMenu','loadScreen','escMenu','quitBox','shopScreen','socialScreen','app'].forEach(i=>hid(i));document.getElementById('enterBtn').classList.remove('show');
+  document.getElementById('gameCanvas').classList.remove('hidden');
   document.getElementById('hud').classList.remove('hidden');document.getElementById('cross').classList.remove('hidden');
-  document.getElementById('hudId').textContent='VAULT '+shortId(myId);document.getElementById('lvl').textContent=myLevel;
-  inGame=true;
+  document.getElementById('hudId').textContent=curServer?('SERVER '+curServer):'OFFLINE';document.getElementById('lvl').textContent=myLevel;
+  inGame=true;hadLock=false;ambience('game');
   // svět se vytvoří jen jednou; při návratu z menu se jen znovu ukáže
   if(!gameStarted){gameStarted=true;init3D();}
   else if(window.updateAmmo) window.updateAmmo();
 };
+
+// ===================== 40.1: MENU, SERVERY (max 24), POZVÁNKY, TÝMY, ATOMIC SHOP, LOADING =====================
+const LOGO_URL='data:image/png;base64,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';
+const MAX_SRV=24,HUB_PREFIX='wayout80-s',INBOX_PREFIX='wayout80-u-';
+const ICE_CFG={config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:stun.cloudflare.com:3478'}]}};
+let curServer=0,hubPeer=null,hubN=0,hubRes={},probeWait={},leavingSrv=false,srvGen=0,inboxPeer=null,myTeam=null,issuedTeams={},invites={},loadingNow=false,netQ=Promise.resolve(),shopFrom='main',lastEscOpen=0,hadLock=false;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const ge=id=>document.getElementById(id);
+const shw=id=>{const e=ge(id);if(e) e.classList.remove('hidden');};
+const hid=id=>{const e=ge(id);if(e) e.classList.add('hidden');};
+const isShw=id=>{const e=ge(id);return !!e&&!e.classList.contains('hidden');};
+window.show=shw;window.hide=hid;
+const escH=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const serial=fn=>{const p=netQ.then(fn,fn);netQ=p.catch(()=>{});return p;};
+document.querySelectorAll('.logoImg').forEach(i=>{i.src=LOGO_URL;});
+// klik / najetí na tlačítka = zvuk
+document.addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('button');if(b) playSound('ui',0.6);},true);
+document.addEventListener('mouseover',e=>{const b=e.target&&e.target.closest&&e.target.closest('.mm-btn,.esc-btn');if(b&&b!==window.__lastHov){window.__lastHov=b;playSound('hover',0.6);}},true);
+
+// ---------- servery ----------
+async function waitPeerOpen(ms){const t=Date.now();while(Date.now()-t<ms){if(peer&&peer.open&&!peer.destroyed) return true;await sleep(250);}return false;}
+function probeHub(N){
+  return new Promise(res=>{
+    const hidn=HUB_PREFIX+N;let done=false,c=null;
+    const fin=r=>{if(done) return;done=true;delete probeWait[hidn];setTimeout(()=>{try{c&&c.close();}catch(e){}},1200);res(r);};
+    probeWait[hidn]=()=>fin({s:'none'});
+    setTimeout(()=>fin({s:'none',to:1}),7000);
+    try{c=peer.connect(hidn,{reliable:true});}catch(e){fin({s:'none'});return;}
+    c.on('open',()=>{try{c.send({type:'joinReq',id:myId,name:myName});}catch(e){fin({s:'none'});}});
+    c.on('data',d=>{if(d&&d.type==='joinInfo') fin(d.ok?{s:'ok',n:N,members:(Array.isArray(d.members)?d.members:[]).filter(x=>typeof x==='string').slice(0,MAX_SRV)}:{s:'full'});});
+    c.on('error',()=>fin({s:'none'}));
+  });
+}
+function hubOpen(N){
+  return new Promise(res=>{
+    let done=false,hp=null;
+    const fail=()=>{if(done) return;done=true;try{hp&&hp.destroy();}catch(e){}res(false);};
+    try{hp=new Peer(HUB_PREFIX+N,ICE_CFG);}catch(e){res(false);return;}
+    hp.on('open',()=>{
+      if(done){try{hp.destroy();}catch(e){}return;}
+      done=true;hubPeer=hp;hubN=N;hubRes={};hp.on('connection',hubHandle);
+      hp.on('disconnected',()=>{if(hubPeer===hp){try{hp.reconnect();}catch(e){}}});
+      res(true);
+    });
+    hp.on('error',()=>{if(!done) fail();});
+    setTimeout(fail,9000);
+  });
+}
+function hubHandle(conn){
+  conn.on('data',d=>{
+    if(!d||d.type!=='joinReq'||typeof d.id!=='string') return;
+    const now=Date.now(),mem=new Set([myId]);
+    Object.keys(conns).forEach(k=>{if(conns[k]&&conns[k].open) mem.add(k);});
+    Object.keys(hubRes).forEach(k=>{if(hubRes[k]<now||mem.has(k)) delete hubRes[k];});
+    const already=mem.has(d.id)||!!hubRes[d.id];
+    if(!already&&mem.size+Object.keys(hubRes).length>=MAX_SRV){try{conn.send({type:'joinInfo',ok:false,full:true});}catch(e){}return;}
+    if(!already) hubRes[d.id]=now+25000;
+    try{conn.send({type:'joinInfo',ok:true,n:hubN,members:[...mem].filter(k=>k!==d.id)});}catch(e){}
+  });
+}
+function ensureHub(tr){
+  if(!curServer||hubPeer||leavingSrv||tr>4) return;
+  const n=curServer;hubOpen(n).then(ok=>{if(!ok&&curServer===n&&!hubPeer&&!leavingSrv) setTimeout(()=>ensureHub(tr+1),4000+Math.random()*4000);});
+}
+function leaveServer(){
+  leavingSrv=true;srvGen++;
+  try{broadcast({type:'playerLeft',id:myId});}catch(e){}
+  const old=conns;conns={};pending={};
+  setTimeout(()=>Object.values(old).forEach(c=>{try{c.close();}catch(e){}}),200);
+  if(hubPeer){try{hubPeer.destroy();}catch(e){}hubPeer=null;hubN=0;}
+  Object.keys(remote).forEach(id=>dropRemote(id,false));
+  try{camps.filter(c=>c.owner!==myId).forEach(c=>{if(c.group&&scene) scene.remove(c.group);});camps=camps.filter(c=>c.owner===myId);}catch(e){}
+  curServer=0;myTeam=null;
+  setTimeout(()=>{leavingSrv=false;},800);
+  srvChanged();
+}
+// připojí na konkrétní server; claim=true => když neexistuje, vytvoří ho
+async function joinServerN(N,claim){
+  if(!(await waitPeerOpen(20000))) return 'fail';
+  for(let tr=0;tr<3;tr++){
+    const r=await probeHub(N);
+    if(r.s==='ok'){leaveServer();await sleep(60);curServer=N;(r.members||[]).forEach(connectTo);srvChanged();return 'ok';}
+    if(r.s==='full') return 'full';
+    if(!claim) return 'fail';
+    leaveServer();
+    if(await hubOpen(N)){curServer=N;srvChanged();return 'ok';}
+  }
+  return 'fail';
+}
+// automaticky: první server, který není plný (nebo nový)
+async function autoJoin(){
+  for(let N=1;N<=80;N++){const r=await joinServerN(N,true);if(r==='ok') return N;if(r==='fail') return 0;}
+  return 0;
+}
+function srvChanged(){
+  setText('hudId',curServer?('SERVER '+curServer):'OFFLINE');
+  updateSrvInfo();
+}
+function updateSrvInfo(){
+  const n=1+Object.keys(remote).length,t=curServer?('SERVER '+curServer+'  ·  '+n+'/'+MAX_SRV+' hráčů'):'OFFLINE (nepřipojeno k serveru)';
+  setText('escSrv',t);setText('socSrv',t+(myTeam?'  ·  jsi v týmu':''));
+}
+function startInbox(){
+  if(inboxPeer||!window.Peer||!myName) return;
+  const ip=new Peer(inboxId(myName),ICE_CFG);inboxPeer=ip;
+  ip.on('connection',c=>{c.on('data',d=>inboxData(d));});
+  ip.on('disconnected',()=>{setTimeout(()=>{try{if(inboxPeer===ip) ip.reconnect();}catch(e){}},2000);});
+  ip.on('error',e=>{if(e&&e.type==='unavailable-id'){try{ip.destroy();}catch(x){}if(inboxPeer===ip) inboxPeer=null;setTimeout(startInbox,15000);}});
+}
+function inboxId(name){return INBOX_PREFIX+[...String(name).toLowerCase()].map(c=>c.charCodeAt(0).toString(16)).join('');}
+function sendInbox(name,msg){
+  return new Promise(res=>{
+    const id=inboxId(name);let done=false,c=null;
+    const fin=r=>{if(done) return;done=true;delete probeWait[id];setTimeout(()=>{try{c&&c.close();}catch(e){}},2000);res(r);};
+    probeWait[id]=()=>fin(false);
+    setTimeout(()=>fin(false),8000);
+    try{c=peer.connect(id,{reliable:true});}catch(e){fin(false);return;}
+    c.on('open',()=>{try{c.send(msg);}catch(e){fin(false);return;}setTimeout(()=>fin(true),150);});
+    c.on('error',()=>fin(false));
+  });
+}
+function inboxData(d){
+  if(!d||typeof d!=='object') return;
+  if(d.type==='invite'){
+    const from=String(d.from||'').slice(0,16);
+    if(from.length<3||from.toLowerCase()===String(myName).toLowerCase()) return;
+    const srv=parseInt(d.srv);if(!(srv>=1&&srv<=99)) return;
+    const team=String(d.team||'').replace(/[^A-Za-z0-9]/g,'').slice(0,40);if(!team) return;
+    if(Object.keys(invites).length>=5&&!invites[from]) return;
+    invites[from]={from,srv,team,t:Date.now()};
+    toast('🔔 Pozvánka od '+from,4000);playSound('invite');refreshInvitePop();renderSocial();
+  }else if(d.type==='inviteReply'){
+    const nm=String(d.from||'?').slice(0,16);
+    if(d.ok&&typeof d.team==='string'&&issuedTeams[d.team]){if(!myTeam) myTeam=d.team;toast('🤝 '+nm+' přijal pozvánku – je ve tvém týmu',4000);playSound('invite');renderSocial();}
+    else if(d.ok===false){toast('❌ '+nm+' pozvánku nepřijal',3000);}
+  }
+}
+function refreshInvitePop(){
+  const ks=Object.keys(invites),el=ge('invitePop');if(!el) return;
+  if(!ks.length){el.classList.add('hidden');return;}
+  const inv=invites[ks[0]];
+  el.innerHTML='🔔 <b>'+escH(inv.from)+'</b> tě zve do týmu (server '+inv.srv+')<br><button data-a="acc" data-n="'+escH(inv.from)+'">PŘIJMOUT</button><button data-a="dec" data-n="'+escH(inv.from)+'">ODMÍTNOUT</button>';
+  el.classList.remove('hidden');
+}
+ge('invitePop').addEventListener('click',e=>{const b=e.target.closest('button');if(!b) return;if(b.dataset.a==='acc') acceptInvite(b.dataset.n);else declineInvite(b.dataset.n);});
+setInterval(()=>{const now=Date.now();let ch=false;Object.keys(invites).forEach(k=>{if(now-invites[k].t>180000){delete invites[k];ch=true;}});if(ch){refreshInvitePop();renderSocial();}if(isShw('socialScreen')){updateSrvInfo();renderSocial();}else if(isShw('escMenu')) updateSrvInfo();},2000);
+function declineInvite(from){const inv=invites[from];delete invites[from];refreshInvitePop();renderSocial();if(inv) sendInbox(from,{type:'inviteReply',ok:false,from:myName});}
+async function acceptInvite(from){
+  const inv=invites[from];if(!inv) return;
+  delete invites[from];refreshInvitePop();
+  if(Date.now()-inv.t>180000){toast('Pozvánka vypršela');return;}
+  if(!loadingNow&&!inGame){startPlay({srv:inv.srv,team:inv.team,from:inv.from});return;}
+  toast('Připojuji se k '+inv.from+' (server '+inv.srv+')…',4000);
+  const r=curServer===inv.srv?'ok':await serial(()=>joinServerN(inv.srv,false));
+  if(r==='ok'){myTeam=inv.team;toast('🤝 Jsi v týmu s '+inv.from,4000);sendInbox(inv.from,{type:'inviteReply',ok:true,from:myName,team:inv.team});}
+  else{toast(r==='full'?'❌ Server '+inv.srv+' je plný':'❌ Server '+inv.srv+' není dostupný',4000);playSound('error');sendInbox(inv.from,{type:'inviteReply',ok:false,from:myName});}
+  srvChanged();renderSocial();
+}
+window.socInvite=async()=>{
+  const nm=ge('socName').value.trim();
+  if(nm.length<3){setText('socMsg','Zadej jméno hráče (min. 3 znaky).');return;}
+  await sendInviteTo(nm);
+};
+async function sendInviteTo(nm){
+  if(nm.toLowerCase()===String(myName).toLowerCase()){setText('socMsg','Sám sebe pozvat nejde.');return;}
+  if(!curServer){setText('socMsg','Nejsi připojený k serveru.');return;}
+  const team=myTeam||('T'+String(myId).replace(/[^A-Za-z0-9]/g,'').slice(-8)+Date.now().toString(36));
+  issuedTeams[team]=1;
+  setText('socMsg','Posílám pozvánku…');
+  const ok=await sendInbox(nm,{type:'invite',from:myName,team,srv:curServer});
+  setText('socMsg',ok?'✅ Pozvánka odeslána hráči '+nm+'.':'❌ Hráč "'+nm+'" není online (nebo má jiné jméno).');
+  if(!ok) playSound('error');
+}
+function renderSocial(){
+  if(!isShw('socialScreen')) return;
+  const el=ge('socList');if(!el) return;
+  const tm=Object.values(remote).filter(p=>myTeam&&p.team===myTeam);
+  let h='<h3 style="color:#4de1ff;margin:10px 0 4px">TÝM</h3>';
+  if(myTeam){h+='<div class="row"><span>★ '+escH(myName)+' (ty)</span></div>'+tm.map(p=>'<div class="row"><span>♦ '+escH(p.name)+' LVL '+(p.level||1)+'</span></div>').join('')+'<div style="margin-top:6px"><button data-a="leave">OPUSTIT TÝM</button></div>';}
+  else h+='<div class="small">Nejsi v žádném týmu. Pozvi hráče – po přijetí se připojí na tvůj server a budete v týmu.</div>';
+  const ps=Object.values(remote);
+  h+='<h3 style="color:#4de1ff;margin:14px 0 4px">HRÁČI NA SERVERU</h3>';
+  h+=ps.length?ps.map(p=>'<div class="row"><span>'+escH(p.name)+' LVL '+(p.level||1)+((myTeam&&p.team===myTeam)?' ♦':'')+'</span><button data-a="inv" data-n="'+escH(p.name)+'">POZVAT</button></div>').join(''):'<div class="small">Zatím tu nikdo jiný není.</div>';
+  const ks=Object.keys(invites);
+  h+='<h3 style="color:#4de1ff;margin:14px 0 4px">PŘÍCHOZÍ POZVÁNKY</h3>';
+  h+=ks.length?ks.map(k=>'<div class="row"><span>'+escH(k)+' (server '+invites[k].srv+')</span><span><button data-a="acc" data-n="'+escH(k)+'">PŘIJMOUT</button> <button data-a="dec" data-n="'+escH(k)+'">ODMÍTNOUT</button></span></div>').join(''):'<div class="small">Žádné.</div>';
+  el.innerHTML=h;
+}
+ge('socList').addEventListener('click',e=>{const b=e.target.closest('button');if(!b) return;const a=b.dataset.a,n=b.dataset.n;
+  if(a==='inv') sendInviteTo(n);else if(a==='acc') acceptInvite(n);else if(a==='dec') declineInvite(n);else if(a==='leave'){myTeam=null;toast('Opustil jsi tým');renderSocial();updateSrvInfo();}});
+window.openSocial=()=>{shw('socialScreen');updateSrvInfo();renderSocial();};
+window.closeSocial=()=>hid('socialScreen');
+const teamMates=()=>Object.values(remote).filter(p=>myTeam&&p.team===myTeam);
+window.__teamMates=teamMates;window.__myTeam=()=>myTeam;
+
+// ---------- Atomic Shop ----------
+const COS=[
+ {id:'hat_cow',s:'hat',n:'Kovbojský klobouk',ic:'🤠',p:120,r:0},{id:'hat_top',s:'hat',n:'Cylindr',ic:'🎩',p:160,r:0},{id:'hat_party',s:'hat',n:'Párty čepice',ic:'🥳',p:60,r:0},
+ {id:'hat_horns',s:'hat',n:'Ďáblovy rohy',ic:'😈',p:220,r:1},{id:'hat_halo',s:'hat',n:'Svatozář',ic:'😇',p:320,r:2},{id:'hat_crown',s:'hat',n:'Zlatá koruna',ic:'👑',p:520,r:3},
+ {id:'back_capr',s:'back',n:'Rudý plášť',ic:'🧣',p:180,r:0},{id:'back_capb',s:'back',n:'Modrý plášť',ic:'🧥',p:180,r:0},{id:'back_pack',s:'back',n:'Raketový batoh',ic:'🚀',p:280,r:1},{id:'back_wings',s:'back',n:'Andělská křídla',ic:'🕊️',p:460,r:2},
+ {id:'suit_red',s:'suit',n:'Rudý oblek',ic:'🟥',p:140,r:0},{id:'suit_green',s:'suit',n:'Radiační zelený oblek',ic:'🟩',p:140,r:0},{id:'suit_pink',s:'suit',n:'Růžový oblek',ic:'🌸',p:140,r:0},{id:'suit_black',s:'suit',n:'Černý oblek',ic:'⬛',p:200,r:1},{id:'suit_gold',s:'suit',n:'Zlatý oblek',ic:'🟨',p:480,r:3},
+ {id:'aura_rad',s:'aura',n:'Radioaktivní záře',ic:'☢️',p:360,r:2},{id:'aura_blue',s:'aura',n:'Atomová modrá aura',ic:'⚛️',p:360,r:2},{id:'aura_fire',s:'aura',n:'Plamenná aura',ic:'🔥',p:420,r:2}
+];
+const RAR=['COMMON','RARE','EPIC','LEGENDARY'],SLOTS=['hat','back','suit','aura'];
+let cosS={a:0,o:{},e:{},d:0,s:0},shopTab=0;
+function loadCos(){
+  try{const r=localStorage.getItem('wp_cos_'+myName);if(r){cosS=Object.assign({a:0,o:{},e:{},d:0,s:0},JSON.parse(r));}else{cosS={a:100,o:{},e:{},d:0,s:0};saveCos();}}catch(e){}
+  if(!cosS.o||typeof cosS.o!=='object') cosS.o={};if(!cosS.e||typeof cosS.e!=='object') cosS.e={};
+}
+function saveCos(){try{localStorage.setItem('wp_cos_'+myName,JSON.stringify(cosS));}catch(e){}}
+const cosSig=()=>SLOTS.map(s=>cosS.e[s]||'').join('|');
+window.__cosSig=cosSig;
+function addAtoms(n){cosS.a+=n;saveCos();refreshAtoms();}
+function refreshAtoms(){setText('mmAtoms',cosS.a);setText('shAtoms',cosS.a);}
+const dayNo=()=>Math.floor((Date.now()-new Date().getTimezoneOffset()*60000)/86400000);
+function shopOffer(){
+  const r=seededRandom(dayNo()*7919+(cosS.s||0)*104729+17);
+  for(let i=0;i<3;i++) r();
+  const pool=COS.slice();for(let i=pool.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+  let freeLeft=r()<0.6?(r()<0.4?2:1):0;
+  return pool.slice(0,6).map(it=>{let f=false;if(freeLeft>0&&r()<0.45){f=true;freeLeft--;}return {it,free:f};});
+}
+function cosCard(it,price,mode){
+  const eq=cosS.e[it.s]===it.id,own=!!cosS.o[it.id];
+  let btn='';
+  if(mode==='shop') btn=own?'<button disabled>MÁŠ</button>':'<button data-a="buy" data-i="'+it.id+'" data-p="'+price+'">'+(price?'KOUPIT':'VZÍT ZDARMA')+'</button>';
+  else btn='<button data-a="eq" data-i="'+it.id+'">'+(eq?'SVLÉKNOUT':'VYBAVIT')+'</button>';
+  return '<div class="cos-card'+(eq?' eq':'')+'"><div class="ic">'+it.ic+'</div><div class="nm">'+escH(it.n)+'</div><div class="rr r'+it.r+'">'+RAR[it.r]+' · '+it.s.toUpperCase()+'</div>'+(mode==='shop'?'<div class="pr'+(price?'':' free')+'">'+(price?('⚛ '+price):'ZDARMA!')+'</div>':'')+btn+'</div>';
+}
+function renderShop(){
+  refreshAtoms();
+  const b=ge('shopBody');if(!b) return;
+  ge('shT0').style.background=shopTab===0?'#3dff5a':'';ge('shT0').style.color=shopTab===0?'#000':'';
+  ge('shT1').style.background=shopTab===1?'#3dff5a':'';ge('shT1').style.color=shopTab===1?'#000':'';
+  if(shopTab===0){
+    b.innerHTML='<div class="small" style="margin-top:8px;opacity:.7">Nabídka se mění každý den o půlnoci. Některé věci bývají zdarma. Atomy dostaneš z denní odměny a za level-up.</div><div class="shop-grid">'+shopOffer().map(o=>cosCard(o.it,o.free?0:o.it.p,'shop')).join('')+'</div>';
+  }else{
+    const own=COS.filter(c=>cosS.o[c.id]);
+    b.innerHTML=own.length?'<div class="shop-grid">'+own.map(it=>cosCard(it,0,'own')).join('')+'</div>':'<div class="small" style="margin-top:12px">Zatím nemáš žádné věci. Kup nebo vyzvedni něco v nabídce.</div>';
+  }
+}
+ge('shopBody').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b||b.disabled) return;const a=b.dataset.a,id=b.dataset.i,it=COS.find(c=>c.id===id);if(!it) return;
+  if(a==='buy'){
+    const offer=shopOffer().find(o=>o.it.id===id);if(!offer||cosS.o[id]) return;
+    const price=offer.free?0:it.p;
+    if(cosS.a<price){toast('Nemáš dost atomů (⚛ '+price+')');playSound('error');return;}
+    cosS.a-=price;cosS.o[id]=1;saveCos();playSound('coin');toast((price?'Koupeno: ':'ZDARMA: ')+it.n,2500);renderShop();
+  }else if(a==='eq'){
+    if(cosS.e[it.s]===id) delete cosS.e[it.s];else cosS.e[it.s]=id;
+    saveCos();playSound('pickup');renderShop();
+  }
+});
+window.shopTabSet=n=>{shopTab=n;renderShop();};
+window.shopRefresh=()=>{if(cosS.a<20){toast('Obnovení stojí 20 ⚛');playSound('error');return;}cosS.a-=20;cosS.s=(cosS.s||0)+1;saveCos();shopTab=0;playSound('coin');renderShop();};
+window.shopDaily=()=>{
+  if(cosS.d===dayNo()){toast('Dnešní odměnu už máš. Přijď zítra!');playSound('error');return;}
+  cosS.d=dayNo();let msg;const r=Math.random();
+  if(r<0.12){const un=COS.filter(c=>!cosS.o[c.id]);if(un.length){const it=un[Math.floor(Math.random()*un.length)];cosS.o[it.id]=1;msg='🎁 ZDARMA: '+it.n+'!';}else{cosS.a+=150;msg='🎁 +150 ⚛';}}
+  else if(r<0.4){const n=100+Math.floor(Math.random()*101);cosS.a+=n;msg='🎁 Jackpot! +'+n+' ⚛';}
+  else{const n=25+Math.floor(Math.random()*56);cosS.a+=n;msg='🎁 Denní odměna: +'+n+' ⚛';}
+  saveCos();playSound('levelup');toast(msg,4000);renderShop();
+};
+window.openShop=()=>{shopFrom=inGame?'esc':'main';shopTab=0;shw('shopScreen');renderShop();};
+window.closeShop=()=>{hid('shopScreen');};
+
+// ---------- hlavní menu / Esc menu / ukončení ----------
+function showMainMenu(){
+  hid('app');hid('loadScreen');hid('escMenu');hid('quitBox');hid('shopScreen');hid('socialScreen');
+  setText('mmUser',myName+'  ·  LVL '+myLevel);refreshAtoms();shw('mainMenu');ambience('menu');
+}
+window.__toMainMenu=()=>{leaveServer();showMainMenu();};
+window.mmPlay=()=>{startPlay();};
+window.mmQuit=()=>{quitDesktop();};
+window.mmLogout=()=>{
+  if(!confirm('Odhlásit se? Příště budeš muset zadat jméno a PIN.')) return;
+  try{localStorage.removeItem('wp_auto');}catch(e){}
+  leaveServer();location.reload();
+};
+const uiOpen=()=>isShw('escMenu')||isShw('shopScreen')||isShw('socialScreen')||isShw('quitBox');
+window.__uiOpen=uiOpen;
+function openEsc(){
+  if(!inGame||uiOpen()) return;
+  try{document.exitPointerLock();}catch(e){}
+  lastEscOpen=performance.now();shw('escMenu');updateSrvInfo();playSound('ui');
+}
+window.escBack=()=>{hid('escMenu');hid('quitBox');hid('shopScreen');hid('socialScreen');const c=ge('gameCanvas');try{c.requestPointerLock();}catch(e){}};
+window.escQuit=()=>shw('quitBox');
+window.escKey=()=>{
+  if(isShw('quitBox')){hid('quitBox');return;}
+  if(isShw('shopScreen')){closeShop();return;}
+  if(isShw('socialScreen')){closeSocial();return;}
+  if(isShw('escMenu')){if(performance.now()-lastEscOpen<350) return;escBack();return;}
+  openEsc();
+};
+document.addEventListener('keydown',e=>{if(e.code==='Escape'&&!inGame){if(isShw('shopScreen')) closeShop();else if(isShw('socialScreen')) closeSocial();}});
+document.addEventListener('pointerlockchange',()=>{
+  if(document.pointerLockElement){hadLock=true;return;}
+  if(hadLock&&inGame&&!uiOpen()){
+    hadLock=false;
+    setTimeout(()=>{if(inGame&&!uiOpen()&&!isInventoryOpen&&!isMapOpen&&!isPipOpen&&!ownerConsoleVisible&&!chatOpen&&document.hasFocus()&&!dead) openEsc();},150);
+  }
+});
+window.quitToMenu=()=>{hid('quitBox');hid('escMenu');if(window.saveAndMenu) window.saveAndMenu();};
+window.quitDesktop=()=>{
+  try{if(window.__savePos) window.__savePos();}catch(e){}
+  try{saveStats();localStorage.setItem('wp_game_version',GAME_VERSION);}catch(e){}
+  try{if(inGame) broadcast({type:'pos',id:myId,name:myName,level:myLevel,x:posRef.x,y:posRef.y,z:posRef.z,yaw:yawRef,ig:false,version:GAME_VERSION});}catch(e){}
+  leaveServer();ambience(null);
+  hid('quitBox');hid('escMenu');shw('closeScreen');
+  setTimeout(()=>{try{window.close();}catch(e){}},500);
+  setTimeout(()=>{setText('closeMsg','Hra je uložená. Můžeš zavřít toto okno.');},1600);
+};
+
+// ---------- načítací obrazovka (1:50, nepřeskočitelná) ----------
+const LOAD_TIPS=[
+ 'Stimpak (H) obnoví zdraví, RadAway (J) odstraní radiaci z těla.',
+ 'Radiace snižuje maximální HP. Vyhýbej se zeleným zónám, nebo měj u sebe RadAway.',
+ 'Truhly a věci na zemi seber pohledem na ně a klávesou E.',
+ 'Postav si C.A.M.P. klávesou Q. Na mapě (M) se k němu můžeš rychle přesunout.',
+ 'Rychlý přesun na mapě funguje jen na campy, Top of the World a členy tvého týmu.',
+ 'Pozvi kamaráda přes ESC → Social. Po přijetí vás to dá na stejný server a do jednoho týmu.',
+ 'Zombíci s pistolí střílí jen když tě vidí. Schovej se za zeď!',
+ 'Voda v kráterech je radioaktivní. Plavání ti přidává RAD.',
+ 'V Atomic Shopu je každý den nová nabídka a někdy i věci zdarma.',
+ 'Top of the World ukrývá nejvíc kořisti – a nejvíc zombíků.',
+ 'Nuka-Cola (klávesa 4) uhasí žízeň a trochu uzdraví.',
+ 'Ghúlové plavou v radioaktivní vodě. Nechoď za nimi!',
+ 'Na jednom serveru může být až 24 hráčů. Když je plný, vytvoří se další.',
+ 'Když se odpojíš, tvoje postava zůstane ležet tam, kde jsi skončil.'
+];
+function buildLoadBg(){
+  const s=ge('ldBg');if(!s||s.childNodes.length) return;
+  let h='<defs><linearGradient id="skg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3d6fae"/><stop offset=".45" stop-color="#c58fa6"/><stop offset=".72" stop-color="#f0a770"/><stop offset="1" stop-color="#f7cf86"/></linearGradient><radialGradient id="sung"><stop offset="0" stop-color="#fff6c8"/><stop offset=".35" stop-color="#ffd98a" stop-opacity=".8"/><stop offset="1" stop-color="#ffb060" stop-opacity="0"/></radialGradient><filter id="bl"><feGaussianBlur stdDeviation="14"/></filter><filter id="bl2"><feGaussianBlur stdDeviation="5"/></filter></defs>';
+  h+='<rect width="1600" height="900" fill="url(#skg)"/><circle cx="1010" cy="560" r="330" fill="url(#sung)"/>';
+  let sd=7;const rnd=()=>{sd=(sd*9301+49297)%233280;return sd/233280;};
+  for(let i=0;i<16;i++){const x=rnd()*1600,y=40+rnd()*380,w=160+rnd()*340,hh=24+rnd()*50;h+='<ellipse cx="'+x.toFixed(0)+'" cy="'+y.toFixed(0)+'" rx="'+w.toFixed(0)+'" ry="'+hh.toFixed(0)+'" fill="'+(rnd()<.5?'#f4b6a4':'#e98f86')+'" opacity=".55" filter="url(#bl)"/>';}
+  h+='<g filter="url(#bl2)" opacity=".92"><ellipse cx="1010" cy="620" rx="120" ry="40" fill="#b86a50"/><ellipse cx="1010" cy="560" rx="52" ry="70" fill="#c9805e"/><ellipse cx="1010" cy="480" rx="112" ry="62" fill="#e0a07a"/><ellipse cx="985" cy="458" rx="62" ry="40" fill="#f0c096"/></g>';
+  h+='<polygon points="0,900 0,640 150,600 330,650 520,590 720,640 900,610 1100,650 1300,600 1450,630 1600,590 1600,900" fill="#6e4a46"/>';
+  h+='<polygon points="0,900 0,730 200,700 420,745 650,705 880,750 1120,710 1350,745 1600,700 1600,900" fill="#4b2e2c"/>';
+  for(let i=0;i<46;i++){const x=rnd()*1600,y=700+rnd()*180,sc=.6+rnd()*1.5,hh=120*sc,w=44*sc,c=rnd()<.25?'#8a3b24':'#1d2a1d';h+='<polygon points="'+x.toFixed(0)+','+(y-hh).toFixed(0)+' '+(x-w/2).toFixed(0)+','+y.toFixed(0)+' '+(x+w/2).toFixed(0)+','+y.toFixed(0)+'" fill="'+c+'"/>';}
+  h+='<polygon points="0,900 0,820 260,790 520,840 780,805 1040,850 1300,815 1600,850 1600,900" fill="#2b1b1a"/>';
+  s.innerHTML=h;
+}
+async function startPlay(opts){
+  if(loadingNow||inGame) return;
+  loadingNow=true;opts=opts||{};
+  const LOAD_MS=window.__LOAD_MS||110000,t0=Date.now();
+  hid('mainMenu');hid('shopScreen');hid('escMenu');
+  buildLoadBg();shw('loadScreen');ambience('menu');
+  setText('ldSrv','Připojuji k serveru…');
+  let tipI=Math.floor(Math.random()*LOAD_TIPS.length),lastTip=-99999,netOk=false,netDone=false,leftMsg='';
+  const ldFill=ge('ldFill');
+  // síť běží na pozadí
+  (async()=>{
+    try{
+      if(opts.srv){
+        const r=await serial(()=>joinServerN(opts.srv,false));
+        if(r==='ok'){myTeam=opts.team;sendInbox(opts.from,{type:'inviteReply',ok:true,from:myName,team:opts.team});netOk=true;}
+        else{toast(r==='full'?'Server pozvánky je plný – hledám jiný':'Server pozvánky není dostupný – hledám jiný',4000);}
+      }
+      let tries=0;
+      while(!netOk&&!netDone&&tries<6){const n=await serial(autoJoin);if(n){netOk=true;break;}tries++;setText('ldSrv','Hledám server… (pokus '+(tries+1)+')');await sleep(5000);}
+    }catch(e){}
+    netDone=true;
+  })();
+  await new Promise(resolve=>{
+    const iv=setInterval(()=>{
+      const el=Date.now()-t0,p=Math.min(1,el/LOAD_MS);
+      ldFill.style.width=(p*100).toFixed(1)+'%';setText('ldPct',Math.floor(p*100)+' %');
+      const left=Math.max(0,Math.ceil((LOAD_MS-el)/1000));setText('ldTime',Math.floor(left/60)+':'+String(left%60).padStart(2,'0'));
+      if(el-lastTip>8000){lastTip=el;setText('ldTip',LOAD_TIPS[tipI++%LOAD_TIPS.length]);}
+      if(curServer) setText('ldSrv','SERVER '+curServer+'  ·  hráčů na serveru: '+(1+Object.keys(remote).length)+'/'+MAX_SRV);
+      else if(netDone) setText('ldSrv','OFFLINE – nepodařilo se připojit k serveru');
+      if(el>=LOAD_MS&&(netDone||el>LOAD_MS+20000)){clearInterval(iv);resolve();}
+    },200);
+  });
+  setText('ldPct','100 %');setText('ldTime','0:00');setText('ldTip','Vstupuješ do pustiny…');
+  await sleep(400);
+  ambience(null);
+  hid('loadScreen');loadingNow=false;
+  if(!curServer) toast('Offline: nepřipojeno k serveru, hraješ sám.',5000);
+  window.enterGame();
+}
+window.startPlay=startPlay;
+
 const WORLD=2000;   // polovina velikosti světa (svět má 4000 x 4000 m)
 function baseHeight(x,z){
   let h=Math.sin(x*0.02)*2+Math.cos(z*0.02)*2;
@@ -1128,7 +1761,7 @@ function init3D(){
   vaultSealed=localStorage.getItem('wp_sealed_'+myName)==='1';
   let sx=DOOR.x+(Math.random()-0.5)*7,sz=DOOR.z+(Math.random()-0.5)*7;
   if(vaultSealed){sx=DOOR.x+14;sz=DOOR.z;}
-  try{const sp=JSON.parse(localStorage.getItem('wp_pos_'+myName)||'null');if(sp&&isFinite(sp.x)&&isFinite(sp.z)&&Math.abs(sp.x)<295&&Math.abs(sp.z)<295){sx=sp.x;sz=sp.z;}}catch(e){}
+  try{const sp=JSON.parse(localStorage.getItem('wp_pos_'+myName)||'null');if(sp&&isFinite(sp.x)&&isFinite(sp.z)&&Math.abs(sp.x)<WORLD-30&&Math.abs(sp.z)<WORLD-30){sx=sp.x;sz=sp.z;}}catch(e){}
   camera.position.set(sx,getTerrainHeight(sx,sz)+1.7,sz);posRef={x:sx,y:camera.position.y,z:sz};
   const T=buildTextures();
   const stdm=o=>new THREE.MeshStandardMaterial(Object.assign({roughness:1},o));
@@ -1430,7 +2063,7 @@ function init3D(){
     const zombie=(id,x,z,hp,dmg,weapon)=>{
       const e=makeGhoul(0,weapon);
       e.position.set(x,getTerrainHeight(x,z)+0.9,z);
-      e.userData={id,hp,speed:1.5,dmg:weapon==='club'?20:dmg,caps:8+Math.floor(sr()*10),xp:35};if(weapon==='pistol') e.userData.gun=6;shade(e,true,false);scene.add(e);enemies.push(e);
+      e.userData={id,hp,speed:1.5,dmg:weapon==='club'?20:dmg,caps:8+Math.floor(sr()*10),xp:35};if(weapon==='pistol') e.userData.gun=2;shade(e,true,false);scene.add(e);enemies.push(e);
     };
     const mkChest=(x,z,loot,extra)=>{
       const ch=new THREE.Mesh(new THREE.BoxGeometry(1.2,0.8,0.8),chestMat);ch.position.set(x,getTerrainHeight(x,z)+0.45,z);
@@ -1948,6 +2581,7 @@ function init3D(){
       return;
     }
     if(ownerConsoleVisible && e.code!=='KeyC' && e.code!=='Escape') return;
+    if(window.__uiOpen&&window.__uiOpen()&&e.code!=='Escape') return;
     if((e.code==='Enter'||e.code==='NumpadEnter')&&!isInventoryOpen&&!isMapOpen&&!isPipOpen&&!ownerConsoleVisible){e.preventDefault();openChat();return;}
     if(e.repeat &&!['KeyW','KeyA','KeyS','KeyD'].includes(e.code)) return;
     if(e.code==='KeyW') moveForward=1;
@@ -1959,7 +2593,7 @@ function init3D(){
       e.preventDefault();
       if(magAmmo>=magSize()) return;
       if(reserveAmmo<=0){magAmmo=magSize();reserveAmmo=90;}else{const need=magSize()-magAmmo;const take=Math.min(need,reserveAmmo);magAmmo+=take;reserveAmmo-=take;}
-      ammo=magAmmo;updateAmmo();playSound('pickup');
+      ammo=magAmmo;updateAmmo();playSound('reload',0.6);
       setTimeout(()=>{keys['KeyR']=false;},80);
     }
     if(e.code==='KeyH'){doHeal();}
@@ -1985,7 +2619,7 @@ function init3D(){
       else if(isPipOpen) closePip();
       else if(isInventoryOpen) closeInv();
       else if(isMapOpen) closeMap();
-      else saveAndMenu();
+      else window.escKey();
     }
   });
   document.addEventListener('keyup',e=>{
@@ -2016,7 +2650,7 @@ function init3D(){
     toast('+'+gain+' CAPS | +'+xpg+' XP'+(hit.userData.type==='ghoul'?' (GHÚL)':hit.userData.type==='scorched'?' (SCORCHED)':''));
     checkQuests();
   }
-  let lastMelee=0;
+  let lastMelee=0,lastHurt=0,lastStep=0,lastGroan=0;
   function meleeHit(){
     const t=performance.now();if(t-lastMelee<550) return;lastMelee=t;
     gunKick=1;playSound('hit',0.5);
@@ -2030,9 +2664,9 @@ function init3D(){
     if(dead) return;
     {const tn=performance.now();if(tn<nextShot) return;nextShot=tn+WEAPONS[curWeapon].cd;}
     if(magAmmo<=0){
-      if(reserveAmmo>0){const take=Math.min(magSize(),reserveAmmo);magAmmo=take;reserveAmmo-=take;ammo=magAmmo;updateAmmo();playSound('pickup');}else{meleeHit();return;}
+      if(reserveAmmo>0){const take=Math.min(magSize(),reserveAmmo);magAmmo=take;reserveAmmo-=take;ammo=magAmmo;updateAmmo();playSound('reload',0.6);}else{playSound('empty',0.5);meleeHit();return;}
     }
-    magAmmo--;ammo=magAmmo;updateAmmo();playSound('shoot',0.6);gunKick=1;
+    magAmmo--;ammo=magAmmo;updateAmmo();playSound('shoot',0.6,curWeapon);gunKick=1;
     const dir=new THREE.Vector3(0,0,-1);dir.applyEuler(new THREE.Euler(pitch,yaw,0,'YXZ'));
     const ray=new THREE.Raycaster(camera.position,dir,0,120);
     const hits=ray.intersectObjects([...enemies,...buildings,...chests,...vaultSolids]);
@@ -2142,7 +2776,8 @@ function init3D(){
   function damage(n){
     if(dead) return;
     hp-=n;setText('hp',hp);
-    if(hp<=0){
+    if(n>=4&&performance.now()-lastHurt>350){lastHurt=performance.now();playSound('hurt',0.6);}
+    if(hp<=0){playSound('death',0.7);
       hp=0;dead=true;rads=0;caps=Math.floor(caps*0.9);saveStats();updateAmmo();
       setText('hp','MRTVÝ 3s - pak 2 min ochrana (-10% caps)');
       setTimeout(()=>{
@@ -2203,10 +2838,11 @@ function init3D(){
     const wx=(mxp-SZ/2)/MS,wz=(myp-SZ/2)/MS;
     const targets=[];
     camps.filter(campShown).forEach(cp=>targets.push({name:'C.A.M.P. '+(cp.name||''),x:cp.x+3,z:cp.z,cost:cp.owner===myId?15:25}));
-    Object.values(remote).forEach(p=>{if(p.ig&&typeof p.x==='number') targets.push({name:p.name,x:p.x+2,z:p.z,cost:25});});
+    mapPOIs.filter(q=>q.label==='TOP OF THE WORLD').forEach(q=>targets.push({name:'TOP OF THE WORLD',x:q.x+22,z:q.z+58,cost:40}));
+    Object.values(remote).forEach(p=>{if(myTeam&&p.team===myTeam&&p.ig&&typeof p.x==='number') targets.push({name:'👥 '+p.name+' (tým)',x:p.x+2,z:p.z,cost:25});});
     let best=null,bd=40;
     targets.forEach(t=>{const d=Math.hypot(t.x-wx,t.z-wz);if(d<bd){bd=d;best=t;}});
-    if(!best){toast('Klikni na camp nebo hráče');return;}
+    if(!best){toast('Přesun jde jen na C.A.M.P., Top of the World a člena týmu');return;}
     const cost=best.cost+Math.floor(Math.hypot(best.x-camera.position.x,best.z-camera.position.z)/60);
     if(caps<cost){toast('Rychlý přesun stojí '+cost+' caps');return;}
     caps-=cost;
@@ -2228,7 +2864,7 @@ function init3D(){
   }
   window.buildCamp=buildCamp;
   function savePos(){if(dead||!camera) return;try{localStorage.setItem('wp_pos_'+myName,JSON.stringify({x:+camera.position.x.toFixed(2),z:+camera.position.z.toFixed(2)}));}catch(e){}}
-  window.addEventListener('pagehide',savePos);window.addEventListener('beforeunload',savePos);
+  window.__savePos=savePos;window.addEventListener('pagehide',savePos);window.addEventListener('beforeunload',savePos);
   function saveAndMenu(){
     savePos();
     broadcast({type:'pos',id:myId,name:myName,level:myLevel,x:posRef.x,y:posRef.y,z:posRef.z,yaw:yawRef,ig:false,version:GAME_VERSION});
@@ -2237,7 +2873,7 @@ function init3D(){
     document.getElementById('gameCanvas').classList.add('hidden');document.getElementById('hud').classList.add('hidden');document.getElementById('cross').classList.add('hidden');
     document.getElementById('radOverlay').style.opacity=0;
     document.getElementById('inventory').classList.add('hidden');document.getElementById('mapScreen').classList.add('hidden');document.getElementById('pipboy').classList.add('hidden');
-    document.getElementById('app').classList.remove('hidden');document.getElementById('lobby').classList.remove('hidden');document.getElementById('enterBtn').classList.add('show');
+    window.__toMainMenu();
     document.exitPointerLock();isInventoryOpen=false;isMapOpen=false;isPipOpen=false;ownerConsoleVisible=false;document.getElementById('ownerConsole').classList.remove('show');
     moveForward=0;moveRight=0;
     updatePlayerList();
@@ -2251,14 +2887,14 @@ function init3D(){
     const box=document.getElementById('onlineBox');if(!box) return;
     const lines=['ONLINE','★ '+myName+' LVL '+myLevel];
     Object.values(remote).forEach(p=>{
-      if(!p.ig||typeof p.x!=='number'){lines.push('▶ '+p.name+' LVL '+p.level+' (lobby)');return;}
+      if(!p.ig||typeof p.x!=='number'){lines.push((p.team&&p.team===myTeam?'♦ ':'▶ ')+p.name+' LVL '+p.level+' (lobby)');return;}
       const dx=p.x-camera.position.x,dz=p.z-camera.position.z;
       const dist=Math.round(Math.hypot(dx,dz));
       let rel=Math.atan2(-dx,-dz)-yaw;
       while(rel>Math.PI) rel-=Math.PI*2;
       while(rel<-Math.PI) rel+=Math.PI*2;
       const idx=((Math.round(rel/(Math.PI/4))%8)+8)%8;
-      lines.push('▶ '+p.name+' LVL '+p.level+'  '+dist+'m '+arrows[idx]);
+      lines.push((p.team&&p.team===myTeam?'♦ ':'▶ ')+p.name+' LVL '+p.level+'  '+dist+'m '+arrows[idx]);
     });
     box.textContent=lines.join('\n');
   }
@@ -2282,6 +2918,7 @@ function init3D(){
     walking=false;
     if(move.length()>0){
       walking=true;
+      if(jumpY<=0.02&&now-lastStep>((keys['ShiftLeft']||keys['ShiftRight'])?290:440)){lastStep=now;playSound('step',0.3);}
       move.normalize().multiplyScalar(4.5*(1+0.05*(special.A-1))*((keys['ShiftLeft']||keys['ShiftRight'])?1.6:1)*dt);
       const nx=camera.position.x+move.x,nz=camera.position.z+move.z;
       if(!isBlocked(nx,nz)){camera.position.x=nx;camera.position.z=nz;}
@@ -2383,7 +3020,8 @@ function init3D(){
           else if(!zWall(z,z.position.x,z.position.z+stz)) z.position.z+=stz;
           ud.mv=true;
         }else z.rotation.y+=0.005;
-        if(ud.gun&&bd<24&&bd>3&&!dead&&(!z.lastShot||now-z.lastShot>2200)&&losClear(z.position.x,z.position.z,camera.position.x,camera.position.z)){z.lastShot=now;if(Math.random()<0.6){playSound('shoot',0.25);damage(ud.gun);toast('💥 Zombie střílí!',600);}}
+        if(bd<16&&bd>2&&now-lastGroan>2500&&Math.random()<0.03){lastGroan=now;playSound('groan',0.45);}
+        if(ud.gun&&bd<24&&bd>3&&!dead&&(!z.lastShot||now-z.lastShot>2800)&&losClear(z.position.x,z.position.z,camera.position.x,camera.position.z)){z.lastShot=now;if(Math.random()<0.4){playSound('shoot',0.3);damage(ud.gun);toast('💥 Zombie střílí!',600);}}
       }else if(ud.tx!==undefined){
         const k=Math.min(1,dt*8);z.position.x+=(ud.tx-z.position.x)*k;z.position.z+=(ud.tz-z.position.z)*k;
       }else z.rotation.y+=0.005;

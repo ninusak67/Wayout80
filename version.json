@@ -1,11 +1,11 @@
 {
-  "version": 40,
+  "version": 41,
   "entry": "wayout.html",
   "files": [
     {
       "name": "wayout.html",
-      "sha256": "5e7e74b8348db3f303aa59c14f5965f3e5be1af17db07d73e9aa3e2e091d2a23"
+      "sha256": "774f35966f72772707405dadef2047e12cc8b9444461f4f673606e1029d0edf6"
     }
   ],
-  "notes": "39.1"
+  "notes": "40.1"
 }
