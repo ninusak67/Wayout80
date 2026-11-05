@@ -99,6 +99,8 @@ button:hover{background:#0a0}
 .cos-card .pr.free{color:#ffe34d}
 .cos-card.eq{border-color:#ffe34d;box-shadow:0 0 12px rgba(255,227,77,.4)}
 .r0{color:#9aa}.r1{color:#4da6ff}.r2{color:#c27dff}.r3{color:#ffb12e}
+#settingsScreen{position:fixed;inset:0;z-index:6250;display:flex;align-items:center;justify-content:center;background:rgba(0,12,0,.78)}
+.row2{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 0;border-bottom:1px solid #123}
 #invitePop{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:8000;background:#041004;border:2px solid #4de1ff;padding:12px 18px;text-align:center;box-shadow:0 0 24px rgba(77,225,255,.5)}
 #invitePop button{margin:8px 6px 0;background:#0a2a0a;color:#3dff5a;border:1px solid #3dff5a;padding:6px 12px;font:bold 13px 'Courier New',monospace;cursor:pointer}
 #socList .row{display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid #123;padding:5px 0}
@@ -141,7 +143,8 @@ button:hover{background:#0a0}
     <input id="nameIn" placeholder="Jméno" maxlength="16">
     <input id="pinIn" placeholder="PIN 4 čísla" maxlength="4" type="password">
     <div id="pinErr" style="color:#f00;display:none">ŠPATNÝ PIN!</div>
-    <button onclick="doRegister()">VSTOUPIT</button>
+    <button onclick="doRegister('login')">PŘIHLÁSIT SE</button>
+    <button onclick="doRegister('create')" style="background:#0a2a0a;color:#3dff5a;border:1px solid #3dff5a;margin-top:8px">VYTVOŘIT ÚČET</button>
     <div id="versionInfo" class="small"></div>
   </div>
   <div id="lobby" class="panel hidden">
@@ -184,6 +187,7 @@ button:hover{background:#0a0}
     <div class="mm-user" id="mmUser">40.1</div>
     <button class="mm-btn" onclick="mmPlay()">PLAY</button>
     <button class="mm-btn" onclick="openShop()">ATOMIC SHOP <span class="mm-atoms">⚛ <b id="mmAtoms">0</b></span></button>
+    <button class="mm-btn" onclick="openSettings()">SETTINGS</button>
     <button class="mm-btn" onclick="mmQuit()">QUIT</button>
     <div class="mm-foot">WAYOUT 40.1 · Created By ItzRealLenix · <a onclick="mmLogout()">odhlásit se</a></div>
   </div>
@@ -194,6 +198,7 @@ button:hover{background:#0a0}
   <button class="esc-btn" onclick="escBack()">BACK TO GAME</button>
   <button class="esc-btn" onclick="openShop()">ATOMIC SHOP</button>
   <button class="esc-btn" onclick="openSocial()">SOCIAL</button>
+  <button class="esc-btn" onclick="openSettings()">SETTINGS</button>
   <button class="esc-btn" onclick="escQuit()">QUIT</button>
   <div class="small" id="escSrv" style="margin-top:14px;opacity:.7"></div>
 </div></div>
@@ -217,6 +222,15 @@ button:hover{background:#0a0}
   <div id="socMsg"></div>
   <div id="socList"></div>
   <div style="margin-top:14px"><button onclick="closeSocial()">ZAVŘÍT</button></div>
+</div></div>
+<div id="settingsScreen" class="hidden"><div class="big-box" style="min-width:min(560px,94vw)">
+  <h2>SETTINGS</h2>
+  <h3 style="color:#4de1ff;margin:10px 0 6px">VOICE CHAT</h3>
+  <div class="row2"><span>Hlasový chat (mikrofon)</span><button id="setVoice" onclick="toggleVoice()">VYPNUTO</button></div>
+  <div class="small" style="opacity:.65;margin:4px 0 12px">Výchozí je vypnuto. Po zapnutí tě prohlížeč požádá o povolení mikrofonu. Slyšíš hráče na serveru podle vzdálenosti, členy týmu všude.</div>
+  <h3 style="color:#4de1ff;margin:10px 0 6px">SOUND</h3>
+  <div class="row2"><span>Hudba v menu</span><button id="setMusic" onclick="toggleMenuMusic()">ZAPNUTO</button></div>
+  <div style="margin-top:16px"><button onclick="closeSettings()">ZAVŘÍT</button></div>
 </div></div>
 <div id="invitePop" class="hidden"></div>
 <div id="loadScreen" class="hidden">
@@ -710,6 +724,7 @@ function ambience(kind){
   const old=sounds.amb;
   if(old){try{old.out.gain.cancelScheduledValues(ctx.currentTime);old.out.gain.setValueAtTime(old.out.gain.value,ctx.currentTime);old.out.gain.linearRampToValueAtTime(0,ctx.currentTime+0.8);}catch(e){}clearInterval(old.timer);setTimeout(()=>{old.nodes.forEach(n=>{try{n.stop();}catch(e){}});try{old.out.disconnect();}catch(e){}},900);sounds.amb=null;}
   if(!kind) return;
+  if(kind==='menu'&&!menuMusicOn) return;
   try{
     const out=ctx.createGain();out.gain.value=0.0001;out.connect(sounds.out);out.gain.linearRampToValueAtTime(1,ctx.currentTime+2);
     const nodes=[],A={out,nodes,timer:null,kind};
@@ -778,7 +793,7 @@ function finishIntro(){
   const nameIn=document.getElementById('nameIn');
   if(nameIn) nameIn.value=localStorage.getItem('wp_name')||'';
   checkForUpdate();
-  try{const nm=localStorage.getItem('wp_name'),pn=nm&&localStorage.getItem('wp_pin_'+nm);if(localStorage.getItem('wp_auto')!=='0'&&nm&&pn){document.getElementById('pinIn').value=pn;window.doRegister();}}catch(e){}
+  try{const nm=localStorage.getItem('wp_name'),pn=nm&&localStorage.getItem('wp_pin_'+nm);if(localStorage.getItem('wp_auto')!=='0'&&nm&&pn){document.getElementById('pinIn').value=pn;window.doRegister('login');}}catch(e){}
 }
 window.finishIntro=finishIntro;
 window.ensureAudio=ensureAudio;
@@ -837,12 +852,14 @@ function sendAccounts(conn){
 }
 setInterval(()=>{if(myName&&myHash){storeMyAccount();sendAccounts();}},30000);
 
-window.doRegister=()=>{
+window.doRegister=(mode)=>{
   const name=document.getElementById('nameIn').value.trim();const pin=document.getElementById('pinIn').value.trim();
   if(name.length<3||name.length>16){alert('Jméno 3-16');return;}if(!/^\d{4}$/.test(pin)){alert('PIN 4 čísla');return;}
   const h=pinHash(name,pin),recA=accounts[name.toLowerCase()];
   const sp=localStorage.getItem('wp_pin_'+name);
   const pe=document.getElementById('pinErr');
+  if(mode==='login'&&!sp&&!recA){pe.textContent='Účet s tímto jménem neexistuje. Klikni na VYTVOŘIT ÚČET.';pe.style.display='block';return;}
+  if(mode==='create'&&(sp||recA)){pe.textContent='Tohle jméno už existuje. Klikni na PŘIHLÁSIT SE.';pe.style.display='block';return;}
   if(sp&&sp!==pin){pe.textContent='ŠPATNÝ PIN!';pe.style.display='block';return;}
   if(!sp&&recA&&recA.h!==h){pe.textContent='Jméno už existuje s jiným heslem. Zadej správný PIN nebo zvol jiné jméno.';pe.style.display='block';return;}
   pe.style.display='none';if(!sp) localStorage.setItem('wp_pin_'+name,pin);
@@ -867,6 +884,7 @@ window.doRegister=()=>{
    else{accounts[k]=loc;saveAccounts();}}
   loadCos();try{localStorage.setItem('wp_auto','1');}catch(e){}
   document.getElementById('myIdDisp').textContent=shortId(myId);showMainMenu();
+  try{document.getElementById('pinIn').value='';}catch(e){}
   checkOwner();restoreCamp();initPeer();
   if(isOwner){const inp=document.getElementById('ownerInput');inp.addEventListener('keydown',e=>{if(e.key==='Enter'){handleOwnerCommand(inp.value);inp.value='';}});}
 };
@@ -908,7 +926,7 @@ function startPeer(){
   if(peerStarting) return;
   peerStarting=true;
   try{if(peer){peer.destroy();}}catch(e){}
-  conns={};pending={};
+  conns={};pending={};voiceCalls={};
   peer=new Peer(myId,{config:{iceServers:[
     {urls:'stun:stun.l.google.com:19302'},
     {urls:'stun:stun1.l.google.com:19302'},
@@ -944,6 +962,7 @@ function startPeer(){
   peer.on('disconnected',()=>{
     if(peer&&!peer.destroyed){logConn('Odpojeno od serveru, připojuji znovu...');setTimeout(()=>{try{peer.reconnect();}catch(e){}},1500);}
   });
+  peer.on('call',onVoiceCall);
   peer.on('connection',conn=>{if(!curServer||leavingSrv){try{conn.on('open',()=>{try{conn.close();}catch(e){}});}catch(e){}return;}setupConn(conn);});
   if(posInterval) clearInterval(posInterval);
   posInterval=setInterval(()=>{
@@ -1054,7 +1073,7 @@ window.connectFriend=()=>{
   setTimeout(()=>{if(!(conns[fid]&&conns[fid].open)) logConn('Spojení se nepodařilo - hráč musí být online v lobby a mít správné ID.');},10000);
 };
 window.enterGame=()=>{
-  ['lobby','mainMenu','loadScreen','escMenu','quitBox','shopScreen','socialScreen','app'].forEach(i=>hid(i));document.getElementById('enterBtn').classList.remove('show');
+  ['lobby','mainMenu','loadScreen','escMenu','quitBox','shopScreen','socialScreen','settingsScreen','app'].forEach(i=>hid(i));document.getElementById('enterBtn').classList.remove('show');
   document.getElementById('gameCanvas').classList.remove('hidden');
   document.getElementById('hud').classList.remove('hidden');document.getElementById('cross').classList.remove('hidden');
   document.getElementById('hudId').textContent=curServer?('SERVER '+curServer):'OFFLINE';document.getElementById('lvl').textContent=myLevel;
@@ -1068,6 +1087,8 @@ window.enterGame=()=>{
 const LOGO_URL='data:image/png;base64,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';
 const MAX_SRV=24,HUB_PREFIX='wayout80-s',INBOX_PREFIX='wayout80-u-';
 const ICE_CFG={config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:stun.cloudflare.com:3478'}]}};
+let menuMusicOn=true,voiceOn=false,micStream=null,voiceCalls={},voiceAudio={},voiceTry={};
+try{menuMusicOn=localStorage.getItem('wp_mmusic')!=='0';}catch(e){}
 let curServer=0,hubPeer=null,hubN=0,hubRes={},probeWait={},leavingSrv=false,srvGen=0,inboxPeer=null,myTeam=null,issuedTeams={},invites={},loadingNow=false,netQ=Promise.resolve(),shopFrom='main',lastEscOpen=0,hadLock=false;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const ge=id=>document.getElementById(id);
@@ -1128,7 +1149,7 @@ function ensureHub(tr){
   const n=curServer;hubOpen(n).then(ok=>{if(!ok&&curServer===n&&!hubPeer&&!leavingSrv) setTimeout(()=>ensureHub(tr+1),4000+Math.random()*4000);});
 }
 function leaveServer(){
-  leavingSrv=true;srvGen++;
+  leavingSrv=true;srvGen++;dropAllVoice();
   try{broadcast({type:'playerLeft',id:myId});}catch(e){}
   const old=conns;conns={};pending={};
   setTimeout(()=>Object.values(old).forEach(c=>{try{c.close();}catch(e){}}),200);
@@ -1329,9 +1350,76 @@ window.shopDaily=()=>{
 window.openShop=()=>{shopFrom=inGame?'esc':'main';shopTab=0;shw('shopScreen');renderShop();};
 window.closeShop=()=>{hid('shopScreen');};
 
+// ---------- nastavení + hlasový chat ----------
+function refreshSettings(){
+  const v=ge('setVoice'),m=ge('setMusic');
+  if(v){v.textContent=voiceOn?'ZAPNUTO':'VYPNUTO';v.style.background=voiceOn?'#3dff5a':'';v.style.color=voiceOn?'#000':'';}
+  if(m){m.textContent=menuMusicOn?'ZAPNUTO':'VYPNUTO';m.style.background=menuMusicOn?'#3dff5a':'';m.style.color=menuMusicOn?'#000':'';}
+}
+window.openSettings=()=>{shw('settingsScreen');refreshSettings();};
+window.closeSettings=()=>hid('settingsScreen');
+window.toggleMenuMusic=()=>{
+  menuMusicOn=!menuMusicOn;try{localStorage.setItem('wp_mmusic',menuMusicOn?'1':'0');}catch(e){}
+  if(!menuMusicOn){if(sounds.amb&&sounds.amb.kind==='menu') ambience(null);}
+  else if(isShw('mainMenu')||loadingNow) ambience('menu');
+  refreshSettings();
+};
+window.toggleVoice=async()=>{
+  if(!voiceOn){
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast('Tento prohlížeč nepodporuje mikrofon');playSound('error');return;}
+    try{micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});}
+    catch(e){toast('🎤 Mikrofon není dostupný nebo není povolený');playSound('error');voiceOn=false;refreshSettings();return;}
+    voiceOn=true;toast('🎤 Hlasový chat zapnut');
+    Object.keys(conns).forEach(id=>{if(conns[id]&&conns[id].open) callVoice(id);});
+  }else{
+    voiceOn=false;dropAllVoice();
+    if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null;}
+    toast('🎤 Hlasový chat vypnut');
+  }
+  refreshSettings();
+};
+function callVoice(id){
+  if(!voiceOn||!micStream||!peer||peer.destroyed||voiceCalls[id]) return;
+  try{const c=peer.call(id,micStream);if(c) attachVoice(id,c);}catch(e){}
+}
+function attachVoice(id,c){
+  voiceCalls[id]=c;
+  c.on('stream',st=>{
+    try{let a=voiceAudio[id];if(!a){a=new Audio();a.autoplay=true;voiceAudio[id]=a;}a.srcObject=st;a.volume=0.8;const pr=a.play();if(pr&&pr.catch) pr.catch(()=>{});}catch(e){}
+  });
+  c.on('close',()=>{if(voiceCalls[id]===c) dropVoice(id);});
+  c.on('error',()=>{if(voiceCalls[id]===c) dropVoice(id);});
+}
+function dropVoice(id){
+  const c=voiceCalls[id];delete voiceCalls[id];
+  if(c){try{c.close();}catch(e){}}
+  const a=voiceAudio[id];if(a){try{a.pause();a.srcObject=null;}catch(e){}delete voiceAudio[id];}
+}
+function dropAllVoice(){Object.keys(voiceCalls).forEach(dropVoice);Object.keys(voiceAudio).forEach(id=>{try{voiceAudio[id].pause();}catch(e){}delete voiceAudio[id];});}
+function onVoiceCall(c){
+  const id=c.peer;
+  if(!voiceOn||!micStream||!curServer){try{c.close();}catch(e){}return;}
+  const ex=voiceCalls[id];
+  if(ex){if(String(myId)<String(id)){try{c.close();}catch(e){}return;}try{ex.close();}catch(e){}delete voiceCalls[id];}
+  try{c.answer(micStream);attachVoice(id,c);}catch(e){}
+}
+setInterval(()=>{
+  if(!voiceOn) return;
+  const now=Date.now();
+  Object.keys(conns).forEach(id=>{if(conns[id]&&conns[id].open&&!voiceCalls[id]&&now-(voiceTry[id]||0)>15000){voiceTry[id]=now;callVoice(id);}});
+  Object.keys(voiceAudio).forEach(id=>{
+    const a=voiceAudio[id],p=remote[id];if(!a) return;
+    let vol=0.9;
+    if(p&&myTeam&&p.team===myTeam) vol=1;
+    else if(p&&p.ig&&typeof p.x==='number'&&inGame) vol=Math.max(0,1-Math.hypot(p.x-posRef.x,p.z-posRef.z)/70);
+    else if(!inGame) vol=0;
+    try{a.volume=Math.max(0,Math.min(1,vol));}catch(e){}
+  });
+},500);
+
 // ---------- hlavní menu / Esc menu / ukončení ----------
 function showMainMenu(){
-  hid('app');hid('loadScreen');hid('escMenu');hid('quitBox');hid('shopScreen');hid('socialScreen');
+  hid('app');hid('loadScreen');hid('escMenu');hid('quitBox');hid('shopScreen');hid('socialScreen');hid('settingsScreen');
   setText('mmUser',myName+'  ·  LVL '+myLevel);refreshAtoms();shw('mainMenu');ambience('menu');
 }
 window.__toMainMenu=()=>{leaveServer();showMainMenu();};
@@ -1339,26 +1427,27 @@ window.mmPlay=()=>{startPlay();};
 window.mmQuit=()=>{quitDesktop();};
 window.mmLogout=()=>{
   if(!confirm('Odhlásit se? Příště budeš muset zadat jméno a PIN.')) return;
-  try{localStorage.removeItem('wp_auto');}catch(e){}
+  try{localStorage.setItem('wp_auto','0');}catch(e){}
   leaveServer();location.reload();
 };
-const uiOpen=()=>isShw('escMenu')||isShw('shopScreen')||isShw('socialScreen')||isShw('quitBox');
+const uiOpen=()=>isShw('settingsScreen')||isShw('escMenu')||isShw('shopScreen')||isShw('socialScreen')||isShw('quitBox');
 window.__uiOpen=uiOpen;
 function openEsc(){
   if(!inGame||uiOpen()) return;
   try{document.exitPointerLock();}catch(e){}
   lastEscOpen=performance.now();shw('escMenu');updateSrvInfo();playSound('ui');
 }
-window.escBack=()=>{hid('escMenu');hid('quitBox');hid('shopScreen');hid('socialScreen');const c=ge('gameCanvas');try{c.requestPointerLock();}catch(e){}};
+window.escBack=()=>{hid('settingsScreen');hid('escMenu');hid('quitBox');hid('shopScreen');hid('socialScreen');const c=ge('gameCanvas');try{c.requestPointerLock();}catch(e){}};
 window.escQuit=()=>shw('quitBox');
 window.escKey=()=>{
   if(isShw('quitBox')){hid('quitBox');return;}
+  if(isShw('settingsScreen')){closeSettings();return;}
   if(isShw('shopScreen')){closeShop();return;}
   if(isShw('socialScreen')){closeSocial();return;}
   if(isShw('escMenu')){if(performance.now()-lastEscOpen<350) return;escBack();return;}
   openEsc();
 };
-document.addEventListener('keydown',e=>{if(e.code==='Escape'&&!inGame){if(isShw('shopScreen')) closeShop();else if(isShw('socialScreen')) closeSocial();}});
+document.addEventListener('keydown',e=>{if(e.code==='Escape'&&!inGame){if(isShw('settingsScreen')) closeSettings();else if(isShw('shopScreen')) closeShop();else if(isShw('socialScreen')) closeSocial();}});
 document.addEventListener('pointerlockchange',()=>{
   if(document.pointerLockElement){hadLock=true;return;}
   if(hadLock&&inGame&&!uiOpen()){
